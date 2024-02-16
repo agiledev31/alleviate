@@ -1,0 +1,29 @@
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-container {
+    position: absolute;
+    width: calc(100% - 288px);
+    height: 100%;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-container svg {
+    fill: #0c4ec1;
+}
+
+.loading-spinner {
+    animation: spinner 2.5s linear infinite;
+}

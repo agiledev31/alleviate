@@ -1,0 +1,29 @@
+@import "./auth.scss";
+@import "./languageswitcher.scss";
+@import "./home.scss";
+
+.ant-btn-primary {
+  background-color: #294895 !important;
+  border: 1px solid #294895;
+  &:hover {
+    color: #294895 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+  &:disabled {
+    color: #ffffff !important;
+    background-color: #294895 !important;
+  }
+}
+
+.ant-btn.ant-btn-primary:not(.ant-btn-dangerous) {
+  background-color: #294895;
+}
+button.ant-switch {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.delete-step-btn {
+  span {
+    margin-bottom: -3px;
+  }
+}

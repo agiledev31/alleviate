@@ -1,0 +1,66 @@
+:root {
+  --indigo-50: #edf8ff;
+  --indigo-100: #d7eeff;
+  --indigo-200: #b7e4ff;
+  --indigo-300: #86d4ff;
+  --indigo-400: #4dbbff;
+  --indigo-500: #2499ff;
+  --indigo-600: #0c7aff;
+  --indigo-700: #0662ef;
+  --indigo-800: #0c4ec1;
+  --indigo-900: #104392;
+  --indigo-950: #0f2b5c;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-width: 250px;
+}
+
+.text-red {
+  color: #ff2400;
+}
+
+:where(.css-dev-only-do-not-override-dj2uwg).ant-select-dropdown .ant-select-item-option-content {
+  overflow: unset !important;
+  white-space: unset !important;
+  text-overflow: unset !important;
+}
+
+.assessments-tabs .spinner-container {
+  width: 100%;
+  min-height: 30px;
+  background-color: transparent;
+}
+
+.qualification-modal-spinner .spinner-container {
+  width: 100%;
+}
+
+.text-primary {
+  color: #0c4ec1;
+}
+
+.qualification-modal-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0,0,0, 0.2);
+  margin-bottom: 15px;
+}
+
+.qualification-modal-form .qualification-select {
+  width: calc(70% - 8px);
+}
+
+.qualification-modal-form .qualification-select .ant-select {
+  width: 100%;
+}
+
+.qualification-modal-form .qualification-options {
+  width: calc(30% - 8px);
+}
