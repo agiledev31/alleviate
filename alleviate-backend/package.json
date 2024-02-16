@@ -1,0 +1,48 @@
+{
+  "name": "risk-assessment-platform-backend",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js",
+    "jobs-server": "nodemon crons/index",
+    "production": "NODE_ENV=production nodemon api/index.js"
+  },
+  "author": "Görkem Sinirlioglu",
+  "license": "ISC",
+  "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "@sendgrid/mail": "^7.7.0",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cloudinary": "^1.41.0",
+    "cloudinary-core": "^2.13.0",
+    "cors": "^2.8.5",
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
+    "exceljs": "^4.4.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.1.0",
+    "helmet": "^5.0.2",
+    "js-cookie": "^3.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^3.1.2",
+    "moment": "^2.29.4",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.2",
+    "mongoose-sequence": "^5.3.1",
+    "nanoid": "^4.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.7",
+    "socket.io": "^4.4.0",
+    "stripe": "^14.7.0",
+    "twilio": "^4.19.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
