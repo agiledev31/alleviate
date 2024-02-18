@@ -30,7 +30,6 @@ import Select from "../../components/Select";
 import { benchmarksSectorType, countries } from "../../data/constants";
 import AuthService from "../../service/AuthService";
 import UploadService from "../../service/UploadService";
-import { sectorOptions } from "../ngo-company/Benchmarks";
 
 function replaceAtIndex(arr, index, newValue) {
   // Create a copy of the original array
@@ -553,22 +552,6 @@ export default function Example() {
                   <Select
                     options={benchmarksSectorType}
                     {...getProps("sector")}
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-4">
-                <label
-                  htmlFor="sector"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Relevant Dataset
-                </label>
-                <div className="mt-2">
-                  <AntdSelect
-                    mode="multiple"
-                    style={{ minWidth: 200 }}
-                    options={Object.values(sectorOptions).flat()}
-                    {...getProps("relevantDataset")}
                   />
                 </div>
               </div>

@@ -4,6 +4,7 @@ import {
   HomeIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
+import { FaMagnifyingGlassChart } from "react-icons/fa6";
 
 import { Skeleton, message } from "antd";
 import Color from "color";
@@ -33,6 +34,7 @@ import CategotyNotifications from "../ngo-company/CategoryNotifications";
 import CreateSuite from "../ngo-company/CreateSuite";
 import { default as CreateTemplate } from "../ngo-company/CreateTemplate";
 import { default as EnrollmentPre } from "../ngo-company/EnrollmentPre";
+import MyBenchmarks from "../MyBenchmarks";
 import MyPrograms from "../ngo-company/MyPrograms";
 import ProgramDetails from "../ngo-company/ProgramDetails";
 import ProgramEdit from "../ngo-company/ProgramEdit";
@@ -216,6 +218,13 @@ const Dashboard = () => {
       href: "/dashboard",
       icon: HomeIcon,
       display: true,
+    },
+    {
+      name: "My Benchmarks",
+      component: <MyBenchmarks />,
+      href: "/dashboard/mybenchmarks",
+      icon: FaMagnifyingGlassChart,
+      display: user?.role === "ngo-company",
     },
     {
       name: "Team",

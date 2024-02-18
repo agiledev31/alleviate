@@ -1,11 +1,8 @@
 import { Column, Pie } from "@ant-design/charts";
 import {
   Button,
-  Card,
   Skeleton,
   Space,
-  Statistic,
-  Switch,
   Table,
   Tag,
 } from "antd";
@@ -13,46 +10,17 @@ import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Select from "../components/Select";
-import { countries } from "../data/constants";
 import { selectUser } from "../redux/auth/selectors";
-import CrudService from "../service/CrudService";
 import DashboardService from "../service/DashboardService";
-import { sectorOptions } from "./ngo-company/Benchmarks";
-
-const avg = (arr) => {
-  if (!arr || !arr.length) return 0;
-  const sum = arr.reduce((acc, cur) => acc + cur);
-  const average = sum / arr.length;
-  return average;
-};
 
 const DashboardDetail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [isOnlyMyCountry, setIsOnlyMyCountry] = useState(false);
   const [KPIs, setKPIs] = useState([]);
   const [sdgs, setSdgs] = useState([]);
   const [pendingProgramData, setPendingProgramData] = useState([]);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
-  const [benchmarks, setBenchmarks] = useState([]);
   const user = useSelector(selectUser);
-  const [country, setCountry] = useState();
-  const [year, setYear] = useState(null);
-
-  useEffect(() => {
-    setCountry(user.country);
-  }, [user]);
-
-  useEffect(() => {
-    CrudService.search("BenchMark", 1000000, 1, {
-      filters: {
-        KPIType: { $in: user.relevantDataset },
-      },
-    }).then(({ data }) => {
-      setBenchmarks(data.items);
-    });
-  }, [user]);
 
   const load = useCallback(() => {
     DashboardService.getDashboardDetails().then((res) => {
@@ -278,119 +246,6 @@ const DashboardDetail = () => {
               ) : (
                 <>No KPIs data found</>
               )}
-            </div>
-          </div>
-
-          <div className={"col-span-12 xl:col-span-6 shadow-sm bg-white p-8"}>
-            <div className="flex justify-between items-start">
-              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-                Benchmarks
-              </h2>
-              <Space direction="vertical">
-                <Switch
-                  checked={isOnlyMyCountry}
-                  onChange={(e) => setIsOnlyMyCountry(e)}
-                  unCheckedChildren="Global"
-                  checkedChildren="My Country"
-                />
-
-                <div>
-                  <label>Country</label>
-                  <Select
-                    placeholder="Country"
-                    value={country}
-                    onChange={(e) => setCountry(e)}
-                    options={[{ value: null, label: "" }, ...countries]}
-                  />
-                </div>
-
-                <div>
-                  <label>Year</label>
-                  <Select
-                    value={year}
-                    onChange={(e) => setYear(e)}
-                    options={[
-                      {
-                        value: null,
-                        label: "",
-                      },
-                      ...Array.from(new Set(benchmarks.map((b) => b.year)))
-                        .filter((a) => !!a)
-                        .sort((a, b) => parseInt(a) - parseInt(b))
-                        .map((a) => ({
-                          value: a,
-                          label: a,
-                        })),
-                    ]}
-                  />
-                </div>
-              </Space>
-            </div>
-
-            <div>
-              {user?.relevantDataset
-                ?.filter?.((dataset) =>
-                  benchmarks?.some?.((b) => b.KPIType === dataset)
-                )
-                ?.map?.((dataset, i) => (
-                  <div key={i}>
-                    <Card bordered={false}>
-                      <div className="flex justify-between">
-                        <Statistic
-                          title={
-                            Object.values(sectorOptions)
-                              .flat()
-                              .find((e) => e.value === dataset)?.label ?? ""
-                          }
-                          value={avg(
-                            benchmarks
-                              .filter(
-                                (b) =>
-                                  b.KPIType === dataset &&
-                                  (!isOnlyMyCountry ||
-                                    b.country ===
-                                      countries.find((c) => country === c.value)
-                                        ?.label) &&
-                                  (!year ||
-                                    !b.year ||
-                                    b.year === parseInt(year))
-                              )
-                              .map((b) => b.total ?? 0)
-                          )}
-                          precision={2}
-                        />
-                        {!isOnlyMyCountry && (
-                          <Statistic
-                            title={`${
-                              Object.values(sectorOptions)
-                                .flat()
-                                .find((e) => e.value === dataset)?.label ?? ""
-                            } (${
-                              countries.find((c) => c.value === user.country)
-                                ?.label
-                            })`}
-                            value={avg(
-                              benchmarks
-                                .filter(
-                                  (b) =>
-                                    b.KPIType === dataset &&
-                                    b.country ===
-                                      countries.find(
-                                        (c) => user.country === c.value
-                                      )?.label &&
-                                    (!year ||
-                                      !b.year ||
-                                      b.year === parseInt(year))
-                                )
-                                .map((b) => b.total ?? 0)
-                            )}
-                            precision={2}
-                          />
-                        )}
-                      </div>
-                    </Card>
-                  </div>
-                ))}
             </div>
           </div>
 
