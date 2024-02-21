@@ -30,6 +30,7 @@ const DashboardDetail = () => {
       setSdgs(res.data.sdgs);
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
+      console.log("res", res.data.KPIs);
     });
   }, []);
 

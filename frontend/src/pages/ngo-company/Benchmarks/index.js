@@ -12,29 +12,20 @@ import ImportModule from "./ImportModule";
 export const handleXLSXTOJSON = async ({ sheet, sheetName }, callback) => {
   const XLSXTOJSON = new Promise((resolve, reject) => {
     const reader = new FileReader();
+    reader.readAsBinaryString(sheet);
 
     reader.onload = (e) => {
-      const data = e.target.result;
+      const data = e.target?.result;
       const workbook = XLSX.read(data, { type: "binary" });
       const sheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      const jsonResult = jsonData.map((row) =>
-        row.reduce((acc, cell, index) => {
-          const header = jsonData[0][index];
-          if (header) {
-            acc[header] = cell;
-          }
-          return acc;
-        }, {})
-      );
-      resolve(jsonResult);
+
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 , defval: ""});
+      resolve(jsonData);
     };
 
     reader.onerror = (error) => {
       reject(error);
     };
-
-    reader.readAsBinaryString(sheet);
   });
   const json = await XLSXTOJSON;
   callback(json);
@@ -91,6 +82,7 @@ const Benchmarks = () => {
   const [columnMapping, setColumnMapping] = useState({});
   const [workbook, setWorkbook] = useState();
   const [benchmarksData, setBenchmarksData] = useState([]);
+  const [disaggregations, setDisaggregations] = useState([]);
 
   useEffect(() => {
     if (user && user.sector in sectorOptions) {
@@ -330,27 +322,59 @@ const Benchmarks = () => {
   const handleSheetSelect = (sheetName) => {
     if (workbook) {
       const sheet = workbook.Sheets[sheetName];
-
-      // Convert sheet to JSON
-      const jsonData = XLSX.utils.sheet_to_json(sheet);
-      console.log("jsonData", jsonData);
-      // Extract header and build column mapping
-      // const { header, mapping } = extractHeaderWithMapping(jsonData);
-      // const initialMapping = {};
-      // jsonData[0].forEach((header) => {
-      //     initialMapping[header] = '';
-      // });
-      // console.log('initialMapping', initialMapping)
-      const processedData = processData(jsonData, sheetName, "", KPIType);
-      console.log("processedData", processedData);
-      // setHeader(header);
-      // setColumnMapping(mapping);
       setSelectedSheet(sheetName);
+  
+      handleXLSXTOJSON({ sheet: file, sheetName }, (json) => {
+        const _header = json[0];
+        const _subHeader = json[1];
+        const disaggregations = [];
+        let i = 0;
+        while(i < _header.length) {
+          let item = {
+            name: "",
+            children: [],
+          }
+          if(_header[i]) {
+            item.name = _header[i].split(" ").join("_");
+            if(!_subHeader[i]) {
+              disaggregations.push(item);
+            } else {
+              item.children = [_subHeader[i].split(" ").join("_")];
+              disaggregations.push(item);
+            }
+          } else {
+            if(_subHeader[i]) {
+              item = disaggregations.pop();
+              item.children = [...item.children, _subHeader[i].split(" ").join("_")];
+              disaggregations.push(item);
+            }
+          }
+          i++;
+        }
+        setDisaggregations(disaggregations);
+        const flattenHeader = [];
+        disaggregations.map(i => {
+          if(i.children.length > 1) {
+            i.children.map(ch => flattenHeader.push(ch))
+          } else {
+            flattenHeader.push(i.name);
+          }
+        })
+        setHeader(flattenHeader);
 
-      handleXLSXTOJSON({ sheet: file, sheetName }, setJSON);
-
-      // const headerWithSubheaders = createHeaderWithSubheaders(jsonData);
-      // console.log(JSON.stringify(headerWithSubheaders, null, 2));
+        json.shift();
+        json.shift();
+        const _json = json.map((row) =>
+          row.reduce((acc, cell, index) => {
+            const header = flattenHeader[index];
+            if (header) {
+              acc[header.toLowerCase()] = cell;
+            }
+            return acc;
+          }, {})
+        );
+        setJSON(_json);
+      });
     }
   };
 
@@ -552,7 +576,7 @@ const Benchmarks = () => {
         )}
         {sheetNames.length > 0 && selectedSheet && (
           <div className="mt-5">
-            <ImportModule json={json} KPIType={KPIType} refreshData={getData} />
+            <ImportModule json={json} KPIType={KPIType} header={header} disaggregations={disaggregations} refreshData={getData} />
           </div>
         )}
       </div>

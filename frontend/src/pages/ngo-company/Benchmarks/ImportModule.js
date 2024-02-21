@@ -6,16 +6,20 @@ import * as XLSX from "xlsx";
 import { selectLoading } from "../../../redux/auth/selectors";
 import CrudService from "../../../service/CrudService";
 
-const targetFields = [
-  { value: "country", label: "Country" },
-  { value: "region", label: "Region" },
-  { value: "total", label: "Total" },
-  { value: "year", label: "Year" },
-];
+// const targetFields = [
+//   { value: "country", label: "Country" },
+//   { value: "region", label: "Region" },
+//   { value: "total", label: "Total" },
+//   { value: "year", label: "Year" },
+// ];
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-const ImportModule = ({ json, KPIType, refreshData }) => {
+const ImportModule = ({ json, KPIType, header, disaggregations, refreshData }) => {
   const [bulkUploadProcess, setBulkUploadProcess] = useState({});
   const loading = useSelector(selectLoading);
+  const targetFields = header.map(i => ({value: i, label: i}));
 
   return (
     <>
@@ -26,7 +30,7 @@ const ImportModule = ({ json, KPIType, refreshData }) => {
           try {
             mappings = JSON.parse(
               localStorage[
-                `importfile_mapping_${Object.keys(json?.[0]).join("_")}`
+                `importfile_mapping_${Object.keys(header).join("_")}`
               ]
             );
           } catch (e) {}
@@ -73,7 +77,7 @@ const ImportModule = ({ json, KPIType, refreshData }) => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200">
-                {bulkUploadProcess?.mappedItems?.slice?.(1)?.map((line, i) => (
+                {bulkUploadProcess?.mappedItems?.map((line, i) => (
                   <tr key={i}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <MdDelete
@@ -90,7 +94,7 @@ const ImportModule = ({ json, KPIType, refreshData }) => {
                       />
                     </td>
                     {targetFields.map((t, idx) => (
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td key={idx} className="px-6 py-4 whitespace-nowrap">
                         <Typography.Paragraph
                           editable={{
                             onChange: (e) => {
@@ -123,20 +127,49 @@ const ImportModule = ({ json, KPIType, refreshData }) => {
                     );
 
                   const chunks = chunk(
-                    bulkUploadProcess.mappedItems.slice(1).map((l) => ({
+                    bulkUploadProcess.mappedItems.map((l) => ({
                       ...l,
                     })),
                     100
                   );
 
                   await CrudService.delete("BenchMark", null, { KPIType });
+
+                  
+
                   for (const chunk of chunks) {
                     await CrudService.create("BenchMark", {
-                      bulkItems: chunk.map((c) => ({
-                        ...c,
-                        KPIType,
-                        total: parseFloat(c.total),
-                      })),
+                      bulkItems: chunk.map((c) => {
+                        let _disaggregations = [...disaggregations];
+                        let result = _disaggregations.map(item => {
+                          let temp = {
+                            name: '',
+                            children: [],
+                          };
+                          temp.name = item.name;
+                          temp.children = item.children;
+
+                          if(temp.children.length > 1) {
+                            let _temp = temp.children.reduce((acc, cell, index) => {
+                              if (cell) {
+                                acc[cell.toLowerCase()] = parseFloat(c[capitalize(cell)]);
+                              }
+                              return acc;
+                            }, {})
+                            temp.children = _temp;
+                          } else {
+                            temp['value'] = c[item.name];
+                          }
+                          return temp;
+                        });
+                        return {
+                          disaggregations: result,
+                          KPIType,
+                          total: parseFloat(c.Total),
+                          country: c.Country,
+                          region: c.Region,
+                        }
+                      }),
                     });
                   }
                   await refreshData();

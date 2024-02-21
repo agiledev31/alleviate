@@ -319,6 +319,7 @@ const benchMarkSchema = new mongoose.Schema(
     benchMarkType: { type: String },
     sheetType: { type: String },
     KPIType: { type: String },
+    disaggregations: {type: Object},
     iso3: { type: String },
     country: { type: String },
     region: { type: String },

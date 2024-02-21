@@ -32,6 +32,7 @@ const DashboardDetail = () => {
   const user = useSelector(selectUser);
   const [country, setCountry] = useState();
   const [lineChartData, setLineChartData] = useState([]);
+  const [selectedKPI, setSelectedKPI] = useState("out_of_school_rates");
   
   const config = {
     data: lineChartData,
@@ -61,13 +62,74 @@ const DashboardDetail = () => {
         year: year,
         total: avg(temp.filter(i => i.year === year).map(t => t.total))
       }));
-      setLineChartData(temp_chartdata)
+      setLineChartData(temp_chartdata);
     });
   }, [user]);
 
-  console.log("user", user)
-  console.log("dataset", sectorOptions[user?.sector]);
+  const selectKPI = (KPI) => {
+    setSelectedKPI(KPI);
+  }
 
+  const generateChartData = () => {
+    let filtered = benchmarks.filter((b) =>
+          b.KPIType === selectedKPI &&
+          (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
+        )
+        .map((b) => b.disaggregations ?? []);
+      let genderData = filtered.map(item => {
+        let temp = item.filter(i => i.name === "Gender")
+        return temp.length ? temp[0].children : [];
+      })
+    let data = [];
+    if(genderData.length){
+      let male = avg(genderData.map(i => i.male));
+      let female = avg(genderData.map(i => i.female));
+      if(!(male == 0 && female == 0)) {
+        data = [
+          {
+            label: "Male",
+            ratio: parseFloat((100 * male/(male + female)).toPrecision(4)) 
+          },
+          {
+            label: "Female",
+            ratio: parseFloat((100 * female/(male + female)).toPrecision(4)) 
+          }
+        ]
+      }
+    }
+    
+    return {
+      appendPadding: 50,
+      data: data,
+      angleField: "ratio",
+      colorField: "label",
+      radius: 0.8,
+      autoFit: true,
+      label: {
+        type: "inner",
+        offset: "-40%",
+        content: function content(_ref) {
+          return "".concat(_ref.ratio, "%");
+        },
+        style: {
+          fontSize: 12,
+          textAlign: "center",
+        },
+      },
+      legend: {
+        position: "top",
+        flipPage: false,
+        style: {
+          textAlign: "center",
+        },
+      },
+      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
+    };
+  };
+
+  useEffect(() => {
+    generateChartData()
+  }, [selectedKPI])
 
   if (!benchmarks.length) return <Skeleton active />;
 
@@ -75,7 +137,20 @@ const DashboardDetail = () => {
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6 bg-[#f1f5f9]"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          <div className={"col-span-12 xl:col-span-6 shadow-sm bg-white p-8"}>
+          <div className={"col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white p-8"}>
+            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+              Disaggregation
+            </h2>
+
+            <div>
+              {selectedKPI ? (
+                <Pie {...generateChartData()} />
+              ) : (
+                <>No Disaggregation</>
+              )}
+            </div>
+          </div>
+          <div className={"col-span-12 sm:col-span-7 xl:col-span-8 shadow-sm bg-white p-8"}>
             <div className="flex justify-between items-start mb-5">
               <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
                 Benchmarks
@@ -110,7 +185,7 @@ const DashboardDetail = () => {
                       {dataset !== "Maternal and Newborn Health Coverage" ?
                         <Card bordered={false}>
                           <div className="justify-between">
-                            <div className="flex items-center opacity-50 pb-4 gap-2">
+                            <div className="flex items-center opacity-50 pb-4 gap-2 cursor-pointer"  onClick={() => selectKPI(dataset)}>
                               {Object.values(sectorOptions.education).find((e) => e.value === dataset) ?
                                 <MdOutlineCastForEducation />
                                 : <MdOutlineHealthAndSafety />
