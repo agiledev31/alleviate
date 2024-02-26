@@ -13,6 +13,10 @@ class DashboardService {
   getDashboardDetails() {
     return this.api.get("/getDashboardDetails");
   }
+
+  getSDGDetails() {
+    return this.api.get("/getSDGDetails");
+  }
 }
 
 export default new DashboardService(`${getBackendUrl()}/dashboard`);

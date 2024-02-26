@@ -205,8 +205,12 @@ const getList = async (req, res) => {
 };
 
 const getCoreProgramMetrics = async (req, res) => {
+  console.log("getCoreProgramMetrics body::", req.body);
+  console.log("getCoreProgramMetrics query::", req.query);
+
   try {
     const categoryFilter = req.query.impact_category;
+    const sdgId = req.query.sdgId;
     const pipeline = [
       {
         $match: {
@@ -306,6 +310,17 @@ const getCoreProgramMetrics = async (req, res) => {
       pipeline.push({
         $match: {
           'impact_category.Name': categoryFilter,
+        },
+      });
+    }
+
+    if (sdgId) {
+      pipeline.push({
+        $unwind: '$sustainable_development_goals',
+      });
+      pipeline.push({
+        $match: {
+          'sustainable_development_goals.ID': sdgId,
         },
       });
     }

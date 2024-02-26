@@ -47,6 +47,7 @@ import SuiteOverviewDetails from "../ngo-company/SuiteOverviewDetails";
 import SuitePreInformation from "../ngo-company/SuitePreInformation";
 import SuiteTarget from "../ngo-company/SuiteTarget";
 import SuiteTrack from "../ngo-company/SuiteTrack";
+import SDGDetails from "../ngo-company/SDGDetails";
 import { default as TemplateDetails } from "../ngo-company/TemplateDetails";
 import { default as TemplateEdit } from "../ngo-company/TemplateEdit";
 import { default as TemplatePre } from "../ngo-company/TemplatePre";
@@ -422,6 +423,7 @@ const Dashboard = () => {
         <Route path={"/suitetrack"} element={<SuiteTrack />} />
         <Route path={"/suitetarget"} element={<SuiteTarget />} />
         <Route path={"/suiteobjective"} element={<SuiteObjective />} />
+        <Route path={"/sdgdetails"} element={<SDGDetails />} />
       </Routes>
     </Theme>
   );

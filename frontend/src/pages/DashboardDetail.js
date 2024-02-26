@@ -10,14 +10,16 @@ import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ResponsivePieCanvas  } from '@nivo/pie'
 import { selectUser } from "../redux/auth/selectors";
 import DashboardService from "../service/DashboardService";
+import { sdgDefault } from "../data/constants";
 
 const DashboardDetail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [KPIs, setKPIs] = useState([]);
-  const [sdgs, setSdgs] = useState([]);
+  const [sdgs, setSdgs] = useState(sdgDefault);
   const [pendingProgramData, setPendingProgramData] = useState([]);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const user = useSelector(selectUser);
@@ -26,11 +28,19 @@ const DashboardDetail = () => {
     DashboardService.getDashboardDetails().then((res) => {
       if (!res.data) return;
       setData(res.data);
-      setKPIs(res.data.KPIs);
-      setSdgs(res.data.sdgs);
+      let _sdgtotal = Object.values(res.data.sdgs).reduce((acc, i) => {
+        acc += i;
+        return acc;
+      });
+      if(_sdgtotal == 0) _sdgtotal = 1;
+      let _sdg = sdgDefault.map((item, index) => {
+        item.value = (res.data.sdgs[item.id] * 100 / _sdgtotal).toFixed(2);
+        return item;
+      })
+      setSdgs(_sdg);
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
-      console.log("res", res.data.KPIs);
+      console.log("data", res.data);
     });
   }, []);
 
@@ -38,6 +48,15 @@ const DashboardDetail = () => {
     load();
   }, [load]);
 
+  const clickSGDNode = (node, event) => {
+    console.log("click sgd node", node)
+    console.log("click sgd index", node.data?.index)
+    if(!node.data?.index) return;
+    navigate(
+      `/dashboard/sdgdetails?id=${node.data?.index}`
+    );
+  }
+  
   const generateChartData = (data) => {
     return {
       appendPadding: 50,
@@ -236,18 +255,108 @@ const DashboardDetail = () => {
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6 bg-[#f1f5f9]"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          <div className={"col-span-12 xl:col-span-6 shadow-sm bg-white p-8"}>
+          <div className={"col-span-12 shadow-sm bg-white p-8"}>
             <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-              Statistics by KPIs
+              Sustainable Development Goals
             </h2>
-
-            <div>
-              {KPIs && KPIs.length > 0 ? (
+            <div className="flex flex-row justify-between items-center">
+              <div className="h-[700px] w-[90%]">
+                <ResponsivePieCanvas 
+                  onClick={(node, event) => {clickSGDNode(node, event)}}
+                  data={sdgs}
+                  margin={{ top: 100, right: 200, bottom: 100, left: 100 }}
+                  innerRadius={0.5}
+                  padAngle={0.3}
+                  cornerRadius={3}
+                  activeOuterRadiusOffset={8}
+                  colors={sdgDefault.map(i => i.color)}
+                  borderColor={{
+                      from: 'color',
+                      modifiers: [
+                          [
+                              'darker',
+                              0.6
+                          ]
+                      ]
+                  }}
+                  arcLinkLabelsSkipAngle={10}
+                  arcLinkLabelsTextColor="#333333"
+                  arcLinkLabelsThickness={2}
+                  arcLinkLabelsColor={{ from: 'color' }}
+                  arcLabel={e=>e.value+"%"}
+                  arcLabelsSkipAngle={10}
+                  arcLabelsTextColor="#ffffff"
+                  defs={[
+                      {
+                          id: 'dots',
+                          type: 'patternDots',
+                          background: 'inherit',
+                          color: 'rgba(255, 255, 255, 0.3)',
+                          size: 4,
+                          padding: 1,
+                          stagger: true
+                      },
+                      {
+                          id: 'lines',
+                          type: 'patternLines',
+                          background: 'inherit',
+                          color: 'rgba(255, 255, 255, 0.3)',
+                          rotation: -45,
+                          lineWidth: 6,
+                          spacing: 10
+                      }
+                  ]}
+                  fill={[
+                      {
+                          match: {
+                              id: 'python'
+                          },
+                          id: 'dots'
+                      },
+                      {
+                          match: {
+                              id: 'scala'
+                          },
+                          id: 'lines'
+                      },
+                  ]}
+                  legends={[
+                      // {
+                      //     anchor: 'right',
+                      //     direction: 'column',
+                      //     justify: false,
+                      //     translateX: 140,
+                      //     translateY: 0,
+                      //     itemsSpacing: 2,
+                      //     itemWidth: 60,
+                      //     itemHeight: 16,
+                      //     itemTextColor: '#999',
+                      //     itemDirection: 'left-to-right',
+                      //     itemOpacity: 1,
+                      //     symbolSize: 14,
+                      //     symbolShape: 'circle'
+                      // }
+                  ]}
+                />
+              </div>
+              <ul role="list" className="list-disc space-y-1 pl-2">
+                  {sdgDefault?.map((sdg, index) => (
+                      <li key={index} className="flex items-center">
+                          <img
+                              className="h-8 w-auto rounded-md"
+                              src={`/images/sdg-icons/E_WEB_${index + 1}.png`}
+                              alt={sdg.Name}
+                          />
+                      </li>
+                  ))}
+              </ul>
+            </div>
+            
+            {/* {KPIs && KPIs.length > 0 ? (
                 <Pie {...generateChartData(KPIs)} />
               ) : (
-                <>No KPIs data found</>
-              )}
-            </div>
+                <>No SDG data found</>
+              )} */}
           </div>
 
           <div className={"col-span-12 shadow-sm bg-white p-8"}>

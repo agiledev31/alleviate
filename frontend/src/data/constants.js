@@ -243,3 +243,125 @@ export const convertCamelCaseStringToNormalString = (string) => {
 
 export const DATA_PAR_PAGE = 10;
 export const PAGE_NUMBER = 1;
+
+export const sdgDefault = [
+  {
+    "index": 1,
+    "id": "No Poverty",
+    "label": "No Poverty",
+    "value": 426,
+    "color": "#EA1D2C"
+  },
+  {
+    "index": 2,
+    "id": "Zero Hunger",
+    "label": "Zero Hunger",
+    "value": 149,
+    "color": "#DDA83A"
+  },
+  {
+    "index": 3,
+    "id": "Good Health and Well-being",
+    "label": "Good Health and Well-being",
+    "value": 576,
+    "color": "#4C9F38"
+  },
+  {
+    "index": 4,
+    "id": "Quality Education",
+    "label": "Quality Education",
+    "value": 233,
+    "color": "#C32033"
+  },
+  {
+    "index": 5,
+    "id": "Gender Equality",
+    "label": "Gender Equality",
+    "value": 581,
+    "color": "#FF3A21"
+  },
+  {
+    "index": 6,
+    "id": "Clean Water and Sanitation",
+    "label": "Clean Water and Sanitation",
+    "value": 471,
+    "color": "#26BDE2"
+  },
+  {
+    "index": 7,
+    "id": "Affordable and Clean Energy",
+    "label": "Affordable and Clean Energy",
+    "value": 599,
+    "color": "#FCC30B"
+  },
+  {
+    "index": 8,
+    "id": "Decent Work and Economic Growth",
+    "label": "Decent Work and Economic Growth",
+    "value": 524,
+    "color": "#A21942"
+  },
+  {
+    "index": 9,
+    "id": "Industry, Innovation and Infrastructure",
+    "label": "Industry, Innovation and Infrastructure",
+    "value": 32,
+    "color": "#F36D24"
+  },
+  {
+    "index": 10,
+    "id": "Reduced Inequalities",
+    "label": "Reduced Inequalities",
+    "value": 580,
+    "color": "#DD1367"
+  },
+  {
+    "index": 11,
+    "id": "Sustainable Cities and Communities",
+    "label": "Sustainable Cities and Communities",
+    "value": 518,
+    "color": "#FA9D26"
+  },
+  {
+    "index": 12,
+    "id": "Responsible Consumption and Production",
+    "label": "Responsible Consumption and Production",
+    "value": 204,
+    "color": "#BF8B2E"
+  },
+  {
+    "index": 13,
+    "id": "Climate Action",
+    "label": "Climate Action",
+    "value": 383,
+    "color": "#3F7E44"
+  },
+  {
+    "index": 14,
+    "id": "Life Below Water",
+    "label": "Life Below Water",
+    "value": 30,
+    "color": "#3F7E44"
+  },
+  {
+    "index": 15,
+    "id": "Life on Land",
+    "label": "Life on Land",
+    "value": 149,
+    "color": "#56C02B"
+  },
+  {
+    "index": 16,
+    "id": "Peace, Justice and Institutions",
+    "label": "Peace, Justice and Institutions",
+    "value": 94,
+    "color": "#00689D"
+  },
+  {
+    "index": 17,
+    "id": "Partnerships for the Goals",
+    "label": "Partnerships for the Goals",
+    "value": 192,
+    "color": "#19486A"
+  },
+];

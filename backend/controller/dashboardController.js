@@ -22,48 +22,77 @@ const getDashboardDetails = async (req, res) => {
     try {
         const data = {
             KPIs: [],
+            // KPIListWithSDG: [],
+            SDGList: [],
             segmentKPIs: [],
             submissions: [],
             pendingPrograms: [],
             sdgs: [],
         };
         const userSuite = await Suite.find({user_id: req.user._id});
-        const userSuiteIds = userSuite.map(item => item._id)
+        const userSuiteIds = userSuite.map(item => item._id);
+
         const suitWiseProgram = await Program.find({suite: {$in: userSuiteIds}})
-
-        // KPIs (Pie chart)
         const suitWiseProgramIds = suitWiseProgram.map(item => item._id);
-        const programSubmissions = await ProgramSubmission.find({programId: {$in: suitWiseProgramIds}});
-        const allKPIs = programSubmissions.flatMap((submission) => submission.KPIs);
 
-        const selectKPIs = allKPIs.filter((kpi) => (kpi.kpiType === 'select' || kpi.kpiType === 'radio' || kpi.kpiType === 'quiz') && kpi.key && kpi.submittedValue);
-        const totalKPIs = selectKPIs.length;
+        // const programSubmissions = await ProgramSubmission.find({programId: {$in: suitWiseProgramIds}});
+        // const allKPIs = programSubmissions.flatMap((submission) => submission.KPIs);
 
-        const sortedKPIs = selectKPIs.reduce((acc, kpi) => {
-            const key = kpi.key;
-            acc[key] = (acc[key] || 0) + 1;
-            return acc;
-        }, {});
+        // const selectKPIs = allKPIs.filter((kpi) => (kpi.kpiType === 'select' || kpi.kpiType === 'radio' || kpi.kpiType === 'quiz') && kpi.key && kpi.submittedValue);
+        // const totalKPIs = selectKPIs.length;
 
-        const topKPIs = Object.entries(sortedKPIs)
-            .sort(([, countA], [, countB]) => countB - countA)
-            .slice(0, 5)
-            .map(([key]) => key);
+        // const sortedKPIs = selectKPIs.reduce((acc, kpi) => {
+        //     const key = kpi.key;
+        //     acc[key] = (acc[key] || 0) + 1;
+        //     return acc;
+        // }, {});
 
-        const topKPIsData = topKPIs.map(key => {
-            const count = sortedKPIs[key];
-            const ratio = totalKPIs > 0 ? ((count / totalKPIs) * 100).toFixed(2) : 0;
-            return {
-                label: key,
-                ratio: parseFloat(ratio),
-            };
-        });
+        // const topKPIs = Object.entries(sortedKPIs)
+            // .sort(([, countA], [, countB]) => countB - countA)
+            // .slice(0, 5)
+            // .map(([key]) => key);
 
-        if (topKPIsData && topKPIsData.length > 0){
-            data.KPIs = topKPIsData;
-        }
+        // const topKPIsData = topKPIs.map(key => {
+        //     const count = sortedKPIs[key];
+        //     const ratio = totalKPIs > 0 ? ((count / totalKPIs) * 100).toFixed(2) : 0;
+        //     return {
+        //         label: key,
+        //         ratio: parseFloat(ratio),
+        //     };
+        // });
 
+        // if (topKPIsData && topKPIsData.length > 0){
+        //     data.KPIs = topKPIsData;
+        // }
+        // data.KPIs = sortedKPIs;
+        // const sdg_list = await db
+        //     .collection("sustainable_development_goals")
+        //     .find({})
+        //     .toArray();
+        // data.SDGList = sdg_list;
+
+        // get whole sdg across all users
         // SDGs (Bar Chart)
+        // const pipeline = [
+        //     {
+        //         $match: {
+        //             published_at: { $ne: null },
+        //         },
+        //     },
+        //     {
+        //         $lookup: {
+        //             from: "sustainable_development_goals",
+        //             localField: "sustainable_development_goals",
+        //             foreignField: "_id",
+        //             as: "sustainable_development_goals",
+        //         },
+        //     }
+        // ];
+
+        // get sdgs for the current user(only who have submittedValue for his assessments)
+        // //get sdgs from the user suites
+        // const allKPIsIDs = userSuite.flatMap(item => item.KPIs);
+        // data.KPIs = allKPIsIDs;
         const pipeline = [
             {
                 $match: {
@@ -80,33 +109,41 @@ const getDashboardDetails = async (req, res) => {
             }
         ];
 
-        const list = await db
+        const allKPIsWithSDG = await db
             .collection("core_program_metrics")
             .aggregate(pipeline)
             .toArray();
+        data.KPIListWithSDG = allKPIsWithSDG;
 
-
-        const countMap = {
+        const sdgCountMap = {
             'No Poverty': 0,
+            'Zero Hunger': 0,
+            'Good Health and Well-being': 0,
             'Quality Education': 0,
-            'Reduced Inequalities': 0
-        };
+            'Gender Equality': 0,
+            'Clean Water and Sanitation': 0,
+            'Affordable and Clean Energy': 0,
+            'Decent Work and Economic Growth': 0,
+            'Industry, Innovation and Infrastructure': 0,
+            'Reduced Inequalities': 0,
+            'Sustainable Cities and Communities': 0,
+            'Responsible Consumption and Production': 0,
+            'Climate Action': 0,
+            'Life Below Water': 0,
+            'Life on Land': 0,
+            'Peace, Justice and Institutions': 0,
+            'Partnerships for the Goals': 0,
+        }
 
-        list.forEach(obj => {
+        allKPIsWithSDG.forEach(obj => {
             obj.sustainable_development_goals.forEach(innerObj => {
                 const key = innerObj.Name;
-                if (countMap.hasOwnProperty(key)) {
-                    countMap[key]++;
+                if (sdgCountMap.hasOwnProperty(key)) {
+                    sdgCountMap[key]++;
                 }
             });
         });
-
-        const topSdgs = Object.keys(countMap)
-            .map(key => ({ label: key, count: countMap[key] }))
-
-        if (topSdgs) {
-            data.sdgs = topSdgs;
-        }
+        data.sdgs = sdgCountMap;
 
         // Recent submissions
         const submissions = await ProgramSubmission.find({programId: {$in: suitWiseProgramIds}}).sort({createdAt: -1}).limit(5).populate('user_id programId');
