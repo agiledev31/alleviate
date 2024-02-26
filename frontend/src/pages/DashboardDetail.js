@@ -1,4 +1,3 @@
-import { Column, Pie } from "@ant-design/charts";
 import {
   Button,
   Skeleton,
@@ -18,7 +17,6 @@ import { sdgDefault } from "../data/constants";
 const DashboardDetail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [KPIs, setKPIs] = useState([]);
   const [sdgs, setSdgs] = useState(sdgDefault);
   const [pendingProgramData, setPendingProgramData] = useState([]);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
@@ -56,65 +54,6 @@ const DashboardDetail = () => {
       `/dashboard/sdgdetails?id=${node.data?.index}`
     );
   }
-  
-  const generateChartData = (data) => {
-    return {
-      appendPadding: 50,
-      data: data,
-      angleField: "ratio",
-      colorField: "label",
-      radius: 0.8,
-      autoFit: true,
-      label: {
-        type: "inner",
-        offset: "-30%",
-        content: function content(_ref) {
-          return "".concat(_ref.ratio, "%");
-        },
-        style: {
-          fontSize: 12,
-          textAlign: "center",
-        },
-      },
-      legend: {
-        position: "top",
-        flipPage: false,
-        style: {
-          textAlign: "center",
-        },
-      },
-      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
-    };
-  };
-
-  const generateSdgBarChartData = (data) => {
-    return {
-      data,
-      xField: "label",
-      yField: "count",
-      label: {
-        position: "middle",
-        style: {
-          fill: "#FFFFFF",
-          opacity: 0.6,
-        },
-      },
-      xAxis: {
-        label: {
-          autoHide: true,
-          autoRotate: false,
-        },
-      },
-      meta: {
-        label: {
-          alias: "a",
-        },
-        count: {
-          alias: "Count",
-        },
-      },
-    };
-  };
 
   const submissionColumns = [
     {
@@ -320,23 +259,7 @@ const DashboardDetail = () => {
                           id: 'lines'
                       },
                   ]}
-                  legends={[
-                      // {
-                      //     anchor: 'right',
-                      //     direction: 'column',
-                      //     justify: false,
-                      //     translateX: 140,
-                      //     translateY: 0,
-                      //     itemsSpacing: 2,
-                      //     itemWidth: 60,
-                      //     itemHeight: 16,
-                      //     itemTextColor: '#999',
-                      //     itemDirection: 'left-to-right',
-                      //     itemOpacity: 1,
-                      //     symbolSize: 14,
-                      //     symbolShape: 'circle'
-                      // }
-                  ]}
+                  legends={[]}
                 />
               </div>
               <ul role="list" className="list-disc space-y-1 pl-2">
@@ -351,12 +274,6 @@ const DashboardDetail = () => {
                   ))}
               </ul>
             </div>
-            
-            {/* {KPIs && KPIs.length > 0 ? (
-                <Pie {...generateChartData(KPIs)} />
-              ) : (
-                <>No SDG data found</>
-              )} */}
           </div>
 
           <div className={"col-span-12 shadow-sm bg-white p-8"}>
