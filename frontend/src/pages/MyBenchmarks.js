@@ -33,6 +33,7 @@ const DashboardDetail = () => {
   const [country, setCountry] = useState();
   const [lineChartData, setLineChartData] = useState([]);
   const [selectedKPI, setSelectedKPI] = useState("out_of_school_rates");
+  const [filteredAggregation, setFilteredAggregation] = useState([])
   
   const config = {
     data: lineChartData,
@@ -70,20 +71,15 @@ const DashboardDetail = () => {
     setSelectedKPI(KPI);
   }
 
-  const generateChartData = () => {
-    let filtered = benchmarks.filter((b) =>
-          b.KPIType === selectedKPI &&
-          (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
-        )
-        .map((b) => b.disaggregations ?? []);
-      let genderData = filtered.map(item => {
-        let temp = item.filter(i => i.name === "Gender")
-        return temp.length ? temp[0].children : [];
-      })
+  const generateChartDataForGender = () => {
+    let _data = filteredAggregation.map(item => {
+      let temp = item.filter(i => i.name === "Gender")
+      return temp.length ? temp[0].children : [];
+    })
     let data = [];
-    if(genderData.length){
-      let male = avg(genderData.map(i => i.male));
-      let female = avg(genderData.map(i => i.female));
+    if(_data.length){
+      let male = avg(_data.map(i => i.male));
+      let female = avg(_data.map(i => i.female));
       if(!(male == 0 && female == 0)) {
         data = [
           {
@@ -99,7 +95,252 @@ const DashboardDetail = () => {
     }
     
     return {
-      appendPadding: 50,
+      appendPadding: 20,
+      data: data,
+      angleField: "ratio",
+      colorField: "label",
+      radius: 0.8,
+      autoFit: true,
+      label: {
+        type: "inner",
+        offset: "-40%",
+        content: function content(_ref) {
+          return "".concat(_ref.ratio, "%");
+        },
+        style: {
+          fontSize: 12,
+          textAlign: "center",
+        },
+      },
+      legend: {
+        position: "top",
+        flipPage: false,
+        style: {
+          textAlign: "center",
+        },
+      },
+      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
+    };
+  };
+
+  const generateChartDataForResidence = () => {
+    let _data = filteredAggregation.map(item => {
+      let temp = item.filter(i => i.name === "Residence")
+      return temp.length ? temp[0].children : [];
+    })
+    let data = [];
+    if(_data.length){
+      let rural = avg(_data.map(i => i.rural));
+      let urban = avg(_data.map(i => i.urban));
+      if(!(rural == 0 && urban == 0)) {
+        data = [
+          {
+            label: "Rural",
+            ratio: parseFloat((100 * rural/(rural + urban)).toPrecision(4)) 
+          },
+          {
+            label: "Urban",
+            ratio: parseFloat((100 * urban/(rural + urban)).toPrecision(4)) 
+          }
+        ]
+      }
+    }
+    
+    return {
+      appendPadding: 20,
+      data: data,
+      angleField: "ratio",
+      colorField: "label",
+      radius: 0.8,
+      autoFit: true,
+      label: {
+        type: "inner",
+        offset: "-40%",
+        content: function content(_ref) {
+          return "".concat(_ref.ratio, "%");
+        },
+        style: {
+          fontSize: 12,
+          textAlign: "center",
+        },
+      },
+      legend: {
+        position: "top",
+        flipPage: false,
+        style: {
+          textAlign: "center",
+        },
+      },
+      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
+    };
+  };
+
+  const generateChartDataForWealth_quintile = () => {
+    let _data = filteredAggregation.map(item => {
+      let temp = item.filter(i => i.name === "Wealth_quintile")
+      return temp.length ? temp[0].children : [];
+    })
+    let data = [];
+    if(_data.length){
+      let poorest = avg(_data.map(i => i.poorest));
+      let second = avg(_data.map(i => i.second));
+      let middle = avg(_data.map(i => i.middle));
+      let fourth = avg(_data.map(i => i.fourth));
+      let richest = avg(_data.map(i => i.richest));
+      let total = poorest + second + middle + fourth + richest;
+      if(!(poorest == 0 && second == 0 && middle == 0 && fourth == 0 && richest == 0)) {
+        data = [
+          {
+            label: "Poorest",
+            ratio: parseFloat((100 * poorest/total).toPrecision(4)) 
+          },
+          {
+            label: "Second",
+            ratio: parseFloat((100 * second/total).toPrecision(4)) 
+          },
+          {
+            label: "Middle",
+            ratio: parseFloat((100 * middle/total).toPrecision(4)) 
+          },
+          {
+            label: "Fourth",
+            ratio: parseFloat((100 * fourth/total).toPrecision(4)) 
+          },
+          {
+            label: "Richest",
+            ratio: parseFloat((100 * richest/total).toPrecision(4)) 
+          }
+        ]
+      }
+    }
+    
+    return {
+      appendPadding: 20,
+      data: data,
+      angleField: "ratio",
+      colorField: "label",
+      radius: 0.8,
+      autoFit: true,
+      label: {
+        type: "inner",
+        offset: "-40%",
+        content: function content(_ref) {
+          return "".concat(_ref.ratio, "%");
+        },
+        style: {
+          fontSize: 12,
+          textAlign: "center",
+        },
+      },
+      legend: {
+        position: "top",
+        flipPage: false,
+        style: {
+          textAlign: "center",
+        },
+      },
+      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
+    };
+  };
+
+  const generateChartDataForSource = () => {
+    let _data = filteredAggregation.map(item => {
+      let temp = item.filter(i => i.name === "Source")
+      return temp.length ? temp[0].children : [];
+    })
+    let data = [];
+    if(_data.length){
+      let time_period = avg(_data.map(i => i.time_period));
+      let data_source = avg(_data.map(i => i.data_source));
+      if(!(time_period == 0 && data_source == 0)) {
+        data = [
+          {
+            label: "Time Period",
+            ratio: parseFloat((100 * time_period/(time_period + data_source)).toPrecision(4)) 
+          },
+          {
+            label: "Data Source",
+            ratio: parseFloat((100 * data_source/(time_period + data_source)).toPrecision(4)) 
+          }
+        ]
+      }
+    }
+    
+    return {
+      appendPadding: 20,
+      data: data,
+      angleField: "ratio",
+      colorField: "label",
+      radius: 0.8,
+      autoFit: true,
+      label: {
+        type: "inner",
+        offset: "-40%",
+        content: function content(_ref) {
+          return "".concat(_ref.ratio, "%");
+        },
+        style: {
+          fontSize: 12,
+          textAlign: "center",
+        },
+      },
+      legend: {
+        position: "top",
+        flipPage: false,
+        style: {
+          textAlign: "center",
+        },
+      },
+      interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
+    };
+  };
+
+  const generateChartDataForPopulation_data = () => {
+    let _data = filteredAggregation.map(item => {
+      let temp = item.filter(i => i.name === "Wealth_quintile")
+      return temp.length ? temp[0].children : [];
+    })
+    let data = [];
+    if(_data.length){
+      let _total = avg(_data.map(i => i["pop,_total"]));
+      let _female = avg(_data.map(i => i["pop,_female"]));
+      let _male = avg(_data.map(i => i["pop,_male"]));
+      let _rural = avg(_data.map(i => i["pop,_rural"]));
+      let _urban = avg(_data.map(i => i["pop,_urban"]));
+      let urban_percentage = avg(_data.map(i => i.urban_percentage));
+      let total = _total + _female + _male + _rural + _urban + urban_percentage;
+      if(!(_total == 0 && _female == 0 && _male == 0 && _rural == 0 && _urban == 0)) {
+        data = [
+          {
+            label: "Total",
+            ratio: parseFloat((100 * _total/total).toPrecision(4)) 
+          },
+          {
+            label: "Female",
+            ratio: parseFloat((100 * _female/total).toPrecision(4)) 
+          },
+          {
+            label: "Male",
+            ratio: parseFloat((100 * _male/total).toPrecision(4)) 
+          },
+          {
+            label: "Rural",
+            ratio: parseFloat((100 * _rural/total).toPrecision(4)) 
+          },
+          {
+            label: "Urban",
+            ratio: parseFloat((100 * _urban/total).toPrecision(4)) 
+          },
+          {
+            label: "Urban percentage",
+            ratio: parseFloat((100 * urban_percentage/total).toPrecision(4)) 
+          }
+        ]
+      }
+    }
+    
+    return {
+      appendPadding: 20,
       data: data,
       angleField: "ratio",
       colorField: "label",
@@ -128,8 +369,18 @@ const DashboardDetail = () => {
   };
 
   useEffect(() => {
-    generateChartData()
-  }, [selectedKPI])
+    setFilteredAggregation(benchmarks.filter((b) =>
+        b.KPIType === selectedKPI &&
+        (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
+      )
+      .map((b) => b.disaggregations ?? [])
+    )
+    generateChartDataForGender();
+    generateChartDataForResidence();
+    generateChartDataForWealth_quintile();
+    generateChartDataForSource();
+    generateChartDataForPopulation_data();
+  }, [selectedKPI, isOnlyMyCountry, country, benchmarks])
 
   if (!benchmarks.length) return <Skeleton active />;
 
@@ -137,19 +388,6 @@ const DashboardDetail = () => {
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6 bg-[#f1f5f9]"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          <div className={"col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-              Disaggregation
-            </h2>
-
-            <div>
-              {selectedKPI ? (
-                <Pie {...generateChartData()} />
-              ) : (
-                <>No Disaggregation</>
-              )}
-            </div>
-          </div>
           <div className={"col-span-12 sm:col-span-7 xl:col-span-8 shadow-sm bg-white p-8"}>
             <div className="flex justify-between items-start mb-5">
               <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
@@ -171,6 +409,7 @@ const DashboardDetail = () => {
                       className="min-w-[240px]"
                       selected={country}
                       onSelect={setCountry}
+                      searchable
                     />
                   </div>
                 }
@@ -185,7 +424,7 @@ const DashboardDetail = () => {
                       {dataset !== "Maternal and Newborn Health Coverage" ?
                         <Card bordered={false}>
                           <div className="justify-between">
-                            <div className="flex items-center opacity-50 pb-4 gap-2 cursor-pointer"  onClick={() => selectKPI(dataset)}>
+                            <div className="flex items-center opacity-50 pb-4 gap-2 cursor-pointer text-[16px]"  onClick={() => selectKPI(dataset)}>
                               {Object.values(sectorOptions.education).find((e) => e.value === dataset) ?
                                 <MdOutlineCastForEducation />
                                 : <MdOutlineHealthAndSafety />
@@ -194,30 +433,37 @@ const DashboardDetail = () => {
                             </div>
                             {benchmarks.filter((b) =>
                               b.KPIType === dataset && (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
-                            ).length ?
-                              <Progress 
-                                status="active"
-                                percent={
-                                  avg(benchmarks.filter((b) =>
-                                      b.KPIType === dataset &&
-                                      (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
-                                    )
-                                    .map((b) => b.total ?? 0))
-                                }  
-                              />
-                              : <div>No data available!</div>
+                            ).length 
+                            ?
+                              avg(benchmarks.filter((b) =>
+                                  b.KPIType === dataset &&
+                                  (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
+                                )
+                                .map((b) => b.total ?? 0))
+                              ?   <Progress 
+                                  status="active"
+                                  percent={
+                                    avg(benchmarks.filter((b) =>
+                                        b.KPIType === dataset &&
+                                        (!isOnlyMyCountry || b.country === countries.find((c) => country === c.value)?.label)
+                                      )
+                                      .map((b) => b.total ?? 0))
+                                  }  
+                                />
+                              : <div className="opacity-70">No data Available</div>
+                            : <div className="opacity-70">No data Available</div>
                           }
                           </div>
                         </Card>
                         : <Card bordered={false}>
                             <div className="justify-between">
-                              <div className="flex items-center opacity-50 pb-4 gap-2">
+                              <div className="flex items-center opacity-50 pb-4 gap-2 text-[16px]">
                                 <MdOutlineHealthAndSafety />
                                 {Object.values(sectorOptions).flat().find((e) => e.value === dataset)?.label ?? ""}
                               </div>
                               {lineChartData ?
                                 <Line className="max-h-60" {...config} />
-                                : <div>No data available!</div>
+                                : <div className="opacity-70">No data Available</div>
                               }
                             </div>
                           </Card>
@@ -225,7 +471,57 @@ const DashboardDetail = () => {
                     </div>
                 ))}
             </div>
-          </div>          
+          </div>
+          <div className={"col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white p-8"}>
+            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+              Disaggregation
+            </h2>
+
+            <div>
+              {selectedKPI ? (
+                <>
+                  <h2 className="font-bold">{ selectedKPI.slice(0, 1).toUpperCase() + selectedKPI.replace(/_/g, " ").slice(1) }</h2>
+                  <div className="!h-[300px]">
+                    <h4>Gender</h4>
+                    { generateChartDataForGender().data[0]?.ratio && generateChartDataForGender().data[0]?.ratio != NaN 
+                      ? <Pie
+                          {...generateChartDataForGender() } 
+                        />
+                      : <div className="opacity-70">No data Available!</div>
+                    }
+                  </div>
+                  <div className="!h-[300px]">
+                    <h4>Residence</h4>
+                    { generateChartDataForResidence().data[0]?.ratio && generateChartDataForResidence().data[0]?.ratio != NaN
+                      ? <Pie
+                          {...generateChartDataForResidence() } 
+                        />
+                      : <div className="opacity-70">No data Available!</div>
+                    }
+                  </div>
+                  <div className="!h-[300px]">
+                    <h4>Source</h4>
+                    { generateChartDataForWealth_quintile().data[0]?.ratio && generateChartDataForWealth_quintile().data[0]?.ratio != NaN
+                      ? <Pie
+                          {...generateChartDataForWealth_quintile() } 
+                        />
+                      : <div className="opacity-70">No data Available!</div>
+                    }
+                  </div>
+                  <div className="!h-[300px]">
+                    <h4>Population Data</h4>
+                    { generateChartDataForPopulation_data().data[0]?.ratio && generateChartDataForPopulation_data().data[0]?.ratio != NaN
+                      ? <Pie
+                          {...generateChartDataForPopulation_data() } 
+                        />
+                      : <div className="opacity-70">No data Available!</div>
+                    }
+                  </div>
+                </>
+                
+              ) : ( null )}
+            </div>
+          </div>        
         </div>
       </div>
     </div>
