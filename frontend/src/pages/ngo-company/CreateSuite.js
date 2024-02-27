@@ -14,71 +14,96 @@ const CreateSuite = () => {
     const programTypes = await CrudService.search("ProgramType", 1000, 1, {});
     const templates = await CrudService.search("Template", 1000, 1, {});
     setProgramTypes([...templates.data.items, ...programTypes.data.items]);
-  }
+  };
 
   useEffect(() => {
     if (!user) return;
     getData();
   }, []);
 
-
   const onSelect = async (programType) => {
     const program = await CrudService.create("Suite", {
       programType: programType._id,
       name: programType.name,
       description: programType.description,
-      // image: programType.image,
       published: false,
-      ...(programType.hasOwnProperty('KPIs') && programType.KPIs.length > 0 ? {KPIs: programType.KPIs} : {} ),
-      ...(programType.hasOwnProperty('category') ? {category: programType.category} : {} ),
-      ...(programType.hasOwnProperty('strategicGoals') ? {strategicGoals: programType.strategicGoals} : {} ),
-      ...(programType.hasOwnProperty('deliveryModel') ? {deliveryModel: programType.deliveryModel} : {} ),
-      ...(programType.hasOwnProperty('products') ? {products: programType.products} : {} ),
-      ...(programType.hasOwnProperty('impactThemes') && programType.impactThemes.length > 0 ? {impactThemes: programType.impactThemes} : {} ),
-      ...(programType.hasOwnProperty('objectives') ? {objectives: programType.objectives} : {} )
+      ...(programType.hasOwnProperty("KPIs") && programType.KPIs.length > 0
+        ? { KPIs: programType.KPIs }
+        : {}),
+      ...(programType.hasOwnProperty("useCase")
+        ? { category: programType.useCase }
+        : {}),
+      ...(programType.hasOwnProperty("strategicGoals")
+        ? { strategicGoals: programType.strategicGoals }
+        : {}),
+      ...(programType.hasOwnProperty("deliveryModel")
+        ? { deliveryModel: programType.deliveryModel }
+        : {}),
+      ...(programType.hasOwnProperty("products")
+        ? { products: programType.products }
+        : {}),
+      ...(programType.hasOwnProperty("impactThemes") &&
+      programType.impactThemes.length > 0
+        ? { impactThemes: programType.impactThemes }
+        : {}),
+      ...(programType.hasOwnProperty("objectives")
+        ? { objectives: programType.objectives }
+        : {}),
     });
 
-    if (programType.hasOwnProperty('assessments')) {
+    if (programType.hasOwnProperty("assessments")) {
       // Create assessment from template wise assessment
       if (programType.assessments && programType.assessments.length > 0) {
         const data = {
-          filters: { _id: programType.assessments }
+          filters: { _id: programType.assessments },
         };
-        CrudService.search("DefaultAssessment", 100, 1, data).then(async (res) => {
-          if (res.data && res.data.items && res.data.items.length > 0) {
-            for (const item of res.data.items) {
-              const body = {
-                suite: program.data._id,
-                name: item.name,
-                description: item.description,
-                assessmentType: item.assessmentType,
-                published: false,
-                form: item.form,
-                ...(item.name === "Personal Information" ? {isDefaultAssessment: true, published: true} : {})
+        CrudService.search("DefaultAssessment", 100, 1, data).then(
+          async (res) => {
+            if (res.data && res.data.items && res.data.items.length > 0) {
+              for (const item of res.data.items) {
+                const body = {
+                  suite: program.data._id,
+                  name: item.name,
+                  description: item.description,
+                  assessmentType: item.assessmentType,
+                  published: false,
+                  form: item.form,
+                  ...(item.name === "Personal Information"
+                    ? { isDefaultAssessment: true, published: true }
+                    : {}),
+                };
+                await CrudService.create("Program", body);
               }
-              await CrudService.create("Program", body);
             }
           }
-        });
+        );
       }
     } else {
-      const defaultAssessment = await CrudService.search("DefaultAssessment", 1, 1, {sort: {createdAt: 1}});
+      const defaultAssessment = await CrudService.search(
+        "DefaultAssessment",
+        1,
+        1,
+        { sort: { createdAt: 1 } }
+      );
       // Create default assessment
-      await CrudService.getSingle("DefaultAssessment", defaultAssessment.data.items[0]._id).then(async (res) => {
+      await CrudService.getSingle(
+        "DefaultAssessment",
+        defaultAssessment.data.items[0]._id
+      ).then(async (res) => {
         await CrudService.create("Program", {
           suite: program.data._id,
           name: res.data.name,
           description: res.data.description,
           // image: program.data.image,
           published: true,
-          assessmentType: 'enrollment',
+          assessmentType: "enrollment",
           isDefaultAssessment: true,
-          form: res.data.form
+          form: res.data.form,
         });
       });
     }
     navigate(`/dashboard/suitepre?id=${program.data._id}`);
-  }
+  };
 
   return (
     <>

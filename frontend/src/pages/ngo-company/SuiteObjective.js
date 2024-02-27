@@ -46,15 +46,17 @@ const SuiteObjective = () => {
     );
 
     if (programData && programData.category) {
-      const selectedCategory = categories.find(({ _id }) => _id === programData.category);
+      const selectedCategory = categories.find(
+        ({ _id }) => _id === programData.category
+      );
       updateCategoryData(
-          selectedCategory,
-          products,
-          setCategoryProducts,
-          strategicGoals,
-          setCategoryStrategicGoals,
-          deliveryModels,
-          setCategoryDeliveryModel
+        selectedCategory,
+        products,
+        setCategoryProducts,
+        strategicGoals,
+        setCategoryStrategicGoals,
+        deliveryModels,
+        setCategoryDeliveryModel
       );
     }
   }, [programData]);
@@ -146,10 +148,9 @@ const SuiteObjective = () => {
           fieldName: "category",
           // label: "Program Category",
           label:
-              "Which impact category best aligns with your organization's mission?",
+            "Which impact category best aligns with your organization's mission?",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
-          required: true,
         },
         {
           fieldName: "strategicGoals",
@@ -159,29 +160,26 @@ const SuiteObjective = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "deliveryModel",
           label:
-              "What approach is your organization using to achieve the selected strategic goal(s)?",
+            "What approach is your organization using to achieve the selected strategic goal(s)?",
           type: "quiz",
           options: categoryDeliveryModel.map((c) => ({
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "products",
           label:
-              "What specific products or services are you offering within your chosen delivery model?",
+            "What specific products or services are you offering within your chosen delivery model?",
           type: "quiz",
           options: categoryProducts.map((c) => ({
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "impactThemes",
@@ -219,18 +217,18 @@ const SuiteObjective = () => {
             ...programData,
           }}
           onFinish={async (formData) => {
-              if (formData && formData.isFinishClicked) {
-                await CrudService.update("Suite", id, {
-                  ...formData,
-                }).then((res) => {
-                  if (!res.data) return;
-                  setProgramDataForDisplay(res.data);
-                  navigate(`/dashboard/suitetrack?id=${programData._id}`);
-                });
-              }
-              if (formData.isBackClicked) {
-                navigate(`/dashboard/suitetrack?id=${programData._id}`);
-              }
+            if (formData && formData.isFinishClicked) {
+              await CrudService.update("Suite", id, {
+                ...formData,
+              }).then((res) => {
+                if (!res.data) return;
+                setProgramDataForDisplay(res.data);
+                navigate(`/dashboard/suitedetails?id=${programData._id}`);
+              });
+            }
+            if (formData.isBackClicked) {
+              navigate(`/dashboard/suitedetails?id=${programData._id}`);
+            }
           }}
           programDataDisplay={programDataDisplay}
           onChangeFromSelect={(fieldName, value) =>

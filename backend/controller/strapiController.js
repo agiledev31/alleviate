@@ -205,9 +205,6 @@ const getList = async (req, res) => {
 };
 
 const getCoreProgramMetrics = async (req, res) => {
-  console.log("getCoreProgramMetrics body::", req.body);
-  console.log("getCoreProgramMetrics query::", req.query);
-
   try {
     const categoryFilter = req.query.impact_category;
     const sdgId = req.query.sdgId;

@@ -1,13 +1,13 @@
-import {Allotment} from "allotment";
+import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import {Button, Popconfirm, Skeleton, Space, Tooltip} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import { Button, Popconfirm, Skeleton, Space, Tooltip } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import MultiStepConfigurator from "../../components/MultiStepConfigurator";
 import CrudService from "../../service/CrudService";
-import getMetricsPrompt from "./getMetricsPrompt";
 import getFormPrompt from "./getFormPrompt";
+import getMetricsPrompt from "./getMetricsPrompt";
 
 const ProgramEdit = () => {
   let [searchParams] = useSearchParams();
@@ -33,7 +33,7 @@ const ProgramEdit = () => {
   useEffect(() => {
     const id = searchParams.get("id");
     const formType = searchParams.get("formType");
-    setFormType(formType)
+    setFormType(formType);
     if (!id) return;
     setProgramData(null);
     setFunnelSteps([]);
@@ -44,23 +44,23 @@ const ProgramEdit = () => {
       setProgramData(res.data);
 
       if (res.data.KpiDetails && res.data.KpiDetails.length > 0) {
-        const kpis = res.data.KpiDetails.map(item => ({
+        const kpis = res.data.KpiDetails.map((item) => ({
           value: item._id,
-          label: item.MetricName
-        }))
-        setKpiDetails(kpis)
+          label: item.MetricName,
+        }));
+        setKpiDetails(kpis);
       }
 
       if (!res.data?.form) {
         setThinking(true);
         socket.current = new WebSocket(
-            `wss://booklified-chat-socket.herokuapp.com`
+          `wss://booklified-chat-socket.herokuapp.com`
         );
 
         socket.current.addEventListener("open", async () => {
           setInterval(
-              () => socket.current.send(JSON.stringify({ id: "PING" })),
-              30000
+            () => socket.current.send(JSON.stringify({ id: "PING" })),
+            30000
           );
           // const content = getFormPrompt(`
           // We need a multistep form for an assessment that will be used by an NGO organization. The assessment is for a program:
@@ -70,17 +70,20 @@ const ProgramEdit = () => {
           // Please create a form that asks as much qualifying questions as possible!
           // `);
 
-          const metrics = (res.data.KpiDetails && res.data.KpiDetails.length > 0) ? res.data.KpiDetails.map(item => item.MetricName) : []
+          const metrics =
+            res.data.KpiDetails && res.data.KpiDetails.length > 0
+              ? res.data.KpiDetails.map((item) => item.MetricName)
+              : [];
           const content = getMetricsPrompt(metrics, res.data);
 
           socket.current.send(
-              JSON.stringify({
-                id: "OPEN_AI_PROMPT",
-                payload: {
-                  content,
-                  model: "gpt-3.5-turbo-16k",
-                },
-              })
+            JSON.stringify({
+              id: "OPEN_AI_PROMPT",
+              payload: {
+                content,
+                model: "gpt-3.5-turbo-16k",
+              },
+            })
           );
         });
 
@@ -90,13 +93,13 @@ const ProgramEdit = () => {
           const response = message.payload?.response;
           try {
             formData = JSON.parse(
-                `[${response
-                    .split("[")
-                    ?.slice(1)
-                    .join("[")
-                    .split("]")
-                    .slice(0, -1)
-                    .join("]")}]`
+              `[${response
+                .split("[")
+                ?.slice(1)
+                .join("[")
+                .split("]")
+                .slice(0, -1)
+                .join("]")}]`
             );
             if (!Array.isArray(formData)) throw new Error("Not an array");
           } catch (e) {}
@@ -149,42 +152,41 @@ const ProgramEdit = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
-
-        {formType === 'programPre' && (
-            <MultiStepComponent
-                displaySteps={true}
-                AIEnhancements={true}
-                steps={steps}
-                formType={'programPre'}
-                isClickedPublish={isClickPublish}
-                activeStep={activeStep}
-                onPublish={async (formData) => {
-                  const id = searchParams.get("id");
-                  if (!id) return;
-                  if (formData.isPublished) {
-                    setTimeout(() => {
-                      navigate(`/dashboard/programpublish?id=${id}`);
-                    }, 300)
-                  }
-                }}
-            />
+        {formType === "programPre" && (
+          <MultiStepComponent
+            displaySteps={true}
+            AIEnhancements={true}
+            steps={steps}
+            formType={"programPre"}
+            isClickedPublish={isClickPublish}
+            activeStep={activeStep}
+            onPublish={async (formData) => {
+              const id = searchParams.get("id");
+              if (!id) return;
+              if (formData.isPublished) {
+                setTimeout(() => {
+                  navigate(`/dashboard/programpublish?id=${id}`);
+                }, 300);
+              }
+            }}
+          />
         )}
 
         <Allotment>
           <Allotment.Pane snap>
-              <>
-                <MultiStepComponent
-                    steps={funnelSteps}
-                    isProgramEditForm={true}
-                    kpis={kpiDetails}
-                    onProgramFormEdit={(result) => {
-                      setFunnelSteps(result)
-                      const id = searchParams.get("id");
-                      if (!id) return;
-                      CrudService.update("Program", id, { form: result });
-                    }}
-                />
-              </>
+            <>
+              <MultiStepComponent
+                steps={funnelSteps}
+                isProgramEditForm={true}
+                kpis={kpiDetails}
+                onProgramFormEdit={(result) => {
+                  setFunnelSteps(result);
+                  const id = searchParams.get("id");
+                  if (!id) return;
+                  CrudService.update("Program", id, { form: result });
+                }}
+              />
+            </>
           </Allotment.Pane>
         </Allotment>
       </div>
@@ -202,20 +204,26 @@ const ProgramEdit = () => {
           <Button danger>Delete Assessment</Button>
         </Popconfirm>
 
-        <Tooltip title={(programData && !programData.suite.published) ? 'Please publish the program first, and then proceed to publish this assessment.' : ''}>
+        <Tooltip
+          title={
+            programData && !programData.suite.published
+              ? "Please publish the program first, and then proceed to publish this assessment."
+              : ""
+          }
+        >
           <Button
-              type="primary"
-              disabled={programData && !programData.suite.published}
-              onClick={() => {
-                const id = searchParams.get("id");
-                if (!id) return;
-                if (formType === 'programPre') {
-                  setClickPublish(true);
-                  setActiveStep(2);
-                } else {
-                  navigate(`/dashboard/programpublish?id=${id}`);
-                }
-              }}
+            type="primary"
+            onClick={() => {
+              if (programData && !programData.suite.published) return;
+              const id = searchParams.get("id");
+              if (!id) return;
+              if (formType === "programPre") {
+                setClickPublish(true);
+                setActiveStep(2);
+              } else {
+                navigate(`/dashboard/programpublish?id=${id}`);
+              }
+            }}
           >
             Publish Assessment
           </Button>

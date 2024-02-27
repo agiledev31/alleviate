@@ -23,7 +23,7 @@ const ProgramForm = () => {
       filters: { programId: id, user_id: user._id },
     }).then((res) => {
       if (res.data.items.length > 0) {
-        setProgramSubmittedData(res.data.items[0])
+        setProgramSubmittedData(res.data.items[0]);
         if (res.data.items[0].formData.isFinishClicked === true) {
           navigate(`/dashboard/programthankyou?id=${id}`);
         }
@@ -35,29 +35,29 @@ const ProgramForm = () => {
 
       if (res.data.isDefaultAssessment) {
         if (user) {
-          const data = {}
+          const data = {};
           if (user.firstName) {
-            data.name = user.firstName
+            data.name = user.firstName;
 
             if (user.lastName) {
-              data.name = user.firstName + ' ' + user.lastName
+              data.name = user.firstName + " " + user.lastName;
             }
           }
           if (user.email) {
-            data.email = user.email
+            data.email = user.email;
           }
 
           if (user.phone) {
-            data.phoneNumber = user.phone
+            data.phoneNumber = user.phone;
           }
 
           if (user.country) {
-            data.country = user.country
+            data.country = user.country;
           }
           if (user.city) {
-            data.city = user.city
+            data.city = user.city;
           }
-          setDefaultAssessmentValue(data)
+          setDefaultAssessmentValue(data);
         }
       }
     });
@@ -71,7 +71,10 @@ const ProgramForm = () => {
           displaySteps={programData.displaySteps}
           AIEnhancements={programData.AIEnhancements}
           steps={programData.form}
-          defaultValues={{...programSubmittedData?.formData.submittedData, ...defaultAssessmentValue}}
+          defaultValues={{
+            ...programSubmittedData?.formData.submittedData,
+            ...defaultAssessmentValue,
+          }}
           onFinish={async (formData) => {
             const id = searchParams.get("id");
             if (!id) return;
@@ -92,46 +95,58 @@ const ProgramForm = () => {
                     KPIs.push({
                       key: item.kpi,
                       submittedValue: formData[item.fieldName],
-                      kpiType: item.type
+                      kpiType: item.type,
                     });
 
-                  if (item.kpi && (item.type === "select" || item.type === "radio" || item.type === "quiz") ) {
+                  if (
+                    item.kpi &&
+                    (item.type === "select" ||
+                      item.type === "radio" ||
+                      item.type === "quiz")
+                  ) {
                     KPIs.push({
                       key: item.kpi,
                       submittedValue: formData[item.fieldName],
                       kpiType: item.type,
-                      options: item.options
+                      options: item.options,
                     });
                   }
                 }
               }
 
-              if (Object.keys(formData).length === 0 && formData.constructor === Object) {
-                formData.isFinishClicked = false
+              if (
+                Object.keys(formData).length === 0 &&
+                formData.constructor === Object
+              ) {
+                formData.isFinishClicked = false;
               }
 
               if (programSubmittedData) {
-                await CrudService.update("ProgramSubmission", programSubmittedData._id ,{
-                  // programId: id,
-                  formData: {
-                    submittedData: formData,
-                    isFinishClicked: formData.isFinishClicked
-                  },
-                  KPIs,
-                }).then((res) => {
+                await CrudService.update(
+                  "ProgramSubmission",
+                  programSubmittedData._id,
+                  {
+                    // programId: id,
+                    formData: {
+                      submittedData: formData,
+                      isFinishClicked: formData.isFinishClicked,
+                    },
+                    KPIs,
+                  }
+                ).then((res) => {
                   if (!res.data) return;
                 });
               } else {
                 await CrudService.create("ProgramSubmission", {
-                    programId: id,
-                    formData: {
-                      submittedData: formData,
-                      isFinishClicked: formData.isFinishClicked
-                    },
-                    KPIs,
+                  programId: id,
+                  formData: {
+                    submittedData: formData,
+                    isFinishClicked: formData.isFinishClicked,
+                  },
+                  KPIs,
                 }).then((res) => {
                   if (!res.data) return;
-                  setProgramSubmittedData(res.data)
+                  setProgramSubmittedData(res.data);
                 });
               }
 

@@ -49,29 +49,29 @@ const SuiteTarget = () => {
           <strong>Program Targets and Timelines</strong>
         </h2>
         <MultiStepComponent
-            displaySteps={false}
-            AIEnhancements={true}
-            steps={targetSteps}
-            isShowBack={true}
-            defaultValues={{
-              ...programData,
-            }}
-            onFinish={async (formData) => {
-              // const targetAction = programData.updateSuiteStages.actions.find(action => action.id === "target");
-              if (formData && formData.isFinishClicked) {
-                await CrudService.update("Suite", id, {
-                  ...formData,
-                }).then((res) => {
-                  if (!res.data) return;
-                  navigate(`/dashboard/suitetrack?id=${programData._id}`);
-                });
-              }
-              if (formData.isBackClicked) {
-                navigate(`/dashboard/suitetrack?id=${programData._id}`);
-              }
-            }}
-            programDataDisplay={programDataDisplay}
-            formType={"SuitePre"}
+          displaySteps={false}
+          AIEnhancements={true}
+          steps={targetSteps}
+          isShowBack={true}
+          defaultValues={{
+            ...programData,
+          }}
+          onFinish={async (formData) => {
+            // const targetAction = programData.updateSuiteStages.actions.find(action => action.id === "target");
+            if (formData && formData.isFinishClicked) {
+              await CrudService.update("Suite", id, {
+                ...formData,
+              }).then((res) => {
+                if (!res.data) return;
+                navigate(`/dashboard/suitedetails?id=${programData._id}`);
+              });
+            }
+            if (formData.isBackClicked) {
+              navigate(`/dashboard/suitedetails?id=${programData._id}`);
+            }
+          }}
+          programDataDisplay={programDataDisplay}
+          formType={"SuitePre"}
         />
       </div>
     </>

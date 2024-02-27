@@ -339,7 +339,7 @@ const Dashboard = () => {
                   id: item._id,
                   name: item.name,
                   // component: <SuiteDetails />,
-                  component: <SuiteOverview />,
+                  component: <SuiteOverviewDetails />,
                   href: `/dashboard/suitedetails?id=${item._id}`,
                   initial: item.name?.[0]?.toUpperCase?.(),
                 }))
@@ -402,7 +402,7 @@ const Dashboard = () => {
         <Route path={"/programpublish"} element={<ProgramPublish />} />
         <Route path={"/programdetails"} element={<ProgramDetails />} />
         {/*<Route path={"/suitedetails"} element={<SuiteDetails />} />*/}
-        <Route path={"/suitedetails"} element={<SuiteOverview />} />
+        <Route path={"/suitedetails"} element={<SuiteOverviewDetails />} />
         <Route
           path={"/suiteoverviewdetail"}
           element={<SuiteOverviewDetails />}

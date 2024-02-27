@@ -164,7 +164,6 @@ const SuitePre = () => {
             "Which impact category best aligns with your organization's mission?",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
-          required: true,
         },
         {
           fieldName: "strategicGoals",
@@ -174,7 +173,6 @@ const SuitePre = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "deliveryModel",
@@ -185,7 +183,6 @@ const SuitePre = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "products",
@@ -196,7 +193,6 @@ const SuitePre = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "impactThemes",
@@ -253,7 +249,11 @@ const SuitePre = () => {
             const id = searchParams.get("id");
             if (!id) return;
 
-            formData.isAdded = !!(!programData.category && formData.category && !programDataDisplay.category);
+            formData.isAdded = !!(
+              !programData.category &&
+              formData.category &&
+              !programDataDisplay.category
+            );
 
             await CrudService.update("Suite", id, {
               ...formData,

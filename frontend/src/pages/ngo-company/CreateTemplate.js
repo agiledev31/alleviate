@@ -26,7 +26,7 @@ const CreateTemplate = () => {
     if (!id) {
       setReloadSteps(true);
       setProgramData(null);
-      setTimeout(() => setReloadSteps(false), 1000)
+      setTimeout(() => setReloadSteps(false), 1000);
     } else {
       const fetchData = async () => {
         if (id) {
@@ -41,9 +41,8 @@ const CreateTemplate = () => {
     }
   }, [searchParams]);
 
-
   const handleActiveStep = (activeStep) => {
-    setActiveStep(activeStep)
+    setActiveStep(activeStep);
   };
 
   useEffect(() => {
@@ -180,7 +179,6 @@ const CreateTemplate = () => {
             "Which impact category best aligns with your organization's mission?",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
-          required: true,
         },
         {
           fieldName: "strategicGoals",
@@ -190,7 +188,6 @@ const CreateTemplate = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "deliveryModel",
@@ -201,7 +198,6 @@ const CreateTemplate = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "products",
@@ -212,7 +208,6 @@ const CreateTemplate = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "impactThemes",
@@ -255,7 +250,7 @@ const CreateTemplate = () => {
     },
   ];
   const id = searchParams.get("id");
-  if (id && !programData ) return <Skeleton active />;
+  if (id && !programData) return <Skeleton active />;
   if (reloadSteps) return <Skeleton active />;
   return (
     <>
@@ -270,27 +265,35 @@ const CreateTemplate = () => {
           onFinish={async (formData) => {
             if (activeStep === 0 && formData && !programData) {
               const template = await CrudService.create("Template", {
-                ...formData
-              })
+                ...formData,
+              });
               if (template) {
                 setProgramData(template);
                 const templateId = template.data._id;
-                searchParams.set('id', templateId);
-                navigate(`${window.location.pathname}?${searchParams.toString()}`, {replace: true});
+                searchParams.set("id", templateId);
+                navigate(
+                  `${window.location.pathname}?${searchParams.toString()}`,
+                  { replace: true }
+                );
 
-                const defaultAssessment = await CrudService.search("DefaultAssessment", 1, 1, {sort: {createdAt: 1}});
-                await CrudService.update("Template", templateId ,{
+                const defaultAssessment = await CrudService.search(
+                  "DefaultAssessment",
+                  1,
+                  1,
+                  { sort: { createdAt: 1 } }
+                );
+                await CrudService.update("Template", templateId, {
                   assessments: [defaultAssessment.data.items[0]._id],
                 });
               }
             } else {
               const id = searchParams.get("id");
               if (!id) return;
-              await CrudService.update("Template",id ,{
+              await CrudService.update("Template", id, {
                 ...formData,
               }).then((res) => {
                 if (!res.data) return;
-                setProgramData(res.data)
+                setProgramData(res.data);
                 setProgramDataForDisplay(res.data);
               });
             }

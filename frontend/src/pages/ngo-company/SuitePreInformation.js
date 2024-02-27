@@ -26,13 +26,13 @@ const SuitePreInformation = () => {
     setProgramData(null);
 
     if (id) {
-      setProgramCreated(true)
+      setProgramCreated(true);
       CrudService.getSingle("Suite", id).then((res) => {
         if (!res.data) return;
         setProgramData(res.data);
       });
     } else {
-      setProgramCreated(false)
+      setProgramCreated(false);
       setProgramData(null);
     }
   }, [searchParams]);
@@ -131,47 +131,6 @@ const SuitePreInformation = () => {
     }
   };
 
-  const initialSteps = [
-    {
-      id: "",
-      name: "General Information",
-      form: [
-        {
-          fieldName: "name",
-          label: "What is the name of your organization's impact program? ",
-          type: "input",
-          placeholder: "Enter program name",
-          required: true,
-        },
-        {
-          fieldName: "description",
-          label: "Program Description",
-          type: "textarea",
-          placeholder: "Enter program description",
-          rows: 6,
-        },
-        {
-          fieldName: "image",
-          label: "Thumbnail",
-          type: "upload",
-          placeholder: "Upload a thumbnail",
-          rows: 6,
-        },
-        {
-          fieldName: "useCaseType",
-          label: "Use Case Type",
-          type: "select",
-          options: [
-            { value: "education", label: "Education" },
-            { value: "entrepreneurship", label: "Entrepreneurship" }
-          ],
-          placeholder: "Select type",
-          required: true
-        },
-      ],
-    },
-  ];
-
   const steps = [
     {
       id: "step1",
@@ -212,7 +171,6 @@ const SuitePreInformation = () => {
             "Which impact category best aligns with your organization's mission?",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
-          required: true,
         },
         {
           fieldName: "strategicGoals",
@@ -222,7 +180,6 @@ const SuitePreInformation = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "deliveryModel",
@@ -233,7 +190,6 @@ const SuitePreInformation = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "products",
@@ -244,7 +200,6 @@ const SuitePreInformation = () => {
             value: c._id,
             label: c.Name,
           })),
-          required: true,
         },
         {
           fieldName: "impactThemes",
@@ -300,7 +255,7 @@ const SuitePreInformation = () => {
         <MultiStepComponent
           displaySteps={false}
           AIEnhancements={true}
-          steps={initialSteps}
+          steps={steps}
           defaultValues={{
             ...programData,
           }}
@@ -309,11 +264,13 @@ const SuitePreInformation = () => {
               if (option === "scratch") {
                 if (formData && formData.isFinishClicked) {
                   await CrudService.create("Suite", {
-                    ...formData
+                    ...formData,
                   }).then(async (program) => {
                     if (!program.data) return;
 
-                    await CrudService.search("DefaultAssessment", 1, 1, {sort: {createdAt: 1}}).then(async (res) => {
+                    await CrudService.search("DefaultAssessment", 1, 1, {
+                      sort: { createdAt: 1 },
+                    }).then(async (res) => {
                       if (!res.data) return;
                       const assessment = res.data.items[0];
 
@@ -323,26 +280,33 @@ const SuitePreInformation = () => {
                         description: assessment.description,
                         // image: program.data.image,
                         published: true,
-                        assessmentType: 'enrollment',
+                        assessmentType: "enrollment",
                         isDefaultAssessment: true,
-                        form: assessment.form
-                      }).then(res => {
+                        form: assessment.form,
+                      }).then((res) => {
                         if (!res) return;
-                        navigate(`/dashboard/suitetrack?id=${program.data._id}`);
+                        navigate(
+                          `/dashboard/suitedetails?id=${program.data._id}`
+                        );
                       });
                     });
                   });
                 }
               }
             } else {
-              if (programData && programCreated && formData && formData.isFinishClicked) {
-                  await CrudService.update("Suite", id, {
-                    ...formData,
-                  }).then((res) => {
-                    if (!res.data) return;
-                    setProgramDataForDisplay(res.data);
-                  });
-                  navigate(`/dashboard/suitetrack?id=${programData._id}`);
+              if (
+                programData &&
+                programCreated &&
+                formData &&
+                formData.isFinishClicked
+              ) {
+                await CrudService.update("Suite", id, {
+                  ...formData,
+                }).then((res) => {
+                  if (!res.data) return;
+                  setProgramDataForDisplay(res.data);
+                });
+                navigate(`/dashboard/suitedetails?id=${programData._id}`);
               }
             }
           }}

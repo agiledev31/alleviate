@@ -538,7 +538,12 @@ export default function Example() {
                   Country
                 </label>
                 <div className="mt-2">
-                  <Select options={countries} {...getProps("country")} />
+                  <Select
+                    options={countries.sort((a, b) =>
+                      a.label.localeCompare(b.label)
+                    )}
+                    {...getProps("country")}
+                  />
                 </div>
               </div>
               <div className="sm:col-span-4">
