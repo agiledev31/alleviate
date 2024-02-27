@@ -1324,7 +1324,7 @@ const SuiteDetails = () => {
               <strong>End Date</strong>:{" "}
               <input
                 type="date"
-                value={
+                defaultValue={
                   programData?.endDate
                     ? moment(programData?.endDate).format("YYYY-MM-DD")
                     : null
@@ -1334,7 +1334,7 @@ const SuiteDetails = () => {
                   if (!id) return;
 
                   await CrudService.update("Suite", id, {
-                    endDate: new Date(e.target.defaultValue ?? e.target.value)
+                    endDate: new Date(e.target.value)
                       .toISOString()
                       .replace("Z", "+00:00"),
                   });
