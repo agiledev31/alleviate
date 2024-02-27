@@ -473,7 +473,7 @@ const DashboardDetail = () => {
             </div>
           </div>
           <div className={"col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+            <h2 className={"text-gray-900 text-2xl pb-4"}>
               Disaggregation
             </h2>
 
@@ -481,44 +481,36 @@ const DashboardDetail = () => {
               {selectedKPI ? (
                 <>
                   <h2 className="font-bold">{ selectedKPI.slice(0, 1).toUpperCase() + selectedKPI.replace(/_/g, " ").slice(1) }</h2>
-                  <div className="!h-[300px]">
-                    <h4>Gender</h4>
-                    { generateChartDataForGender().data[0]?.ratio && generateChartDataForGender().data[0]?.ratio != NaN 
-                      ? <Pie
-                          {...generateChartDataForGender() } 
-                        />
-                      : <div className="opacity-70">No data Available!</div>
-                    }
-                  </div>
-                  <div className="!h-[300px]">
-                    <h4>Residence</h4>
-                    { generateChartDataForResidence().data[0]?.ratio && generateChartDataForResidence().data[0]?.ratio != NaN
-                      ? <Pie
-                          {...generateChartDataForResidence() } 
-                        />
-                      : <div className="opacity-70">No data Available!</div>
-                    }
-                  </div>
-                  <div className="!h-[300px]">
-                    <h4>Source</h4>
-                    { generateChartDataForWealth_quintile().data[0]?.ratio && generateChartDataForWealth_quintile().data[0]?.ratio != NaN
-                      ? <Pie
-                          {...generateChartDataForWealth_quintile() } 
-                        />
-                      : <div className="opacity-70">No data Available!</div>
-                    }
-                  </div>
-                  <div className="!h-[300px]">
-                    <h4>Population Data</h4>
-                    { generateChartDataForPopulation_data().data[0]?.ratio && generateChartDataForPopulation_data().data[0]?.ratio != NaN
-                      ? <Pie
-                          {...generateChartDataForPopulation_data() } 
-                        />
-                      : <div className="opacity-70">No data Available!</div>
-                    }
-                  </div>
+                  { generateChartDataForGender().data[0]?.ratio && generateChartDataForGender().data[0]?.ratio != NaN 
+                    ? <div className="!h-[300px]">
+                        <h4>Gender</h4>
+                        <Pie {...generateChartDataForGender() } />
+                      </div>
+                    : null
+                  }
+                  
+                  { generateChartDataForResidence().data[0]?.ratio && generateChartDataForResidence().data[0]?.ratio != NaN
+                    ? <div className="!h-[300px]">
+                        <h4>Residence</h4>
+                        <Pie {...generateChartDataForResidence() } />
+                      </div>
+                    : null
+                  }
+                  { generateChartDataForWealth_quintile().data[0]?.ratio && generateChartDataForWealth_quintile().data[0]?.ratio != NaN
+                    ? <div className="!h-[300px]">
+                        <h4>Source</h4>
+                        <Pie {...generateChartDataForWealth_quintile() } />
+                      </div>
+                    : null
+                  }
+                  { generateChartDataForPopulation_data().data[0]?.ratio && generateChartDataForPopulation_data().data[0]?.ratio != NaN
+                    ? <div className="!h-[300px]">
+                        <h4>Population Data</h4>
+                        <Pie {...generateChartDataForPopulation_data() } />
+                      </div>
+                    : null
+                  }
                 </>
-                
               ) : ( null )}
             </div>
           </div>        
