@@ -19,7 +19,10 @@ export const handleXLSXTOJSON = async ({ sheet, sheetName }, callback) => {
       const workbook = XLSX.read(data, { type: "binary" });
       const sheet = workbook.Sheets[sheetName];
 
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 , defval: ""});
+      const jsonData = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: "",
+      });
       resolve(jsonData);
     };
 
@@ -85,9 +88,9 @@ const Benchmarks = () => {
   const [disaggregations, setDisaggregations] = useState([]);
 
   useEffect(() => {
-    if (user && user.sector in sectorOptions) {
+    if (user) {
       setKPISTypeListOptions(Object.values(sectorOptions).flat());
-      setKPIType(sectorOptions[user.sector][0].value);
+      setKPIType(sectorOptions[user?.sector ?? "education"][0].value);
     }
     getData();
   }, [user]);
@@ -323,29 +326,32 @@ const Benchmarks = () => {
     if (workbook) {
       const sheet = workbook.Sheets[sheetName];
       setSelectedSheet(sheetName);
-  
+
       handleXLSXTOJSON({ sheet: file, sheetName }, (json) => {
         const _header = json[0];
         const _subHeader = json[1];
         const disaggregations = [];
         let i = 0;
-        while(i < _header.length) {
+        while (i < _header.length) {
           let item = {
             name: "",
             children: [],
-          }
-          if(_header[i]) {
+          };
+          if (_header[i]) {
             item.name = _header[i].split(" ").join("_");
-            if(!_subHeader[i]) {
+            if (!_subHeader[i]) {
               disaggregations.push(item);
             } else {
               item.children = [_subHeader[i].split(" ").join("_")];
               disaggregations.push(item);
             }
           } else {
-            if(_subHeader[i]) {
+            if (_subHeader[i]) {
               item = disaggregations.pop();
-              item.children = [...item.children, _subHeader[i].split(" ").join("_")];
+              item.children = [
+                ...item.children,
+                _subHeader[i].split(" ").join("_"),
+              ];
               disaggregations.push(item);
             }
           }
@@ -353,13 +359,13 @@ const Benchmarks = () => {
         }
         setDisaggregations(disaggregations);
         const flattenHeader = [];
-        disaggregations.map(i => {
-          if(i.children.length > 1) {
-            i.children.map(ch => flattenHeader.push(ch))
+        disaggregations.map((i) => {
+          if (i.children.length > 1) {
+            i.children.map((ch) => flattenHeader.push(ch));
           } else {
             flattenHeader.push(i.name);
           }
-        })
+        });
         setHeader(flattenHeader);
 
         json.shift();
@@ -576,7 +582,13 @@ const Benchmarks = () => {
         )}
         {sheetNames.length > 0 && selectedSheet && (
           <div className="mt-5">
-            <ImportModule json={json} KPIType={KPIType} header={header} disaggregations={disaggregations} refreshData={getData} />
+            <ImportModule
+              json={json}
+              KPIType={KPIType}
+              header={header}
+              disaggregations={disaggregations}
+              refreshData={getData}
+            />
           </div>
         )}
       </div>

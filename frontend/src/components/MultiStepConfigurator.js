@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Space, Tooltip, Checkbox } from "antd";
+import { Button, Checkbox, Divider, Modal, Space, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -14,7 +14,7 @@ const EditFormModal = ({
   onSave,
   onCancel,
   funnelSteps,
-  kpis
+  kpis,
 }) => {
   const handleSave = () => {
     onSave(editedItem);
@@ -34,7 +34,9 @@ const EditFormModal = ({
     "switch",
     "checkbox",
   ].includes(editedItem?.type);
-  const renderKPI = ["inputNumber", "rate", "radio", "select", "quiz"].includes(editedItem?.type);
+  const renderKPI = ["inputNumber", "rate", "radio", "select", "quiz"].includes(
+    editedItem?.type
+  );
 
   const addCondition = () => {
     const newCondition = {
@@ -257,7 +259,9 @@ const EditFormModal = ({
           />
         </div>
       )}
-      {(editedItem.type === "select" || editedItem.type === "radio" || editedItem.type === "quiz") && (
+      {(editedItem.type === "select" ||
+        editedItem.type === "radio" ||
+        editedItem.type === "quiz") && (
         <div>
           <label>Options:</label>
           {editedItem.options?.map?.((option, index) => (
@@ -307,12 +311,12 @@ const EditFormModal = ({
         </div>
       )}
 
-      <div className={'mt-3'}>
+      <div className={"mt-3"}>
         <Checkbox
-            checked={editedItem?.required}
-            onChange={(e) => {
-              setEditedItem({ ...editedItem, required: e.target.checked })
-            }}
+          checked={editedItem?.required}
+          onChange={(e) => {
+            setEditedItem({ ...editedItem, required: e.target.checked });
+          }}
         >
           Required
         </Checkbox>
@@ -343,34 +347,36 @@ const EditFormModal = ({
             </Tooltip>
           </div>
 
-          {kpis.length > 0 ? (
-              <Select
-                  style={{ width: 450 }}
-                  onChange={(value) =>
-                      setEditedItem({
-                        ...editedItem,
-                        kpi: value,
-                      })
-                  }
-                  value={editedItem?.kpi ?? ""}
-              >
-                {kpis.sort((a, b) => a.label.localeCompare(b.label)).map((option) => (
-                    <Select.Option key={option.value} value={option.label}>
-                      {option.label}
-                    </Select.Option>
+          {kpis?.length > 0 ? (
+            <Select
+              style={{ width: 450 }}
+              onChange={(value) =>
+                setEditedItem({
+                  ...editedItem,
+                  kpi: value,
+                })
+              }
+              value={editedItem?.kpi ?? ""}
+            >
+              {kpis
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.label}>
+                    {option.label}
+                  </Select.Option>
                 ))}
-              </Select>
+            </Select>
           ) : (
-              <Input
-                  placeholder="Enter metric name to track as a KPI"
-                  value={editedItem?.kpi ?? ""}
-                  onChange={(e) =>
-                      setEditedItem({
-                        ...editedItem,
-                        kpi: e.target.value,
-                      })
-                  }
-              />
+            <Input
+              placeholder="Enter metric name to track as a KPI"
+              value={editedItem?.kpi ?? ""}
+              onChange={(e) =>
+                setEditedItem({
+                  ...editedItem,
+                  kpi: e.target.value,
+                })
+              }
+            />
           )}
         </>
       )}
@@ -378,7 +384,13 @@ const EditFormModal = ({
   );
 };
 
-const MultiStepConfigurator = ({ funnelSteps, setFunnelSteps, kpis, activeStep, isProgramEditForm }) => {
+const MultiStepConfigurator = ({
+  funnelSteps,
+  setFunnelSteps,
+  kpis,
+  activeStep,
+  isProgramEditForm,
+}) => {
   const [editStepIndex, setEditStepIndex] = useState(null);
   const [editedStepForm, setEditedStepForm] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control the visibility of the JSON modal
@@ -386,9 +398,9 @@ const MultiStepConfigurator = ({ funnelSteps, setFunnelSteps, kpis, activeStep, 
 
   useEffect(() => {
     if (isProgramEditForm) {
-      handleEditStep(activeStep)
+      handleEditStep(activeStep);
     }
-  }, [activeStep])
+  }, [activeStep]);
 
   useEffect(() => {
     const updatedSteps = [...funnelSteps];
@@ -535,7 +547,7 @@ const MultiStepConfigurator = ({ funnelSteps, setFunnelSteps, kpis, activeStep, 
           </DragDropContext>
           <Space>
             {!isProgramEditForm && (
-                <Button onClick={handleCloseOverlay}>Back</Button>
+              <Button onClick={handleCloseOverlay}>Back</Button>
             )}
             <Button
               className="px-2 py-1 text-sm bg-indigo-500 text-white rounded "

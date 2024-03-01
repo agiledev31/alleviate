@@ -53,13 +53,13 @@ const SDGDetails = () => {
         width: 150,
         render: (text) => text || '',
     },
-    {
-        title: 'Progress',
-        dataIndex: 'Progress',
-        key: 'Progress',
-        width: 400,
-        render: (sdgs) => (<Progress percent={0} />),
-    },
+    // {
+    //     title: 'Progress',
+    //     dataIndex: 'Progress',
+    //     key: 'Progress',
+    //     width: 400,
+    //     render: (sdgs) => (<Progress percent={0} />),
+    // },
     {
         title: 'Actions',
         key: 'actions',

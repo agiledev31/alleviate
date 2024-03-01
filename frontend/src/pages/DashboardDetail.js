@@ -47,8 +47,6 @@ const DashboardDetail = () => {
   }, [load]);
 
   const clickSGDNode = (node, event) => {
-    console.log("click sgd node", node)
-    console.log("click sgd index", node.data?.index)
     if(!node.data?.index) return;
     navigate(
       `/dashboard/sdgdetails?id=${node.data?.index}`

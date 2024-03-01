@@ -242,6 +242,8 @@ const programSchema = new mongoose.Schema(
     formAccessibility: { type: String, default: "" },
     invitePeopleEmails: { type: [String], default: [] },
     invitedEmails: { type: [String], default: [] },
+    reminderType: { type: String, default: "" },
+    nextReminderDate: { type: Date },
   },
   { timestamps: true }
 );
@@ -257,6 +259,7 @@ const suiteSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: "UseCase" },
     impactThemes: { type: [String], default: [] },
     KPIs: { type: [String], default: [] },
+    additionalKPIData: {type: [Object], default: [] },
     startDate: { type: Date, default: new Date() },
     endDate: { type: Date },
     objectives: { type: String, default: "" },

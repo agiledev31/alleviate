@@ -44,6 +44,17 @@ const ProgramPre = () => {
           label: "End Date",
           type: "datepicker",
         },
+        {
+          fieldName: "reminderType",
+          label: "Period",
+          type: "select",
+          options: [
+            { label: "Weekly", value: "Weekly" },
+            { label: "Quarterly", value: "Quarterly" },
+            { label: "Monthly", value: "Monthly" },
+            { label: "Annually", value: "Annually" },
+          ]
+        },
       ],
     },
     {
