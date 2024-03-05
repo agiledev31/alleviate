@@ -91,6 +91,15 @@ const userSchema = new mongoose.Schema(
       default: [],
       when: { role: "admin" },
     },
+    parent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    accessLevel: {
+      type: String,
+      enum: ["read-write", "read"],
+      default: "read-write",
+    },
 
     // Other common fields (you can add more as needed)
     avatar: { type: String, default: "" },
@@ -143,6 +152,7 @@ const userSchema = new mongoose.Schema(
     },
 
     sector: { type: String },
+    blocked: { type: Boolean, default: false },
     relevantDataset: { type: [String], default: [] },
     // Category wise notification settings
     categoryNotifications: [
@@ -259,7 +269,7 @@ const suiteSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: "UseCase" },
     impactThemes: { type: [String], default: [] },
     KPIs: { type: [String], default: [] },
-    additionalKPIData: {type: [Object], default: [] },
+    additionalKPIData: { type: [Object], default: [] },
     startDate: { type: Date, default: new Date() },
     endDate: { type: Date },
     objectives: { type: String, default: "" },
@@ -323,7 +333,7 @@ const benchMarkSchema = new mongoose.Schema(
     benchMarkType: { type: String },
     sheetType: { type: String },
     KPIType: { type: String },
-    disaggregations: {type: Object},
+    disaggregations: { type: Object },
     iso3: { type: String },
     country: { type: String },
     region: { type: String },

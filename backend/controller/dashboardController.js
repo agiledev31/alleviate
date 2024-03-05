@@ -29,9 +29,12 @@ const getDashboardDetails = async (req, res) => {
             pendingPrograms: [],
             sdgs: [],
         };
-        const userSuite = await Suite.find({user_id: req.user._id});
-        const userSuiteIds = userSuite.map(item => item._id);
+        const userSuite = await Suite.find({
+            user_id: req.user._id,
+            published: true,
+        });
 
+        const userSuiteIds = userSuite.map(item => item._id);
         const suitWiseProgram = await Program.find({suite: {$in: userSuiteIds}})
         const suitWiseProgramIds = suitWiseProgram.map(item => item._id);
 
@@ -93,10 +96,12 @@ const getDashboardDetails = async (req, res) => {
         // //get sdgs from the user suites
         // const allKPIsIDs = userSuite.flatMap(item => item.KPIs);
         // data.KPIs = allKPIsIDs;
+        const suiteKPIsIds = userSuite.flatMap((suite) => suite.KPIs);
+        data.KPIs = suiteKPIsIds;
         const pipeline = [
             {
                 $match: {
-                    published_at: { $ne: null },
+                    _id: {$in: suiteKPIsIds.map(id => new ObjectId(id))}
                 },
             },
             {
@@ -109,11 +114,11 @@ const getDashboardDetails = async (req, res) => {
             }
         ];
 
-        const allKPIsWithSDG = await db
+        const KPIsWithSDG = await db
             .collection("core_program_metrics")
             .aggregate(pipeline)
             .toArray();
-        data.KPIListWithSDG = allKPIsWithSDG;
+        data.KPIListWithSDG = KPIsWithSDG;
 
         const sdgCountMap = {
             'No Poverty': 0,
@@ -135,7 +140,7 @@ const getDashboardDetails = async (req, res) => {
             'Partnerships for the Goals': 0,
         }
 
-        allKPIsWithSDG.forEach(obj => {
+        KPIsWithSDG.forEach(obj => {
             obj.sustainable_development_goals.forEach(innerObj => {
                 const key = innerObj.Name;
                 if (sdgCountMap.hasOwnProperty(key)) {
@@ -183,7 +188,21 @@ const getDashboardDetails = async (req, res) => {
         });
     }
 };
+const getMySuites = async (req, res) => {
+    try {
+        const userSuites = await Suite.find({
+            user_id: req.user._id,
+            published: true,
+        });
 
+        res.json(userSuites);
+    } catch (err) {
+        res.status(400).send({
+          message: err.message,
+        });
+    }
+};
 module.exports = {
   getDashboardDetails,
+  getMySuites,
 };

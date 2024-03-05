@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import PublicPages from "./PublicPages";
 import { brandColor } from "./data/constants";
 import Dashboard from "./pages/Dashboard";
+import JoinTeamMember from "./pages/JoinTeamMember";
 import { selectUser } from "./redux/auth/selectors";
 
 const AntInit = () => {
@@ -18,6 +19,7 @@ const AntInit = () => {
         <Router>
           <Routes>
             <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/join" element={<JoinTeamMember />} />
             <Route path="/*" element={<PublicPages />} />
           </Routes>
         </Router>

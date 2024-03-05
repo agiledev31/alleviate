@@ -13,10 +13,12 @@ const {
   requestKyc,
   roleSelect,
   generateLinkToInviteUser,
+  registerTeam,
 } = require("../controller/authController");
 const { checkUser } = require("../controller/crudController");
 
 router.post("/register", register);
+router.post("/registerTeam", registerTeam);
 router.post("/login", login);
 router.post("/refresh", refresh);
 router.post("/requestPasswordReset", requestPasswordReset);

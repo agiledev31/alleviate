@@ -62,6 +62,40 @@ const register = async (req, res) => {
   }
 };
 
+const registerTeam = async (req, res) => {
+  try {
+    const { parent, phone, email, password, firstName, lastName } = req.body;
+
+    if (password.length < 8)
+      throw new Error("Password must contain minimum 8 characters");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const parentUser = await User.findById(parent);
+    if (!parentUser) throw new Error("Master user not found");
+
+    // Create a new user instance
+    const user = new User({
+      parent,
+      email: email?.toLowerCase?.(),
+      phone,
+      roles: parentUser.roles,
+      role: parentUser.role,
+      password: hashedPassword,
+      firstName: firstName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
+      lastName: lastName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
+    });
+    await user.save();
+
+    res.json({});
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).send({
+      message: err.code === 11000 ? "User already registered" : err.message,
+    });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -619,4 +653,5 @@ module.exports = {
   requestKyc,
   roleSelect,
   generateLinkToInviteUser,
+  registerTeam,
 };

@@ -14,8 +14,8 @@ class DashboardService {
     return this.api.get("/getDashboardDetails");
   }
 
-  getSDGDetails() {
-    return this.api.get("/getSDGDetails");
+  getMySuites() {
+    return this.api.get("/getMySuites");
   }
 }
 

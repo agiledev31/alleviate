@@ -24,6 +24,7 @@ import { store } from "../../redux/store";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import { default as DashboardDetail } from "../DashboardDetail";
+import MyBenchmarks from "../MyBenchmarks";
 import ProgramForm from "../ProgramForm";
 import ProgramOverview from "../ProgramOverview";
 import ProgramThankyou from "../ProgramThankyou";
@@ -34,12 +35,12 @@ import CategotyNotifications from "../ngo-company/CategoryNotifications";
 import CreateSuite from "../ngo-company/CreateSuite";
 import { default as CreateTemplate } from "../ngo-company/CreateTemplate";
 import { default as EnrollmentPre } from "../ngo-company/EnrollmentPre";
-import MyBenchmarks from "../MyBenchmarks";
 import MyPrograms from "../ngo-company/MyPrograms";
 import ProgramDetails from "../ngo-company/ProgramDetails";
 import ProgramEdit from "../ngo-company/ProgramEdit";
 import ProgramPre from "../ngo-company/ProgramPre";
 import ProgramPublish from "../ngo-company/ProgramPublish";
+import SDGDetails from "../ngo-company/SDGDetails";
 import SuiteModal from "../ngo-company/SuiteModal";
 import SuiteObjective from "../ngo-company/SuiteObjective";
 import SuiteOverview from "../ngo-company/SuiteOverview";
@@ -47,7 +48,7 @@ import SuiteOverviewDetails from "../ngo-company/SuiteOverviewDetails";
 import SuitePreInformation from "../ngo-company/SuitePreInformation";
 import SuiteTarget from "../ngo-company/SuiteTarget";
 import SuiteTrack from "../ngo-company/SuiteTrack";
-import SDGDetails from "../ngo-company/SDGDetails";
+import Team from "../ngo-company/Team";
 import { default as TemplateDetails } from "../ngo-company/TemplateDetails";
 import { default as TemplateEdit } from "../ngo-company/TemplateEdit";
 import { default as TemplatePre } from "../ngo-company/TemplatePre";
@@ -229,10 +230,10 @@ const Dashboard = () => {
     },
     {
       name: "Team",
-      component: <>Team</>,
+      component: <Team />,
       href: "/dashboard/team",
       icon: UsersIcon,
-      display: true,
+      display: !user?.parent,
     },
     {
       name: "My Programs",

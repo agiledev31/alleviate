@@ -12,11 +12,40 @@ const checkUser = async (req, res, next) => {
     const userId = decodedToken.userId;
 
     // Find the user in the database
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
 
     // Check if the user exists
     if (!user) {
       throw new Error("");
+    }
+
+    const actualRoles = user.roles;
+    const actualParent = user.parent;
+    const actualAccessLevel = user.accessLevel;
+    const actualEmail = user.email;
+    const actualPhone = user.phone;
+    const actualAvatar = user.avatar;
+    const actualFirstName = user.firstName;
+    const actualLastName = user.lastName;
+    const actualID = user._id;
+
+    if (user.blocked) {
+      throw new Error("Access blocked!!");
+    }
+
+    let isTeammember = false;
+    if (user.parent) {
+      req.teamMember = Object.assign({}, user)?._doc;
+      delete req.teamMember.resetToken;
+      delete req.teamMember.password;
+      delete req.teamMember?.smtp?.dkimPrivateKey;
+      delete req.teamMember.__v;
+
+      user = await User.findById(user.parent);
+      if (!user) {
+        throw new Error("");
+      }
+      isTeammember = true;
     }
 
     // Set the user object in the request for further use
@@ -25,6 +54,18 @@ const checkUser = async (req, res, next) => {
     delete req.user.resetToken;
     delete req.user.password;
     delete req.user.__v;
+
+    if (isTeammember) {
+      req.user.roles = actualRoles;
+      req.user.parent = actualParent;
+      req.user.accessLevel = actualAccessLevel;
+      req.user.email = actualEmail;
+      req.user.phone = actualPhone;
+      req.user.avatar = actualAvatar;
+      req.user.firstName = actualFirstName;
+      req.user.lastName = actualLastName;
+      req.user.actualID = actualID;
+    }
 
     next();
   } catch (err) {

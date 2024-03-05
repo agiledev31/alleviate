@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 const { connectDB } = require("../config/db");
 const authRoutes = require("../routes/authRoutes");
+const userRoutes = require("../routes/userRoutes");
 const crudRoutes = require("../routes/crudRoutes");
 const stripeRoutes = require("../routes/stripeRoutes");
 const cloudinaryRoutes = require("../routes/cloudinaryRoutes");
@@ -27,7 +28,7 @@ app.use((req, res, next) => {
   if (req.originalUrl.includes("/stripe/webhook")) {
     bodyParser.text({ type: "application/json" })(req, res, next);
   } else {
-    express.json({limit: '10mb'})(req, res, next);
+    express.json({ limit: "10mb" })(req, res, next);
   }
 });
 
@@ -52,6 +53,7 @@ app.use(async (req, res, next) => {
 
 //this for route will need for store front, also for admin dashboard
 app.use("/api/auth/", authRoutes);
+app.use("/api/user/", userRoutes);
 app.use("/api/crud/", crudRoutes);
 app.use("/api/stripe/", stripeRoutes);
 app.use("/api/cloudinary/", cloudinaryRoutes);

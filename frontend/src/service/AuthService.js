@@ -19,7 +19,7 @@ class AuthService {
     firstName,
     lastName,
     roleSelected,
-    sector
+    sector,
   }) {
     return this.api.post("/register", {
       role,
@@ -29,7 +29,7 @@ class AuthService {
       firstName,
       lastName,
       roleSelected,
-      sector
+      sector,
     });
   }
 
@@ -80,13 +80,16 @@ class AuthService {
   roleSelect(e) {
     return this.api.post("/roleSelect", e);
   }
+  registerTeam(data) {
+    return this.api.post("/registerTeam", data);
+  }
 
   generateLinkToInviteUser({ program, invitePeopleEmails, type }) {
     return this.api.post("/generateLinkToInviteUser", {
       program,
       invitePeopleEmails,
       baseURL: window.location.origin,
-      type
+      type,
     });
   }
 }
