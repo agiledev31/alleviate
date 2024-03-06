@@ -38,6 +38,7 @@ import StatsDashboard from "../../components/StatsDashboard";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
+import StatsService from "../../service/StatsService";
 
 export const trackCategoriesList = [
   {
@@ -54,21 +55,25 @@ export const trackCategoriesList = [
           },
           {
             id: "target",
-            text: ({ programData }) => {
+            text: ({ programData, KPISurveys, allKPIs }) => {
               let _KPIs = programData?.KPIs;
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
               _additionalKPIData.map(i => {
-                if(i._id && i.targetValue && i.targetUnit && i.timeline) _count++;
+                let _kpiMetricName = allKPIs?.filter(item => item._id == i._id)?.[0]?.MetricName;
+                let _kpiStats = KPISurveys.filter(item => item.key == _kpiMetricName)?.[0];
+                if (i.targetValue <= _kpiStats?.average) _count++;
               })
               let _text = "Set specific targets and timelines (" + _count + "/" + _KPIs.length + ")";
               return _text;
             },
-            checker: ({ programData }) => {
+            checker: ({ programData, KPISurveys, allKPIs }) => {
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
               _additionalKPIData.map(i => {
-                if(i._id && i.targetValue && i.targetUnit && i.timeline) _count++;
+                let _kpiMetricName = allKPIs?.filter(item => item._id == i._id)?.[0]?.MetricName;
+                let _kpiStats = KPISurveys.filter(item => item.key == _kpiMetricName)?.[0];
+                if (i.targetValue <= _kpiStats?.average) _count++;
               })
               return !!_count;
             },
@@ -86,7 +91,7 @@ export const trackCategoriesList = [
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
               _additionalKPIData.map(i => {
-                if(i.baseline) _count++;
+                if (i.baseline) _count++;
               })
               let _text = "Platform collects baseline data on beneficiaries (" + _count + "/" + _KPIs.length + ")";
               return _text;
@@ -95,7 +100,7 @@ export const trackCategoriesList = [
               let _additionalKPIData = programData?.additionalKPIData;
               let _count = 0;
               _additionalKPIData.map(i => {
-                if(i.baseline) _count++;
+                if (i.baseline) _count++;
               })
               return !!_count;
             },
@@ -137,7 +142,7 @@ export const trackCategoriesList = [
             checker: ({ assessmentData }) => {
               let _count = 0;
               assessmentData.map(i => {
-                if(i.reminderType) {
+                if (i.reminderType) {
                   _count++;
                 }
               })
@@ -154,7 +159,7 @@ export const trackCategoriesList = [
             text: ({ assessmentData }) => {
               let _count = 0;
               assessmentData.map(i => {
-                if(i.name && i.form.length) _count++;
+                if (i.name && i.form.length) _count++;
               })
               let _text = "Platform measures program outcomes (" + _count + "/" + assessmentData.length + ")";
               return _text;
@@ -527,6 +532,7 @@ const SuiteDetails = () => {
   const [hasAssessment, setHasAssessment] = useState(false);
   const [hasSubmission, setHasSubmission] = useState(false);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
+  const [KPISurveys, setKPISurveys] = useState([])
 
   const fileInputRef = useRef(null);
 
@@ -540,14 +546,14 @@ const SuiteDetails = () => {
 
   useEffect(() => {
     let assessement_ids = assessmentData.map(i => i._id)
-      CrudService.search("ProgramSubmission", 100000, 1, {
-        filters: {
-          programId: { $in: assessement_ids }
-        },
-        sort: { createdAt: -1 },
-      }).then((res) => {
-        setSubmittedProgramData(res.data.items);
-      });
+    CrudService.search("ProgramSubmission", 100000, 1, {
+      filters: {
+        programId: { $in: assessement_ids }
+      },
+      sort: { createdAt: -1 },
+    }).then((res) => {
+      setSubmittedProgramData(res.data.items);
+    });
   }, [assessmentData]);
 
   useEffect(() => {
@@ -639,8 +645,8 @@ const SuiteDetails = () => {
       setProgramData(res.data);
       setProgramCategoryName(
         res.data.hasOwnProperty("categoryDetail") &&
-          res.data.categoryDetail.Name &&
-          res.data.categoryDetail.Name
+        res.data.categoryDetail.Name &&
+        res.data.categoryDetail.Name
       );
       setReminderType(
         res.data.hasOwnProperty("reminderType") && res.data.reminderType
@@ -649,7 +655,15 @@ const SuiteDetails = () => {
       );
 
       setHasKPIs(!!(res.data.KPIs && res.data.KPIs.length > 0));
-    });    
+    });
+
+    StatsService.getSurveys(id ?? "")
+      .then(({ data }) => {
+        setKPISurveys(data.KPIs || []);
+      })
+      .finally(() => {
+        
+      });
   }, [searchParams]);
 
   useEffect(() => {
@@ -683,6 +697,7 @@ const SuiteDetails = () => {
   useEffect(() => {
     load();
   }, [load]);
+
   useEffect(() => {
     StrapiService.getCoreProgramMetrics().then(({ data }) => {
       setAllKPIs(data);
@@ -802,14 +817,14 @@ const SuiteDetails = () => {
     let _additionalKPIDataList = programData?.additionalKPIData ?? [];
     let _selectedAddtionalKPIDataList = _additionalKPIDataList.filter(item => item._id == selectedKPI._id);
     let _data = _selectedAddtionalKPIDataList[0] ?? { "_id": selectedKPI._id };
-    setSelectedKPIAdditionalData( _data )
+    setSelectedKPIAdditionalData(_data)
     setShowLoader(true);
     setKPIAdditionalDataModal(true);
   }
 
   const handleAdditionalKPIDataChange = (_data) => {
     let value = _data.target.value;
-    if(_data.target.name == "timeline") {
+    if (_data.target.name == "timeline") {
       value = new Date(_data.target.value)
         .toISOString()
         .replace("Z", "+00:00");
@@ -825,9 +840,9 @@ const SuiteDetails = () => {
     if (!id) return;
     let _additionalKPIDataList = programData?.additionalKPIData ?? [];
     let _temp = _additionalKPIDataList.filter(i => i._id == selectedKPIAdditionalData._id);
-    if(_temp.length) {
+    if (_temp.length) {
       _additionalKPIDataList = _additionalKPIDataList.map(item => {
-        if(item._id == selectedKPIAdditionalData._id) {
+        if (item._id == selectedKPIAdditionalData._id) {
           item = selectedKPIAdditionalData
         }
         return item;
@@ -842,6 +857,7 @@ const SuiteDetails = () => {
     load();
     setShowLoader(false);
     setKPIAdditionalDataModal(false);
+    setActiveTab("kpis");
   }
 
   const handleAddUserClick = async (e) => {
@@ -907,32 +923,33 @@ const SuiteDetails = () => {
         let _additionalKPIData = programData?.additionalKPIData ?? [];
         let _data = _additionalKPIData.filter(i => i._id == KPI_id)?.[0];
         return (
-        <div>
           <div>
-            <span>Baseline: </span>
-            <span>{ _data?.baseline } { _data?.baseline ? _data?.targetUnit : "" }</span>
-          </div>
-          <div>
-            <span>Target: </span>
-            <span>{ _data?.targetValue } { _data?.targetValue ? _data?.targetUnit : "" }</span>
-          </div>
-          <div>
-            <span>TimeLine: </span>
-            {_data?.timeline
-             ? <input
+            <div>
+              <span>Baseline: </span>
+              <span>{_data?.baseline} {_data?.baseline ? _data?.targetUnit : ""}</span>
+            </div>
+            <div>
+              <span>Target: </span>
+              <span>{_data?.targetValue} {_data?.targetValue ? _data?.targetUnit : ""}</span>
+            </div>
+            <div>
+              <span>TimeLine: </span>
+              {_data?.timeline
+                ? <input
                   className="w-[150px] border-none"
                   type="date"
                   name="timeline"
                   disabled
-                  value={ moment(_data?.timeline).format("YYYY-MM-DD") }
+                  value={moment(_data?.timeline).format("YYYY-MM-DD")}
                   onChange={handleAdditionalKPIDataChange}
                 />
-              : null
-            }
-            
+                : null
+              }
+
+            </div>
           </div>
-        </div>
-      )},
+        )
+      },
     },
     {
       title: "Sustainable Development Goals",
@@ -1252,7 +1269,6 @@ const SuiteDetails = () => {
     },
   ];
 
-  console.log("programData", programData)
 
   const programTab = [
     {
@@ -1350,11 +1366,13 @@ const SuiteDetails = () => {
                                         programData,
                                         hasSubmission,
                                         assessmentData,
+                                        KPISurveys,
+                                        allKPIs,
                                       })
                                     }
                                     value={action.id}
                                   >
-                                    {action.text({programData, assessmentData})}
+                                    {action.text({ programData, assessmentData, KPISurveys, allKPIs })}
                                   </Checkbox>
                                 </div>
                               ))}
@@ -1800,8 +1818,8 @@ const SuiteDetails = () => {
                   programData && !programData.published
                     ? "Please publish the program first, and then proceed to invite people."
                     : tags.length === 0
-                    ? "Add emails"
-                    : ""
+                      ? "Add emails"
+                      : ""
                 }
               >
                 <Button
@@ -1964,14 +1982,14 @@ const SuiteDetails = () => {
                       <div key={assessment._id}>
                         <Row gutter={[16, 16]}>
                           <Col span={8}>
-                            <span 
-                              className="cursor-pointer" 
+                            <span
+                              className="cursor-pointer"
                               onClick={() => {
                                 setActiveTab("assessments");
                                 setKPILinkedQuestionModal(false);
                               }}
                             >
-                            {assessment.name}
+                              {assessment.name}
                             </span>
                           </Col>
                           <Col span={16}>
@@ -2031,7 +2049,7 @@ const SuiteDetails = () => {
               id="baseline"
               placeholder="Baseline"
               className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              value={selectedKPIAdditionalData?.Baseline ?? ""}
+              value={selectedKPIAdditionalData?.baseline ?? ""}
               onChange={handleAdditionalKPIDataChange}
             />
           </div>

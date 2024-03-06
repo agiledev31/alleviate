@@ -49,6 +49,7 @@ const ProgramPre = () => {
           label: "Period",
           type: "select",
           options: [
+            { label: "None", value: "" },
             { label: "Weekly", value: "Weekly" },
             { label: "Quarterly", value: "Quarterly" },
             { label: "Monthly", value: "Monthly" },

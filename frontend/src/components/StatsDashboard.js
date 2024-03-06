@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MdRefresh } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
 import StatsService from "../service/StatsService";
-import {Pie} from "@ant-design/charts";
+import { Pie } from "@ant-design/charts";
 
 const StatsDashboard = ({type = ''}) => {
   let [searchParams] = useSearchParams();

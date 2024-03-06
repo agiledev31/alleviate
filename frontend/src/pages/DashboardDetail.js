@@ -38,7 +38,6 @@ const DashboardDetail = () => {
       setSdgs(_sdg);
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
-      console.log("data", res.data);
     });
   }, []);
 

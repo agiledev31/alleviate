@@ -96,7 +96,6 @@ const getAssessmentSurveys = async (req, res) => {
         ? { programId: id}
         : { user_id: req.user._id };
 
-    console.log('baseQuery', baseQuery)
     const submissions = await ProgramSubmission.find({ ...baseQuery });
 
     // Extract all KPIs from submissions

@@ -106,26 +106,6 @@ const SDGDetails = () => {
           )
         }
     },
-    // {
-    //     title: 'Target',
-    //     dataIndex: 'Target',
-    //     key: 'Target',
-    //     width: 150,
-    //     render: (text) => text || '',
-    // },
-    // {
-    //     title: 'Progress',
-    //     dataIndex: 'Progress',
-    //     key: 'Progress',
-    //     width: 400,
-    //     render: (sdgs) => (<Progress percent={0} />),
-    // },
-    // {
-    //   title: 'Actions',
-    //   key: 'actions',
-    //   width: 300,
-    //   render: (program) => (null),
-    // },
   ];
 
   const SuitesWithIpactThemeColumns = [
@@ -136,8 +116,6 @@ const SDGDetails = () => {
       width: 700,
     },
   ];
-
-  // if (loading) return <Skeleton active />;
 
   return (
     <>
