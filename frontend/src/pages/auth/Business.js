@@ -22,13 +22,18 @@ const Business = () => {
   useEffect(() => {
     if (!me) return;
     if (!me.businessId) return setStep(0);
-    if (!me.businessIdDocument) return setStep(1);
-    setStep(2);
+    if (!me.businessIdDocument && me.role != "ngo-company") return setStep(1);
+    if (me.role != "ngo-company") setStep(2);
   }, [me]);
 
   const handleUpdate = useCallback(async () => {
     await AuthService.updateMe(softValue);
     const res = await AuthService.me();
+    
+    if(res.data.me.role == "ngo-company" && res.data.me.businessId) {
+      await GarbageService.approveCompanyApplication();
+      window.location.reload();
+    }
     setMe(res.data.me);
     document.dispatchEvent(new CustomEvent("REFRESH.PROFILE"));
   }, [softValue]);

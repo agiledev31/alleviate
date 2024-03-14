@@ -255,7 +255,7 @@ const me = async (req, res) => {
       if (req.user.companyName === "") profileCompletion--;
       if (req.user.organizationType === "") profileCompletion--;
       if (req.user.businessId === "") profileCompletion--;
-      if (req.user.website === "") profileCompletion--;
+      // if (req.user.website === "") profileCompletion--;
       profileCompletion -= personalProfileCompletion;
       if (profileCompletion !== TOTAL)
         onboardingStatus.step = "profileCompletion";
