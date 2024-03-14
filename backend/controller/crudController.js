@@ -80,7 +80,7 @@ const checkPermission = async (action, req, res, next) => {
 
   const modelName = req.query.ModelName;
 
-  console.log(user.roles);
+  console.log("user.roles", user.roles);
   if (
     user.roles.every(
       (modelPermission) =>

@@ -37,8 +37,6 @@ const db = client.db("strapi");
 const checkModel = async (req, res, next) => {
   const modelName = req.query.ModelName;
 
-  console.log(modelName);
-  console.log(models);
   if (!modelName || !models[modelName]) {
     return res.status(400).json({ message: "Wrong model" });
   }
@@ -501,7 +499,6 @@ router
   .route("/create")
   .post(checkUser, checkWritePermission, async (req, res) => {
     try {
-      console.log("req.user._id", req.user._id);
       const result = await createItem(req, models[req.query.ModelName], {
         user_id: req.user._id,
       });
