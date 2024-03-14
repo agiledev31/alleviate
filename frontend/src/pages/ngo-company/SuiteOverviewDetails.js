@@ -1738,7 +1738,7 @@ const SuiteDetails = () => {
     },
     {
       key: "metrics",
-      label: "Metrics",
+      label: "Reports",
       children: (
         <>
           <Select

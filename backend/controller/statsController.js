@@ -37,6 +37,7 @@ const getSurveys = async (req, res) => {
       const values = groupedKPIs[key];
       const average =
         values.reduce((sum, value) => sum + value, 0) / values.length;
+      const count = values.length;
       const min = Math.min(...values);
       const max = Math.max(...values);
 
@@ -51,6 +52,7 @@ const getSurveys = async (req, res) => {
 
       return {
         key,
+        count,
         average,
         min,
         max,

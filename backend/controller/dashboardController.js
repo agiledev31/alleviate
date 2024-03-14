@@ -121,7 +121,12 @@ const getDashboardDetails = async (req, res) => {
       .collection("core_program_metrics")
       .aggregate(pipeline)
       .toArray();
-    data.KPIListWithSDG = KPIsWithSDG;
+
+    // const _KPIListWithSDG = await db
+    //   .collection("core_program_metrics")
+    //   .aggregate([])
+    //   .toArray()
+    // data.KPIListWithSDG = _KPIListWithSDG;
 
     const sdgCountMap = {
       "No Poverty": 0,
