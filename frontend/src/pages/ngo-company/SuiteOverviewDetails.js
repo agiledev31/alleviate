@@ -1,3 +1,12 @@
+import { DndContext } from '@dnd-kit/core';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import "allotment/dist/style.css";
 import {
   Breadcrumb,
@@ -25,11 +34,12 @@ import {
 import { Option } from "antd/es/mentions";
 import moment from "moment";
 import { TweenOneGroup } from "rc-tween-one";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useRef, useState } from "react";
 import {
   AiOutlineArrowRight,
   AiOutlineCheckCircle,
   AiOutlineCloseCircle,
+  AiOutlineMenu,
 } from "react-icons/ai";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -535,6 +545,58 @@ export const trackCategoriesList = [
   },
 ];
 
+const TableRow = ({ children, ...props }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: props['data-row-key'],
+  });
+  const style = {
+    ...props.style,
+    transform: CSS.Transform.toString(
+      transform && {
+        ...transform,
+        scaleY: 1,
+      },
+    ),
+    transition,
+    ...(isDragging
+      ? {
+          position: 'relative',
+          zIndex: 9999,
+        }
+      : {}),
+  };
+  return (
+    <tr {...props} ref={setNodeRef} style={style} {...attributes}>
+      {React.Children.map(children, (child) => {
+        if (child.key === 'sort') {
+          return React.cloneElement(child, {
+            children: (
+              <AiOutlineMenu
+                size={30}
+                ref={setActivatorNodeRef}
+                style={{
+                  touchAction: 'none',
+                  cursor: 'move',
+                }}
+                {...listeners}
+              />
+            ),
+          });
+        }
+        return child;
+      })}
+    </tr>
+  );
+};
+
 const SuiteDetails = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -578,8 +640,19 @@ const SuiteDetails = () => {
   const [hasSubmission, setHasSubmission] = useState(false);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [KPISurveys, setKPISurveys] = useState([]);
+  const [KPIDataForTable, setKPIDataForTable] = useState([]);
 
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if(programData && programData?.KPIs.length) {
+      setKPIDataForTable(programData?.KPIs?.map?.((kpi) =>
+        allKPIs.find((k) => k._id.toString() === kpi)
+      )?.filter?.((a) => !!a).map((item, i) => ({ ...item, key: i + 1})));
+    }
+  }, [programData])
+
+  console.log("KPIDataForTable", KPIDataForTable)
 
   useEffect(() => {
     CrudService.search("UseCase", 10000, 1, {}).then(({ data }) => {
@@ -940,6 +1013,9 @@ const SuiteDetails = () => {
   };
 
   const KPIsColumns = [
+    {
+      key: 'sort',
+    },
     {
       title: "Metric Name",
       dataIndex: "MetricName",
@@ -1317,6 +1393,17 @@ const SuiteDetails = () => {
     },
   ];
 
+  const onDragEnd = ({ active, over }) => {
+    if (active.id !== over?.id) {
+      
+      setKPIDataForTable((previous) => {
+        const activeIndex = previous.findIndex((i) => i.key === active.id);
+        const overIndex = previous.findIndex((i) => i.key === over?.id);
+        return arrayMove(previous, activeIndex, overIndex);
+      });
+    }
+  };
+
   const programTab = [
     {
       key: "checklist",
@@ -1592,7 +1679,7 @@ const SuiteDetails = () => {
       label: "KPIs",
       children: (
         <>
-          <Table
+          {/* <Table
             dataSource={programData?.KPIs?.map?.((kpi) =>
               allKPIs.find((k) => k._id.toString() === kpi)
             )?.filter?.((a) => !!a)}
@@ -1600,7 +1687,25 @@ const SuiteDetails = () => {
             rowKey={(record) => record._id}
             pagination={false}
             scroll={{ x: "700px" }}
-          />
+          /> */}
+          <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
+            <SortableContext
+              // rowKey array
+              items={KPIDataForTable.map((i) => i.key)}
+              strategy={verticalListSortingStrategy}
+            >
+              <Table
+                components={{
+                  body: {
+                    row: TableRow,
+                  },
+                }}
+                rowKey="key"
+                columns={KPIsColumns}
+                dataSource={KPIDataForTable}
+              />
+            </SortableContext>
+          </DndContext>
           <Button
             className="px-2 py-1 text-sm  rounded my-4"
             type="primary"
