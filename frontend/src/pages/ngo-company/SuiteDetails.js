@@ -793,14 +793,14 @@ const SuiteDetails = () => {
                 <strong>Category</strong>: {programData.categoryDetail.Name}
               </p>
             )}
-            {programData?.impactThemDetails &&
-              programData?.impactThemDetails.length > 0 && (
+            {programData?.impactThemeDetails &&
+              programData?.impactThemeDetails.length > 0 && (
                 <p className={"py-2"}>
                   <strong>Impact Theme</strong>:{" "}
-                  {programData?.impactThemDetails.map((item, index) => (
+                  {programData?.impactThemeDetails.map((item, index) => (
                     <>
                       <span key={item._id}>{item.Name}</span>
-                      {index !== programData.impactThemDetails.length - 1
+                      {index !== programData.impactThemeDetails.length - 1
                         ? ", "
                         : ""}
                     </>

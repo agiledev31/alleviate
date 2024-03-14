@@ -143,10 +143,7 @@ router
         }
       }
 
-      if (
-        req.query.ModelName === "Suite" ||
-        req.query.ModelName === "Template"
-      ) {
+      if ( req.query.ModelName === "Template" ) {
         const {
           impactThemes,
           category,
@@ -157,13 +154,13 @@ router
 
         if (impactThemes && impactThemes.length > 0) {
           let item = impactThemes.map((t) => new ObjectId(t));
-          const impactThemDetails = await db
+          const impactThemeDetails = await db
             .collection("themes")
             .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
             .toArray();
 
-          if (impactThemDetails && impactThemDetails.length > 0) {
-            dataToSend["impactThemDetails"] = impactThemDetails;
+          if (impactThemeDetails && impactThemeDetails.length > 0) {
+            dataToSend["impactThemeDetails"] = impactThemeDetails;
           }
         }
 
@@ -176,29 +173,38 @@ router
           }
         }
 
-        if (strategicGoals) {
+        if (strategicGoals && strategicGoals.length > 0) {
+          let item = strategicGoals.map((t) => new ObjectId(t));
           const strategicGoalDetails = await db
             .collection("strategic_goals")
-            .findOne({ _id: new ObjectId(strategicGoals) });
-          if (strategicGoalDetails) {
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+
+          if (strategicGoalDetails && strategicGoalDetails.length > 0) {
             dataToSend["strategicGoalDetails"] = strategicGoalDetails;
           }
         }
 
-        if (deliveryModel) {
+        if (deliveryModel && deliveryModel.length > 0) {
+          let item = deliveryModel.map((t) => new ObjectId(t));
           const deliveryModelDetails = await db
             .collection("delivery_models")
-            .findOne({ _id: new ObjectId(deliveryModel) });
-          if (deliveryModelDetails) {
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+
+          if (deliveryModelDetails && deliveryModelDetails.length > 0) {
             dataToSend["deliveryModelDetails"] = deliveryModelDetails;
           }
         }
 
-        if (products) {
+        if (products && products.length > 0) {
+          let item = products.map((t) => new ObjectId(t));
           const productDetails = await db
             .collection("products_and_services")
-            .findOne({ _id: new ObjectId(products) });
-          if (productDetails) {
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+
+          if (productDetails && productDetails.length > 0) {
             dataToSend["productDetails"] = productDetails;
           }
         }
@@ -243,7 +249,7 @@ router
         }
       }
       let category = [];
-      let impactThemDetails = [];
+      let impactThemeDetails = [];
       let productDetails = [];
       let strategicGoalDetails = [];
       let deliveryModelDetails = [];
@@ -260,7 +266,7 @@ router
         data?.impactThemes.length > 0
       ) {
         let item = data?.impactThemes.map((t) => new ObjectId(t));
-        impactThemDetails = await db
+        impactThemeDetails = await db
           .collection("themes")
           .find({
             _id: {
@@ -270,25 +276,51 @@ router
           .toArray();
       }
 
-      if (data.products) {
-        productDetails = await db
-          .collection("products_and_services")
-          .find({ _id: new ObjectId(data.products) })
-          .toArray();
-      }
+      if(req.query.ModelName === "Template") {
+        if (data.products) {
+          let item = data.products.map((t) => new ObjectId(t));
+          productDetails = await db
+            .collection("products_and_services")
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+        }
+  
+        if (data.strategicGoals) {
+          let item = data.strategicGoals.map((t) => new ObjectId(t));
+          strategicGoalDetails = await db
+            .collection("strategic_goals")
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+        }
+  
+        if (data.deliveryModel) {
+          let item = data.deliveryModel.map((t) => new ObjectId(t));
+          deliveryModelDetails = await db
+            .collection("delivery_models")
+            .find({ _id: { $in: Array.isArray(item) ? item : [item] } })
+            .toArray();
+        }
+      } else {
+        if (data.products) {
+          productDetails = await db
+            .collection("products_and_services")
+            .find({ _id: new ObjectId(data.products) })
+            .toArray();
+        }
 
-      if (data.strategicGoals) {
-        strategicGoalDetails = await db
-          .collection("strategic_goals")
-          .find({ _id: new ObjectId(data.strategicGoals) })
-          .toArray();
-      }
+        if (data.strategicGoals) {
+          strategicGoalDetails = await db
+            .collection("strategic_goals")
+            .find({ _id: new ObjectId(data.strategicGoals) })
+            .toArray();
+        }
 
-      if (data.deliveryModel) {
-        deliveryModelDetails = await db
-          .collection("delivery_models")
-          .find({ _id: new ObjectId(data.deliveryModel) })
-          .toArray();
+        if (data.deliveryModel) {
+          deliveryModelDetails = await db
+            .collection("delivery_models")
+            .find({ _id: new ObjectId(data.deliveryModel) })
+            .toArray();
+        }
       }
 
       let dataToSend = {
@@ -301,10 +333,10 @@ router
         dataToSend.data["categoryDetail"] = {};
       }
 
-      if (impactThemDetails && impactThemDetails.length > 0) {
-        dataToSend.data["impactThemDetails"] = impactThemDetails;
+      if (impactThemeDetails && impactThemeDetails.length > 0) {
+        dataToSend.data["impactThemeDetails"] = impactThemeDetails;
       } else {
-        dataToSend.data["impactThemDetails"] = [];
+        dataToSend.data["impactThemeDetails"] = [];
       }
 
       if (productDetails && productDetails.length > 0) {

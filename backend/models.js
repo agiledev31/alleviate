@@ -306,9 +306,9 @@ const templateSchema = new mongoose.Schema(
     listedForNGOBeneficiaries: { type: Boolean, default: false },
     listedForDonors: { type: Boolean, default: false },
     listedForExperts: { type: Boolean, default: false },
-    strategicGoals: { type: String, default: "" },
-    deliveryModel: { type: String, default: "" },
-    products: { type: String, default: "" },
+    strategicGoals: { type: [String], default: [] },
+    deliveryModel: { type: [String], default: [] },
+    products: { type: [String], default: [] },
     form: Object,
   },
   { timestamps: true }

@@ -847,6 +847,7 @@ const MultiStepComponent = ({
   }, [defaultValues]);
 
   const handleFormChange = (fieldName, value) => {
+    console.log("multistep component handleFormChange", fieldName, "::", value)
     setFormData((prevData) => ({
       ...prevData,
       [fieldName]: value,
@@ -857,9 +858,9 @@ const MultiStepComponent = ({
       setFormData((prevData) => ({
         ...prevData,
         [fieldName]: value,
-        strategicGoals: null,
-        deliveryModel: null,
-        products: null,
+        strategicGoals: [],
+        deliveryModel: [],
+        products: [],
         isFinishClicked: false,
       }));
       onChangeFromSelect(fieldName, value);
@@ -1040,20 +1041,20 @@ const MultiStepComponent = ({
                       : {programDataDisplay?.categoryDetail.Name}
                     </p>
                   )}
-                  {programDataDisplay?.impactThemDetails &&
-                    programDataDisplay?.impactThemDetails.length > 0 && (
+                  {programDataDisplay?.impactThemeDetails &&
+                    programDataDisplay?.impactThemeDetails.length > 0 && (
                       <p className={"p-2"}>
                         <strong>
                           {formType === "SuitePre" ? "Program" : "Template"}{" "}
                           Impact
                         </strong>
                         :{" "}
-                        {programDataDisplay?.impactThemDetails.map(
+                        {programDataDisplay?.impactThemeDetails.map(
                           (item, index) => (
                             <>
                               <span key={item._id}>{item.Name}</span>
                               {index !==
-                              programDataDisplay?.impactThemDetails.length - 1
+                              programDataDisplay?.impactThemeDetails.length - 1
                                 ? ", "
                                 : ""}
                             </>

@@ -167,23 +167,21 @@ const CreateTemplate = () => {
         },
       ],
     },
-
     {
       id: "step2",
       name: "Template Details",
       form: [
         {
           fieldName: "category",
-          // label: "Program Category",
-          label:
-            "Which impact category best aligns with your organization's mission?",
+          label: "Impact Category",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
         },
         {
           fieldName: "strategicGoals",
-          label: "Which Strategic Goal(s) best match your approach?",
+          label: "Strategic Goal(s)",
           type: "quiz",
+          multi: true,
           options: categoryStrategicGoals.map((c) => ({
             value: c._id,
             label: c.Name,
@@ -191,9 +189,9 @@ const CreateTemplate = () => {
         },
         {
           fieldName: "deliveryModel",
-          label:
-            "What approach is your organization using to achieve the selected strategic goal(s)?",
+          label: "Delivery Model",
           type: "quiz",
+          multi: true,
           options: categoryDeliveryModel.map((c) => ({
             value: c._id,
             label: c.Name,
@@ -201,9 +199,9 @@ const CreateTemplate = () => {
         },
         {
           fieldName: "products",
-          label:
-            "What specific products or services are you offering within your chosen delivery model?",
+          label: "Products or services",
           type: "quiz",
+          multi: true,
           options: categoryProducts.map((c) => ({
             value: c._id,
             label: c.Name,
@@ -211,24 +209,13 @@ const CreateTemplate = () => {
         },
         {
           fieldName: "impactThemes",
-          label: "Which impact themes align with your priorities?",
+          label: "Impact Themes",
           type: "quiz",
           multi: true,
           options: impactThemes.map((c) => ({ value: c._id, label: c.Name })),
         },
-        {
-          fieldName: "startDate",
-          label: "Start Date",
-          type: "datepicker",
-        },
-        {
-          fieldName: "endDate",
-          label: "End Date",
-          type: "datepicker",
-        },
       ],
     },
-    // Step 3: Template Objectives
     {
       id: "step3",
       name: "Template Objectives",
@@ -242,7 +229,6 @@ const CreateTemplate = () => {
         },
       ],
     },
-    // Ste 4: Template Preview
     {
       id: "step4",
       name: "Preview Template",

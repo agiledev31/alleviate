@@ -264,14 +264,14 @@ const TemplateDetails = () => {
                 <strong>Category</strong>: {templateData.categoryDetail.Name}
               </p>
             )}
-            {templateData?.impactThemDetails &&
-              templateData?.impactThemDetails.length > 0 && (
+            {templateData?.impactThemeDetails &&
+              templateData?.impactThemeDetails.length > 0 && (
                 <p className={"py-2"}>
                   <strong>Impact Theme</strong>:{" "}
-                  {templateData?.impactThemDetails.map((item, index) => (
+                  {templateData?.impactThemeDetails.map((item, index) => (
                     <>
                       <span key={item._id}>{item.Name}</span>
-                      {index !== templateData.impactThemDetails.length - 1
+                      {index !== templateData.impactThemeDetails.length - 1
                         ? ", "
                         : ""}
                     </>
