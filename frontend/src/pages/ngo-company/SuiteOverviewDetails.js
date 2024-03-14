@@ -1,5 +1,6 @@
 import "allotment/dist/style.css";
 import {
+  Breadcrumb,
   Button,
   Card,
   Checkbox,
@@ -31,14 +32,14 @@ import {
   AiOutlineCloseCircle,
 } from "react-icons/ai";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ExcelImport from "../../components/ExcelImport";
 import LoadingSpinner from "../../components/Loader";
 import StatsDashboard from "../../components/StatsDashboard";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
-import StrapiService from "../../service/StrapiService";
 import StatsService from "../../service/StatsService";
+import StrapiService from "../../service/StrapiService";
 
 export const trackCategoriesList = [
   {
@@ -59,22 +60,35 @@ export const trackCategoriesList = [
               let _KPIs = programData?.KPIs;
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
-              _additionalKPIData.map(i => {
-                let _kpiMetricName = allKPIs?.filter(item => item._id == i._id)?.[0]?.MetricName;
-                let _kpiStats = KPISurveys.filter(item => item.key == _kpiMetricName)?.[0];
+              _additionalKPIData.map((i) => {
+                let _kpiMetricName = allKPIs?.filter(
+                  (item) => item._id == i._id
+                )?.[0]?.MetricName;
+                let _kpiStats = KPISurveys.filter(
+                  (item) => item.key == _kpiMetricName
+                )?.[0];
                 if (i.targetValue <= _kpiStats?.average) _count++;
-              })
-              let _text = "Set specific targets and timelines (" + _count + "/" + _KPIs.length + ")";
+              });
+              let _text =
+                "Set specific targets and timelines (" +
+                _count +
+                "/" +
+                _KPIs.length +
+                ")";
               return _text;
             },
             checker: ({ programData, KPISurveys, allKPIs }) => {
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
-              _additionalKPIData.map(i => {
-                let _kpiMetricName = allKPIs?.filter(item => item._id == i._id)?.[0]?.MetricName;
-                let _kpiStats = KPISurveys.filter(item => item.key == _kpiMetricName)?.[0];
+              _additionalKPIData.map((i) => {
+                let _kpiMetricName = allKPIs?.filter(
+                  (item) => item._id == i._id
+                )?.[0]?.MetricName;
+                let _kpiStats = KPISurveys.filter(
+                  (item) => item.key == _kpiMetricName
+                )?.[0];
                 if (i.targetValue <= _kpiStats?.average) _count++;
-              })
+              });
               return !!_count;
             },
             tab: "details",
@@ -90,25 +104,31 @@ export const trackCategoriesList = [
               let _KPIs = programData?.KPIs;
               let _additionalKPIData = programData?.additionalKPIData ?? [];
               let _count = 0;
-              _additionalKPIData.map(i => {
+              _additionalKPIData.map((i) => {
                 if (i.baseline) _count++;
-              })
-              let _text = "Platform collects baseline data on beneficiaries (" + _count + "/" + _KPIs.length + ")";
+              });
+              let _text =
+                "Platform collects baseline data on beneficiaries (" +
+                _count +
+                "/" +
+                _KPIs.length +
+                ")";
               return _text;
             },
             checker: ({ programData }) => {
               let _additionalKPIData = programData?.additionalKPIData;
               let _count = 0;
-              _additionalKPIData.map(i => {
+              _additionalKPIData.map((i) => {
                 if (i.baseline) _count++;
-              })
+              });
               return !!_count;
             },
             tab: "assessments",
           },
           {
             id: "5",
-            text: () => "Platform identifies challenges and opportunities for improvement",
+            text: () =>
+              "Platform identifies challenges and opportunities for improvement",
             checker: () => true,
           },
         ],
@@ -118,7 +138,8 @@ export const trackCategoriesList = [
         actions: [
           {
             id: "6",
-            text: () => "Platform regularly monitors beneficiaries' academic performance",
+            text: () =>
+              "Platform regularly monitors beneficiaries' academic performance",
             checker: () => true,
           },
           {
@@ -138,14 +159,15 @@ export const trackCategoriesList = [
         actions: [
           {
             id: "9",
-            text: () => "Platform conducts surveys to gather feedback from beneficiaries",
+            text: () =>
+              "Platform conducts surveys to gather feedback from beneficiaries",
             checker: ({ assessmentData }) => {
               let _count = 0;
-              assessmentData.map(i => {
+              assessmentData.map((i) => {
                 if (i.reminderType) {
                   _count++;
                 }
-              })
+              });
               return !!_count;
             },
           },
@@ -158,17 +180,23 @@ export const trackCategoriesList = [
             id: "12",
             text: ({ assessmentData }) => {
               let _count = 0;
-              assessmentData.map(i => {
+              assessmentData.map((i) => {
                 if (i.name && i.form.length) _count++;
-              })
-              let _text = "Platform measures program outcomes (" + _count + "/" + assessmentData.length + ")";
+              });
+              let _text =
+                "Platform measures program outcomes (" +
+                _count +
+                "/" +
+                assessmentData.length +
+                ")";
               return _text;
             },
             checker: () => true,
           },
           {
             id: "13",
-            text: () => "Platform analyzes results to assess program effectiveness",
+            text: () =>
+              "Platform analyzes results to assess program effectiveness",
             checker: () => true,
           },
           {
@@ -183,7 +211,8 @@ export const trackCategoriesList = [
         actions: [
           {
             id: "15",
-            text: () => "Platform generates reports on beneficiary progress and program impact",
+            text: () =>
+              "Platform generates reports on beneficiary progress and program impact",
             checker: () => true,
           },
           {
@@ -193,7 +222,8 @@ export const trackCategoriesList = [
           },
           {
             id: "17",
-            text: () => "Platform communicates successes and areas for improvement",
+            text: () =>
+              "Platform communicates successes and areas for improvement",
             checker: () => true,
           },
         ],
@@ -228,7 +258,8 @@ export const trackCategoriesList = [
           },
           {
             id: "e4",
-            text: () => "Platform ensures entrepreneurs have access to necessary tools",
+            text: () =>
+              "Platform ensures entrepreneurs have access to necessary tools",
             checker: () => true,
           },
           {
@@ -243,12 +274,14 @@ export const trackCategoriesList = [
         actions: [
           {
             id: "e6",
-            text: () => "Platform provides guidance and mentorship on business development",
+            text: () =>
+              "Platform provides guidance and mentorship on business development",
             checker: () => true,
           },
           {
             id: "e7",
-            text: () => "Platform offers workshops or training sessions on entrepreneurship",
+            text: () =>
+              "Platform offers workshops or training sessions on entrepreneurship",
             checker: () => true,
           },
           {
@@ -268,7 +301,8 @@ export const trackCategoriesList = [
           },
           {
             id: "e10",
-            text: () => "Platform monitors financial growth and customer acquisition",
+            text: () =>
+              "Platform monitors financial growth and customer acquisition",
             checker: () => true,
           },
           {
@@ -293,7 +327,8 @@ export const trackCategoriesList = [
           },
           {
             id: "e14",
-            text: () => "Platform encourages agile and responsive decision-making",
+            text: () =>
+              "Platform encourages agile and responsive decision-making",
             checker: () => true,
           },
         ],
@@ -308,12 +343,14 @@ export const trackCategoriesList = [
           },
           {
             id: "e16",
-            text: () => "Platform assesses the scalability and sustainability of startups",
+            text: () =>
+              "Platform assesses the scalability and sustainability of startups",
             checker: () => true,
           },
           {
             id: "e17",
-            text: () => "Platform explores opportunities for expansion or scaling",
+            text: () =>
+              "Platform explores opportunities for expansion or scaling",
             checker: () => true,
           },
         ],
@@ -328,12 +365,14 @@ export const trackCategoriesList = [
           },
           {
             id: "e19",
-            text: () => "Platform shares progress with investors and stakeholders",
+            text: () =>
+              "Platform shares progress with investors and stakeholders",
             checker: () => true,
           },
           {
             id: "e20",
-            text: () => "Platform fosters relationships with potential investors",
+            text: () =>
+              "Platform fosters relationships with potential investors",
             checker: () => true,
           },
         ],
@@ -417,12 +456,14 @@ export const trackCategoriesList = [
           },
           {
             id: "j10",
-            text: () => "Platform documents interview dates, outcomes, and feedback",
+            text: () =>
+              "Platform documents interview dates, outcomes, and feedback",
             checker: ({ hasSubmission }) => !!hasSubmission,
           },
           {
             id: "j11",
-            text: () => "Platform manages job offer negotiations and acceptances",
+            text: () =>
+              "Platform manages job offer negotiations and acceptances",
             checker: ({ hasSubmission }) => !!hasSubmission,
           },
         ],
@@ -437,7 +478,8 @@ export const trackCategoriesList = [
           },
           {
             id: "j13",
-            text: () => "Platform ensures successful integration into the workplace",
+            text: () =>
+              "Platform ensures successful integration into the workplace",
             checker: () => true,
           },
           {
@@ -472,7 +514,8 @@ export const trackCategoriesList = [
         actions: [
           {
             id: "j18",
-            text: () => "Platform generates reports on job placement and internship success",
+            text: () =>
+              "Platform generates reports on job placement and internship success",
             checker: () => true,
           },
           {
@@ -482,7 +525,8 @@ export const trackCategoriesList = [
           },
           {
             id: "j20",
-            text: () => "Platform uses feedback to improve program effectiveness",
+            text: () =>
+              "Platform uses feedback to improve program effectiveness",
             checker: () => true,
           },
         ],
@@ -504,7 +548,8 @@ const SuiteDetails = () => {
   const [KPIAdditionalDataModal, setKPIAdditionalDataModal] = useState(false);
   const [selectedKPIForLinkedQuestion, setSelectedKPIForLinkedQuestion] =
     useState("");
-  const [selectedKPIAdditionalData, setSelectedKPIAdditionalData] = useState(null);
+  const [selectedKPIAdditionalData, setSelectedKPIAdditionalData] =
+    useState(null);
   const [KPILinkedQuestionAssessments, setKPILinkedQuestionAssessments] =
     useState([]);
   const [assessmentType, setAssessmentType] = useState("enrollment");
@@ -532,7 +577,7 @@ const SuiteDetails = () => {
   const [hasAssessment, setHasAssessment] = useState(false);
   const [hasSubmission, setHasSubmission] = useState(false);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
-  const [KPISurveys, setKPISurveys] = useState([])
+  const [KPISurveys, setKPISurveys] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -545,10 +590,10 @@ const SuiteDetails = () => {
   }, []);
 
   useEffect(() => {
-    let assessement_ids = assessmentData.map(i => i._id)
+    let assessement_ids = assessmentData.map((i) => i._id);
     CrudService.search("ProgramSubmission", 100000, 1, {
       filters: {
-        programId: { $in: assessement_ids }
+        programId: { $in: assessement_ids },
       },
       sort: { createdAt: -1 },
     }).then((res) => {
@@ -645,8 +690,8 @@ const SuiteDetails = () => {
       setProgramData(res.data);
       setProgramCategoryName(
         res.data.hasOwnProperty("categoryDetail") &&
-        res.data.categoryDetail.Name &&
-        res.data.categoryDetail.Name
+          res.data.categoryDetail.Name &&
+          res.data.categoryDetail.Name
       );
       setReminderType(
         res.data.hasOwnProperty("reminderType") && res.data.reminderType
@@ -661,9 +706,7 @@ const SuiteDetails = () => {
       .then(({ data }) => {
         setKPISurveys(data.KPIs || []);
       })
-      .finally(() => {
-        
-      });
+      .finally(() => {});
   }, [searchParams]);
 
   useEffect(() => {
@@ -815,40 +858,42 @@ const SuiteDetails = () => {
 
   const handleEditAdditionalKPIData = async (selectedKPI) => {
     let _additionalKPIDataList = programData?.additionalKPIData ?? [];
-    let _selectedAddtionalKPIDataList = _additionalKPIDataList.filter(item => item._id == selectedKPI._id);
-    let _data = _selectedAddtionalKPIDataList[0] ?? { "_id": selectedKPI._id };
-    setSelectedKPIAdditionalData(_data)
+    let _selectedAddtionalKPIDataList = _additionalKPIDataList.filter(
+      (item) => item._id == selectedKPI._id
+    );
+    let _data = _selectedAddtionalKPIDataList[0] ?? { _id: selectedKPI._id };
+    setSelectedKPIAdditionalData(_data);
     setShowLoader(true);
     setKPIAdditionalDataModal(true);
-  }
+  };
 
   const handleAdditionalKPIDataChange = (_data) => {
     let value = _data.target.value;
     if (_data.target.name == "timeline") {
-      value = new Date(_data.target.value)
-        .toISOString()
-        .replace("Z", "+00:00");
-    };
+      value = new Date(_data.target.value).toISOString().replace("Z", "+00:00");
+    }
     setSelectedKPIAdditionalData({
       ...selectedKPIAdditionalData,
       [_data.target.name]: value,
     });
-  }
+  };
 
   const saveKPIAdditionalData = async () => {
     const id = searchParams.get("id");
     if (!id) return;
     let _additionalKPIDataList = programData?.additionalKPIData ?? [];
-    let _temp = _additionalKPIDataList.filter(i => i._id == selectedKPIAdditionalData._id);
+    let _temp = _additionalKPIDataList.filter(
+      (i) => i._id == selectedKPIAdditionalData._id
+    );
     if (_temp.length) {
-      _additionalKPIDataList = _additionalKPIDataList.map(item => {
+      _additionalKPIDataList = _additionalKPIDataList.map((item) => {
         if (item._id == selectedKPIAdditionalData._id) {
-          item = selectedKPIAdditionalData
+          item = selectedKPIAdditionalData;
         }
         return item;
       });
     } else {
-      _additionalKPIDataList.push(selectedKPIAdditionalData)
+      _additionalKPIDataList.push(selectedKPIAdditionalData);
     }
 
     await CrudService.update("Suite", id, {
@@ -858,7 +903,7 @@ const SuiteDetails = () => {
     setShowLoader(false);
     setKPIAdditionalDataModal(false);
     setActiveTab("kpis");
-  }
+  };
 
   const handleAddUserClick = async (e) => {
     await AuthService.generateLinkToInviteUser({
@@ -921,21 +966,26 @@ const SuiteDetails = () => {
       width: 300,
       render: (KPI_id) => {
         let _additionalKPIData = programData?.additionalKPIData ?? [];
-        let _data = _additionalKPIData.filter(i => i._id == KPI_id)?.[0];
+        let _data = _additionalKPIData.filter((i) => i._id == KPI_id)?.[0];
         return (
           <div>
             <div>
               <span>Baseline: </span>
-              <span>{_data?.baseline} {_data?.baseline ? _data?.targetUnit : ""}</span>
+              <span>
+                {_data?.baseline} {_data?.baseline ? _data?.targetUnit : ""}
+              </span>
             </div>
             <div>
               <span>Target: </span>
-              <span>{_data?.targetValue} {_data?.targetValue ? _data?.targetUnit : ""}</span>
+              <span>
+                {_data?.targetValue}{" "}
+                {_data?.targetValue ? _data?.targetUnit : ""}
+              </span>
             </div>
             <div>
               <span>TimeLine: </span>
-              {_data?.timeline
-                ? <input
+              {_data?.timeline ? (
+                <input
                   className="w-[150px] border-none"
                   type="date"
                   name="timeline"
@@ -943,12 +993,10 @@ const SuiteDetails = () => {
                   value={moment(_data?.timeline).format("YYYY-MM-DD")}
                   onChange={handleAdditionalKPIDataChange}
                 />
-                : null
-              }
-
+              ) : null}
             </div>
           </div>
-        )
+        );
       },
     },
     {
@@ -1269,7 +1317,6 @@ const SuiteDetails = () => {
     },
   ];
 
-
   const programTab = [
     {
       key: "checklist",
@@ -1372,7 +1419,12 @@ const SuiteDetails = () => {
                                     }
                                     value={action.id}
                                   >
-                                    {action.text({ programData, assessmentData, KPISurveys, allKPIs })}
+                                    {action.text({
+                                      programData,
+                                      assessmentData,
+                                      KPISurveys,
+                                      allKPIs,
+                                    })}
                                   </Checkbox>
                                 </div>
                               ))}
@@ -1818,8 +1870,8 @@ const SuiteDetails = () => {
                   programData && !programData.published
                     ? "Please publish the program first, and then proceed to invite people."
                     : tags.length === 0
-                      ? "Add emails"
-                      : ""
+                    ? "Add emails"
+                    : ""
                 }
               >
                 <Button
@@ -1881,6 +1933,21 @@ const SuiteDetails = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
+        <Breadcrumb
+          items={[
+            {
+              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                  {programData?.name ?? ""}
+                </Link>
+              ),
+            },
+          ]}
+        />
+
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-extrabold text-indigo-900 mb-3">
             {programData.name}
@@ -1926,7 +1993,7 @@ const SuiteDetails = () => {
                 if (!id) return;
                 const { _id, createdAt, updatedAt, ...body } = {
                   ...programData,
-                  name: programData.name + "-Copy",
+                  name: programData.name + " (Copy)",
                 };
                 const suite = await CrudService.create("Suite", body);
                 navigate(`/dashboard/suitepre?id=${suite.data._id}`);
@@ -1940,7 +2007,7 @@ const SuiteDetails = () => {
                 const id = searchParams.get("id");
                 if (!id) return;
                 await CrudService.delete("Suite", id);
-                navigate("/dashboard/suite");
+                navigate("/dashboard/myprograms");
               }}
             >
               <Button danger>Delete Program</Button>
@@ -2084,7 +2151,9 @@ const SuiteDetails = () => {
               name="timeline"
               value={
                 selectedKPIAdditionalData?.timeline
-                  ? moment(selectedKPIAdditionalData?.timeline).format("YYYY-MM-DD")
+                  ? moment(selectedKPIAdditionalData?.timeline).format(
+                      "YYYY-MM-DD"
+                    )
                   : moment("").format("YYYY-MM-DD")
               }
               onChange={handleAdditionalKPIDataChange}

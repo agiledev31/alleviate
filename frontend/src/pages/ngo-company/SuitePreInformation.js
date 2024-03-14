@@ -1,6 +1,6 @@
-import { Skeleton } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
@@ -249,6 +249,28 @@ const SuitePreInformation = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
+        <Breadcrumb
+          items={[
+            {
+              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                  {programData?.name ?? ""}
+                </Link>
+              ),
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitepre?id=${programData?._id}`}>
+                  Edit Program
+                </Link>
+              ),
+            },
+          ]}
+        />
+
         <h2 className="text-xl mt-5 mx-3">
           <strong>Program General Information</strong>
         </h2>
@@ -294,19 +316,15 @@ const SuitePreInformation = () => {
                 }
               }
             } else {
-              if (
-                programData &&
-                programCreated &&
-                formData &&
-                formData.isFinishClicked
-              ) {
+              if (programData && programCreated && formData) {
                 await CrudService.update("Suite", id, {
                   ...formData,
                 }).then((res) => {
                   if (!res.data) return;
                   setProgramDataForDisplay(res.data);
                 });
-                navigate(`/dashboard/suitedetails?id=${programData._id}`);
+                if (formData.isFinishClicked)
+                  navigate(`/dashboard/suitedetails?id=${programData._id}`);
               }
             }
           }}

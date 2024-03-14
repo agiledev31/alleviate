@@ -16,10 +16,16 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const ImportModule = ({ json, KPIType, header, disaggregations, refreshData }) => {
+const ImportModule = ({
+  json,
+  KPIType,
+  header,
+  disaggregations,
+  refreshData,
+}) => {
   const [bulkUploadProcess, setBulkUploadProcess] = useState({});
   const loading = useSelector(selectLoading);
-  const targetFields = header.map(i => ({value: i, label: i}));
+  const targetFields = header.map((i) => ({ value: i, label: i }));
 
   return (
     <>
@@ -135,30 +141,33 @@ const ImportModule = ({ json, KPIType, header, disaggregations, refreshData }) =
 
                   await CrudService.delete("BenchMark", null, { KPIType });
 
-                  
-
                   for (const chunk of chunks) {
                     await CrudService.create("BenchMark", {
                       bulkItems: chunk.map((c) => {
                         let _disaggregations = [...disaggregations];
-                        let result = _disaggregations.map(item => {
+                        let result = _disaggregations.map((item) => {
                           let temp = {
-                            name: '',
+                            name: "",
                             children: [],
                           };
                           temp.name = item.name;
                           temp.children = item.children;
 
-                          if(temp.children.length > 1) {
-                            let _temp = temp.children.reduce((acc, cell, index) => {
-                              if (cell) {
-                                acc[cell.toLowerCase()] = parseFloat(c[capitalize(cell)]);
-                              }
-                              return acc;
-                            }, {})
+                          if (temp.children.length > 1) {
+                            let _temp = temp.children.reduce(
+                              (acc, cell, index) => {
+                                if (cell) {
+                                  acc[cell.toLowerCase()] = parseFloat(
+                                    c[capitalize(cell)]
+                                  );
+                                }
+                                return acc;
+                              },
+                              {}
+                            );
                             temp.children = _temp;
                           } else {
-                            temp['value'] = c[item.name];
+                            temp["value"] = c[item.name];
                           }
                           return temp;
                         });
@@ -168,7 +177,7 @@ const ImportModule = ({ json, KPIType, header, disaggregations, refreshData }) =
                           total: parseFloat(c.Total),
                           country: c.Country,
                           region: c.Region,
-                        }
+                        };
                       }),
                     });
                   }

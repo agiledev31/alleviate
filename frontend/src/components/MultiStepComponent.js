@@ -46,6 +46,7 @@ const DynamicForm = ({
   setThinking,
   formType,
   isProgramSubmission,
+  isDataSummary,
 }) => {
   const socket = useRef();
   const [inputVisible, setInputVisible] = useState(false);
@@ -184,6 +185,8 @@ const DynamicForm = ({
           item.fieldName === "name" &&
           `Please enter ${item.label.toLowerCase()}`;
 
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <>
             <Input
@@ -202,6 +205,8 @@ const DynamicForm = ({
           </>
         );
       case "password":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Input
             type="password"
@@ -212,6 +217,8 @@ const DynamicForm = ({
           />
         );
       case "textarea":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Input.TextArea
             placeholder={item.placeholder}
@@ -224,6 +231,8 @@ const DynamicForm = ({
           />
         );
       case "inputNumber":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <InputNumber
             min={item.min}
@@ -235,6 +244,8 @@ const DynamicForm = ({
           />
         );
       case "radio":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Radio.Group
             className={formType === "enrollmentPre" && "grid"}
@@ -251,6 +262,8 @@ const DynamicForm = ({
           </Radio.Group>
         );
       case "rate":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Rate
             onChange={(value) => onChange(item.fieldName, value)}
@@ -259,6 +272,8 @@ const DynamicForm = ({
           />
         );
       case "select":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <>
             <Select
@@ -288,6 +303,8 @@ const DynamicForm = ({
         );
 
       case "quiz":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <>
             {item.options.map((option) => (
@@ -329,6 +346,8 @@ const DynamicForm = ({
           </>
         );
       case "slider":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Slider
             min={item.min}
@@ -340,6 +359,8 @@ const DynamicForm = ({
           />
         );
       case "switch":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Switch
             checked={formData?.[item.fieldName]}
@@ -349,6 +370,8 @@ const DynamicForm = ({
           />
         );
       case "timepicker":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <TimePicker
             onChange={(time, timeString) =>
@@ -362,6 +385,8 @@ const DynamicForm = ({
           />
         );
       case "datepicker":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <DatePicker
             onChange={(date, dateString) =>
@@ -375,6 +400,8 @@ const DynamicForm = ({
           />
         );
       case "upload":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <CloudinaryUpload
             onChange={(info) => {
@@ -383,6 +410,8 @@ const DynamicForm = ({
           />
         );
       case "checkbox":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Checkbox
             checked={formData?.[item.fieldName]}
@@ -395,6 +424,8 @@ const DynamicForm = ({
           </Checkbox>
         );
       case "colorpicker":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <ColorPicker
             onChange={(color) =>
@@ -404,6 +435,8 @@ const DynamicForm = ({
           />
         );
       case "custom":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <item.CustomInputComponent
             onChange={(value) =>
@@ -445,6 +478,8 @@ const DynamicForm = ({
           (isEmailError && `Please enter ${item.label.toLowerCase()}`) ||
           (!isEmailValid && "Please enter a valid email address");
 
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <>
             <div
@@ -553,6 +588,8 @@ const DynamicForm = ({
           </>
         );
       case "countrySelect":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <>
             <Select
@@ -617,6 +654,8 @@ const DynamicForm = ({
           </Menu>
         );
 
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <div ref={wrapperRef}>
             <Dropdown overlay={menu} visible={showAddressResultsMenu}>
@@ -640,6 +679,8 @@ const DynamicForm = ({
         );
 
       case "phoneInput":
+        if (isDataSummary)
+          return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <PhoneInput
             placeholder="Enter phone number"
@@ -761,6 +802,7 @@ const MultiStepComponent = ({
   onProgramFormEdit = () => {},
   kpis,
   isShowBack = false,
+  isDataSummary = false,
 }) => {
   const [formData, setFormData] = useState(defaultValues ?? {});
   const [activeStep, setActiveStep] = useState(0); // Initialize current step to 0
@@ -1088,6 +1130,7 @@ const MultiStepComponent = ({
               onChangeFromSelect={onChangeFromSelect}
               formType={formType}
               isProgramSubmission={isProgramSubmission}
+              isDataSummary={isDataSummary}
             />
 
             {formType === "enrollmentPre" &&
@@ -1278,7 +1321,6 @@ const MultiStepComponent = ({
                           nextStep = skipStepIdx;
                       }
                     }
-
                   if (nextStep > activeStep + 1) {
                     // If next step is ahead, remember skipped steps
                     const skipped = Array.from(

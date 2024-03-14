@@ -18,6 +18,9 @@ class StatsService {
   getAssessmentSurveys(id) {
     return this.api.get(`/getAssessmentSurveys?id=${id}`);
   }
+  getDataSummary(id) {
+    return this.api.get(`/getDataSummary?id=${id}`);
+  }
 }
 
 export default new StatsService(`${getBackendUrl()}/stats`);

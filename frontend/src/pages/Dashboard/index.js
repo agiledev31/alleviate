@@ -402,14 +402,12 @@ const Dashboard = () => {
         ))}
         <Route path={"/programpublish"} element={<ProgramPublish />} />
         <Route path={"/programdetails"} element={<ProgramDetails />} />
-        {/*<Route path={"/suitedetails"} element={<SuiteDetails />} />*/}
         <Route path={"/suitedetails"} element={<SuiteOverviewDetails />} />
         <Route
           path={"/suiteoverviewdetail"}
           element={<SuiteOverviewDetails />}
         />
         <Route path={"/programpre"} element={<ProgramPre />} />
-        {/*<Route path={"/suitepre"} element={<SuitePre />} />*/}
         <Route path={"/programform"} element={<ProgramForm />} />
         <Route path={"/programthankyou"} element={<ProgramThankyou />} />
         <Route path={"/suite"} element={<CreateSuite />} />

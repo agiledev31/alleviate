@@ -519,7 +519,7 @@ const generateLinkToInviteUser = async (req, res) => {
     }
 
     if (assessment) {
-      let emails = assessment.invitedEmails || [];
+      let emails = assessment?.invitedEmails || [];
       if (invitePeopleEmails && invitePeopleEmails.length > 0) {
         for (const email of invitePeopleEmails) {
           if (!emails.includes(email)) {
@@ -536,7 +536,7 @@ const generateLinkToInviteUser = async (req, res) => {
     }
 
     if (suite) {
-      let emails = suite.invitedEmails || [];
+      let emails = suite?.invitedEmails || [];
       if (invitePeopleEmails && invitePeopleEmails.length > 0) {
         for (const email of invitePeopleEmails) {
           if (!emails.includes(email)) {

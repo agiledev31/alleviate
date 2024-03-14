@@ -1,7 +1,7 @@
-import { Skeleton } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../components/MultiStepComponent";
 import { selectUser } from "../redux/auth/selectors";
 import CrudService from "../service/CrudService";
@@ -20,13 +20,17 @@ const ProgramForm = () => {
     setProgramData(null);
 
     CrudService.search("ProgramSubmission", 1, 1, {
-      filters: { programId: id, user_id: user._id },
+      filters: {
+        programId: id,
+        user_id: user._id,
+        "formData.submittedData": { $exists: true },
+      },
     }).then((res) => {
       if (res.data.items.length > 0) {
         setProgramSubmittedData(res.data.items[0]);
-        if (res.data.items[0].formData.isFinishClicked === true) {
-          navigate(`/dashboard/programthankyou?id=${id}`);
-        }
+        // if (res.data.items[0].formData.isFinishClicked === true) {
+        //   navigate(`/dashboard/programthankyou?id=${id}`);
+        // }
       }
     });
     CrudService.getSingle("Program", id).then((res) => {
@@ -67,6 +71,24 @@ const ProgramForm = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
+        <Breadcrumb
+          items={[
+            {
+              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                  {programData?.name ?? ""}
+                </Link>
+              ),
+            },
+            {
+              title: "Submission",
+            },
+          ]}
+        />
+
         <MultiStepComponent
           displaySteps={programData.displaySteps}
           AIEnhancements={programData.AIEnhancements}

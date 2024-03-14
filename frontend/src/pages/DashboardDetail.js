@@ -1,18 +1,12 @@
-import {
-  Button,
-  Skeleton,
-  Space,
-  Table,
-  Tag,
-} from "antd";
+import { ResponsivePieCanvas } from "@nivo/pie";
+import { Button, Skeleton, Space, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ResponsivePieCanvas  } from '@nivo/pie'
+import { sdgDefault } from "../data/constants";
 import { selectUser } from "../redux/auth/selectors";
 import DashboardService from "../service/DashboardService";
-import { sdgDefault } from "../data/constants";
 
 const DashboardDetail = () => {
   const navigate = useNavigate();
@@ -30,11 +24,11 @@ const DashboardDetail = () => {
         acc += i;
         return acc;
       });
-      if(_sdgtotal == 0) _sdgtotal = 1;
+      if (_sdgtotal == 0) _sdgtotal = 1;
       let _sdg = sdgDefault.map((item, index) => {
-        item.value = (res.data.sdgs[item.id] * 100 / _sdgtotal).toFixed(2);
+        item.value = ((res.data.sdgs[item.id] * 100) / _sdgtotal).toFixed(2);
         return item;
-      })
+      });
       setSdgs(_sdg);
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
@@ -46,11 +40,9 @@ const DashboardDetail = () => {
   }, [load]);
 
   const clickSGDNode = (node, event) => {
-    if(!node.data?.index) return;
-    navigate(
-      `/dashboard/sdgdetails?id=${node.data?.index}`
-    );
-  }
+    if (!node.data?.index) return;
+    navigate(`/dashboard/sdgdetails?id=${node.data?.index}`);
+  };
 
   const submissionColumns = [
     {
@@ -197,78 +189,75 @@ const DashboardDetail = () => {
             </h2>
             <div className="flex flex-row justify-between items-center">
               <div className="h-[700px] w-[90%]">
-                <ResponsivePieCanvas 
-                  onClick={(node, event) => {clickSGDNode(node, event)}}
+                <ResponsivePieCanvas
+                  onClick={(node, event) => {
+                    clickSGDNode(node, event);
+                  }}
                   data={sdgs}
                   margin={{ top: 100, right: 200, bottom: 100, left: 100 }}
                   innerRadius={0.5}
                   padAngle={0.3}
                   cornerRadius={3}
                   activeOuterRadiusOffset={8}
-                  colors={sdgDefault.map(i => i.color)}
+                  colors={sdgDefault.map((i) => i.color)}
                   borderColor={{
-                      from: 'color',
-                      modifiers: [
-                          [
-                              'darker',
-                              0.6
-                          ]
-                      ]
+                    from: "color",
+                    modifiers: [["darker", 0.6]],
                   }}
                   arcLinkLabelsSkipAngle={10}
                   arcLinkLabelsTextColor="#333333"
                   arcLinkLabelsThickness={2}
-                  arcLinkLabelsColor={{ from: 'color' }}
-                  arcLabel={e=>e.value+"%"}
+                  arcLinkLabelsColor={{ from: "color" }}
+                  arcLabel={(e) => e.value + "%"}
                   arcLabelsSkipAngle={10}
                   arcLabelsTextColor="#ffffff"
                   defs={[
-                      {
-                          id: 'dots',
-                          type: 'patternDots',
-                          background: 'inherit',
-                          color: 'rgba(255, 255, 255, 0.3)',
-                          size: 4,
-                          padding: 1,
-                          stagger: true
-                      },
-                      {
-                          id: 'lines',
-                          type: 'patternLines',
-                          background: 'inherit',
-                          color: 'rgba(255, 255, 255, 0.3)',
-                          rotation: -45,
-                          lineWidth: 6,
-                          spacing: 10
-                      }
+                    {
+                      id: "dots",
+                      type: "patternDots",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      size: 4,
+                      padding: 1,
+                      stagger: true,
+                    },
+                    {
+                      id: "lines",
+                      type: "patternLines",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      rotation: -45,
+                      lineWidth: 6,
+                      spacing: 10,
+                    },
                   ]}
                   fill={[
-                      {
-                          match: {
-                              id: 'python'
-                          },
-                          id: 'dots'
+                    {
+                      match: {
+                        id: "python",
                       },
-                      {
-                          match: {
-                              id: 'scala'
-                          },
-                          id: 'lines'
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "scala",
                       },
+                      id: "lines",
+                    },
                   ]}
                   legends={[]}
                 />
               </div>
               <ul role="list" className="list-disc space-y-1 pl-2">
-                  {sdgDefault?.map((sdg, index) => (
-                      <li key={index} className="flex items-center">
-                          <img
-                              className="h-8 w-auto rounded-md"
-                              src={`/images/sdg-icons/E_WEB_${index + 1}.png`}
-                              alt={sdg.Name}
-                          />
-                      </li>
-                  ))}
+                {sdgDefault?.map((sdg, index) => (
+                  <li key={index} className="flex items-center">
+                    <img
+                      className="h-8 w-auto rounded-md"
+                      src={`/images/sdg-icons/E_WEB_${index + 1}.png`}
+                      alt={sdg.Name}
+                    />
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

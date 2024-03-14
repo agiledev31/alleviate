@@ -1,4 +1,4 @@
-import { Skeleton } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../components/MultiStepComponent";
@@ -24,6 +24,24 @@ const ProgramThankyou = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
+        <Breadcrumb
+          items={[
+            {
+              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                  {programData?.name ?? ""}
+                </Link>
+              ),
+            },
+            {
+              title: "Submission",
+            },
+          ]}
+        />
+
         <div className="text-center">
           <p className="text-base font-semibold text-indigo-600">Success!</p>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">

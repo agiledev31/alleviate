@@ -87,11 +87,11 @@ router
 
       if (req.query.ModelName === "Suite") {
         let invitedPeoples = [];
-        if (result.invitedEmails && result.invitedEmails.length > 0) {
+        if (result?.invitedEmails && result?.invitedEmails.length > 0) {
           const assessments = await models["Program"].find({
             suite: { $in: result._id },
           });
-          const invitedEmails = result.invitedEmails;
+          const invitedEmails = result?.invitedEmails;
           for (const email of invitedEmails) {
             const user = await User.findOne({ email });
             if (user) {
@@ -99,8 +99,8 @@ router
                 .filter(
                   (assessment) =>
                     assessment &&
-                    assessment.invitedEmails &&
-                    assessment.invitedEmails.includes(email)
+                    assessment?.invitedEmails &&
+                    assessment?.invitedEmails.includes(email)
                 )
                 .map((assessment) => ({
                   user: { email },
@@ -118,8 +118,8 @@ router
                 .filter(
                   (assessment) =>
                     assessment &&
-                    assessment.invitedEmails &&
-                    assessment.invitedEmails.includes(email)
+                    assessment?.invitedEmails &&
+                    assessment?.invitedEmails.includes(email)
                 )
                 .map((assessment) => ({
                   user: { email: email },
@@ -255,11 +255,11 @@ router
       }
 
       if (
-        data.impactThemes &&
-        data.impactThemes.length &&
-        data.impactThemes.length > 0
+        data?.impactThemes &&
+        data?.impactThemes.length &&
+        data?.impactThemes.length > 0
       ) {
-        let item = data.impactThemes.map((t) => new ObjectId(t));
+        let item = data?.impactThemes.map((t) => new ObjectId(t));
         impactThemDetails = await db
           .collection("themes")
           .find({

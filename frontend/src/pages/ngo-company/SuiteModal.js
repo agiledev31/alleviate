@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const SuiteModal = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [selectedOption, setSelectedOption] = useState("template");
+  const [selectedOption, setSelectedOption] = useState("scratch");
 
   const handleOk = async () => {
     if (selectedOption === "template") {
@@ -24,13 +24,13 @@ const SuiteModal = () => {
   };
 
   const formData = {
-    label: "Build programs from scratch or templates",
+    label: "How would you like to start?",
     fieldName: "createOption",
     type: "radio",
     placeholder: "Select Option",
     options: [
-      { value: "template", label: "Templates" },
-      { value: "scratch", label: "Scratch" },
+      { value: "scratch", label: "From scratch" },
+      { value: "template", label: "Use template" },
     ],
     required: true,
   };

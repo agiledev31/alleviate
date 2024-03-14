@@ -1,6 +1,6 @@
-import { Skeleton } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import CrudService from "../../service/CrudService";
 
@@ -54,7 +54,7 @@ const ProgramPre = () => {
             { label: "Quarterly", value: "Quarterly" },
             { label: "Monthly", value: "Monthly" },
             { label: "Annually", value: "Annually" },
-          ]
+          ],
         },
       ],
     },
@@ -74,6 +74,24 @@ const ProgramPre = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
+        <Breadcrumb
+          items={[
+            {
+              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+            },
+            {
+              title: (
+                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                  {programData?.name ?? ""}
+                </Link>
+              ),
+            },
+            {
+              title: "Create Program",
+            },
+          ]}
+        />
+
         <MultiStepComponent
           displaySteps={true}
           AIEnhancements={true}
@@ -86,9 +104,9 @@ const ProgramPre = () => {
             if (!id) return;
 
             if (!programData.name && formData.name) {
-              formData.isAdded = true
+              formData.isAdded = true;
             } else {
-              formData.isAdded = false
+              formData.isAdded = false;
             }
 
             await CrudService.update("Program", id, {

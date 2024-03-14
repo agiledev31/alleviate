@@ -14,11 +14,12 @@ async function connectToDatabase() {
     console.error("Error connecting to the database", error);
   }
 }
-connectToDatabase();
 const db = client.db("strapi");
 
 const landingPage = async (req, res) => {
   try {
+    await connectToDatabase();
+
     const landingpage = await db.collection("landingpages").findOne({
       published_at: { $ne: null },
     });
@@ -150,11 +151,14 @@ const landingPage = async (req, res) => {
     res.status(400).send({
       message: err.message,
     });
+  } finally {
   }
 };
 
 const getBlog = async (req, res) => {
   try {
+    await connectToDatabase();
+
     console.log(req.query.id);
     const blog = await db
       .collection("blogs")
@@ -186,11 +190,14 @@ const getBlog = async (req, res) => {
     res.status(400).send({
       message: err.message,
     });
+  } finally {
   }
 };
 
 const getList = async (req, res) => {
   try {
+    await connectToDatabase();
+
     const list = await db
       .collection(req.query.name)
       .find({ published_at: { $ne: null } })
@@ -201,11 +208,14 @@ const getList = async (req, res) => {
     res.status(400).send({
       message: err.message,
     });
+  } finally {
   }
 };
 
 const getCoreProgramMetrics = async (req, res) => {
   try {
+    await connectToDatabase();
+
     const categoryFilter = req.query.impact_category;
     const sdgId = req.query.sdgId;
     const pipeline = [
@@ -302,22 +312,22 @@ const getCoreProgramMetrics = async (req, res) => {
 
     if (categoryFilter) {
       pipeline.push({
-        $unwind: '$impact_category',
+        $unwind: "$impact_category",
       });
       pipeline.push({
         $match: {
-          'impact_category.Name': categoryFilter,
+          "impact_category.Name": categoryFilter,
         },
       });
     }
 
     if (sdgId) {
       pipeline.push({
-        $unwind: '$sustainable_development_goals',
+        $unwind: "$sustainable_development_goals",
       });
       pipeline.push({
         $match: {
-          'sustainable_development_goals.ID': sdgId,
+          "sustainable_development_goals.ID": sdgId,
         },
       });
     }
@@ -332,10 +342,9 @@ const getCoreProgramMetrics = async (req, res) => {
     res.status(400).send({
       message: err.message,
     });
+  } finally {
   }
 };
-
-
 
 module.exports = {
   landingPage,

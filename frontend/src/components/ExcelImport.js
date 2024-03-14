@@ -333,13 +333,21 @@ const ExcelImport = ({
                       );
                   }
 
-                  const mappedItems = bulkUploadProcess.json.map((item) => {
-                    const mappedItem = {};
-                    for (const key of keys)
-                      mappedItem[bulkUploadProcess.mappings[key]] = item[key];
+                  const mappedItems = bulkUploadProcess.json
+                    .map((item) => {
+                      const mappedItem = {};
+                      for (const key of keys)
+                        mappedItem[bulkUploadProcess.mappings[key]] = item[key];
 
-                    return mappedItem;
-                  });
+                      return mappedItem;
+                    })
+                    .filter((a) => {
+                      let hasData = false;
+                      for (const key of Object.keys(a)) {
+                        if (a[key]) hasData = true;
+                      }
+                      return hasData;
+                    });
                   setBulkUploadProcess((current) => ({
                     ...current,
                     mappedItems,
