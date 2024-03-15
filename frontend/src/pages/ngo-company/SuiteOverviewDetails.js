@@ -34,7 +34,7 @@ import {
 import { Option } from "antd/es/mentions";
 import moment from "moment";
 import { TweenOneGroup } from "rc-tween-one";
-import React, { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   AiOutlineArrowRight,
   AiOutlineCheckCircle,
@@ -43,6 +43,8 @@ import {
 } from "react-icons/ai";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/auth/selectors";
 import ExcelImport from "../../components/ExcelImport";
 import LoadingSpinner from "../../components/Loader";
 import StatsDashboard from "../../components/StatsDashboard";
@@ -50,6 +52,7 @@ import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import StatsService from "../../service/StatsService";
 import StrapiService from "../../service/StrapiService";
+import UserService from '../../service/UserService';
 
 export const trackCategoriesList = [
   {
@@ -600,6 +603,7 @@ const TableRow = ({ children, ...props }) => {
 const SuiteDetails = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
   const [programData, setProgramData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [KPIs, setKPIs] = useState([]);
@@ -641,18 +645,21 @@ const SuiteDetails = () => {
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [KPISurveys, setKPISurveys] = useState([]);
   const [KPIDataForTable, setKPIDataForTable] = useState([]);
+  const [currentFavoriteKPIs, setCurrentFavoriteKPIs] = useState(user?.favoriteKPIs ?? []);
 
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if(programData && programData?.KPIs.length) {
+    setCurrentFavoriteKPIs(user?.favoriteKPIs);
+  }, [user]);
+
+  useEffect(() => {
+    if(programData && programData?.KPIs?.length) {
       setKPIDataForTable(programData?.KPIs?.map?.((kpi) =>
         allKPIs.find((k) => k._id.toString() === kpi)
       )?.filter?.((a) => !!a).map((item, i) => ({ ...item, key: i + 1})));
     }
-  }, [programData])
-
-  console.log("KPIDataForTable", KPIDataForTable)
+  }, [programData, programData?.KPIs])
 
   useEffect(() => {
     CrudService.search("UseCase", 10000, 1, {}).then(({ data }) => {
@@ -1101,6 +1108,56 @@ const SuiteDetails = () => {
       width: 300,
       render: (metric) => (
         <Space size={[12, 10]} wrap>
+          <div className='min-w-[150px] text-right'>
+            <Tooltip
+              title={
+                currentFavoriteKPIs && 
+                currentFavoriteKPIs?.includes(metric?._id)
+                  ? "Remove from Favorite"
+                  : "Add to Favorite"
+              }
+            >
+              {currentFavoriteKPIs &&
+              currentFavoriteKPIs.includes(metric._id) ? (
+                <MdFavorite
+                  className={"mx-1 cursor-pointer"}
+                  stroke={"red"}
+                  color={"red"}
+                  size={22}
+                  onClick={async () => {
+                    await UserService.updateUser(user._id, {
+                      favoriteKPIs: currentFavoriteKPIs.filter(
+                        (id) => id !== metric._id
+                      ),
+                    }).then((res) => {
+                      setCurrentFavoriteKPIs((prev) =>
+                      prev.filter((p) => p != metric._id)
+                    );
+                    });
+                  }}
+                />
+              ) : (
+                <MdFavoriteBorder
+                  className={"mx-1 cursor-pointer"}
+                  stroke={"red"}
+                  size={22}
+                  onClick={async () => {
+                    await UserService.updateUser(user._id, {
+                      favoriteKPIs: [...currentFavoriteKPIs, metric._id],
+                    }).then((res) => {
+                      setCurrentFavoriteKPIs((prev) =>
+                      [
+                        ...prev,
+                        metric?._id,
+                      ]
+                    );
+                    });
+                  }}
+                />
+              )}
+            </Tooltip>
+          </div>
+          
           <Button
             className="px-2 py-1 text-sm rounded"
             type="primary"

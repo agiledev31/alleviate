@@ -10,7 +10,7 @@ class DashboardService {
     middleField(this.api);
   }
 
-  getDashboardDetails() {
+  getDashboardDetails(data) {
     return this.api.get("/getDashboardDetails");
   }
 

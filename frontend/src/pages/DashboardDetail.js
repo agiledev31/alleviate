@@ -14,6 +14,7 @@ const DashboardDetail = () => {
   const [sdgs, setSdgs] = useState(sdgDefault);
   const [pendingProgramData, setPendingProgramData] = useState([]);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
+  const [favoriteKPIs, setFavoriteKPIs] = useState([]);
   const user = useSelector(selectUser);
 
   const load = useCallback(() => {
@@ -32,6 +33,7 @@ const DashboardDetail = () => {
       setSdgs(_sdg);
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
+      setFavoriteKPIs(res.data.favoriteKPIs);
     });
   }, []);
 
@@ -259,6 +261,19 @@ const DashboardDetail = () => {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          <div className={"col-span-12 shadow-sm bg-white p-8"}>
+            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+              Favourite KPIs
+            </h2>
+            <div className="w-full justify-start items-center display-ruby-text">
+              { favoriteKPIs.map((item, i) => 
+                <div key={i} className="cursor-pointer min-w-[200px] m-1 p-3 text-md text-bold rounded-xl border border-2 bg-gray-300">
+                  { item.MetricName }
+                </div>
+              )}
             </div>
           </div>
 

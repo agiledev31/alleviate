@@ -68,6 +68,8 @@ const ProgramDetails = () => {
   const [unQualificationData, setUnQualificationData] = useState([]);
   const [showLoader, setShowLoader] = useState(false);
 
+  console.log("program data form", programData?.form)
+
   useEffect(() => {
     const id = searchParams.get("id");
     if (!id) return;

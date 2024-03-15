@@ -91,17 +91,28 @@ const updateUser = async (req, res) => {
   try {
     if (req.user.parent) throw new Error("No access");
 
-    await User.findOneAndUpdate(
-      {
-        _id: req.query.id,
-        parent: req.user._id,
-      },
-      {
-        firstName: req.body.firstName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
-        lastName: req.body.lastName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
-        blocked: req.body.blocked,
-      }
-    );
+    if(req.body.favoriteKPIs) {
+      await User.findOneAndUpdate(
+        {
+          _id: req.query.id,
+        },
+        {
+          favoriteKPIs: req.body.favoriteKPIs,
+        }
+      );
+    } else {
+      await User.findOneAndUpdate(
+        {
+          _id: req.query.id,
+          parent: req.user._id,
+        },
+        {
+          firstName: req.body.firstName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
+          lastName: req.body.lastName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
+          blocked: req.body.blocked,
+        }
+      );
+    }
     res.json({});
   } catch (err) {
     console.error(err?.message);

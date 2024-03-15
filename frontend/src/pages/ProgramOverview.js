@@ -17,7 +17,6 @@ import { selectUser } from "../redux/auth/selectors";
 
 const SuiteDetails = () => {
     const user = useSelector(selectUser);
-    console.log("user", user)
     let [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [programData, setProgramData] = useState(null);
@@ -63,7 +62,7 @@ const SuiteDetails = () => {
                             {programData?.name}
                         </Typography.Title>
                     </div>
-                    <Tooltip title={programData?.favoriteBy.includes(user._id) ? 'Remove from Favorite' : 'Add to Favorite'}>
+                    <Tooltip title={programData?.favoriteBy?.includes(user._id) ? 'Remove from Favorite' : 'Add to Favorite'}>
                         {programData && programData.hasOwnProperty('favoriteBy') && programData.favoriteBy.includes(user._id) ? (
                             <MdFavorite
                                 className={'mx-5 cursor-pointer'}

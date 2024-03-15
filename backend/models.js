@@ -170,6 +170,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    favoriteKPIs: { type: [String], default: [] },
   },
   { timestamps: true }
 );

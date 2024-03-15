@@ -72,21 +72,32 @@ const ProgramForm = () => {
     <>
       <div style={{ height: "80vh" }}>
         <Breadcrumb
-          items={[
-            {
-              title: <Link to="/dashboard/myprograms">My Programs</Link>,
-            },
-            {
-              title: (
-                <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
-                  {programData?.name ?? ""}
-                </Link>
-              ),
-            },
-            {
-              title: "Submission",
-            },
-          ]}
+          items={user?.role == "ngo-beneficiary" 
+          ? [
+              {
+                title: <Link to="/dashboard/programs">Programs</Link>,
+              },
+              {
+                title: (
+                  <Link to={`/dashboard/suitedetail?id=${programData?.suite?._id}`}>
+                    {programData?.name ?? ""}
+                  </Link>
+                ),
+              },
+            ]
+          : [
+              {
+                title: <Link to="/dashboard/myprograms">My Programs</Link>,
+              },
+              {
+                title: (
+                  <Link to={`/dashboard/suitedetails?id=${programData?._id}`}>
+                    {programData?.name ?? ""}
+                  </Link>
+                ),
+              },
+            ]
+          }
         />
 
         <MultiStepComponent

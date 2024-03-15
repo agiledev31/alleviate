@@ -23,7 +23,7 @@ const getDashboardDetails = async (req, res) => {
 
     const data = {
       KPIs: [],
-      // KPIListWithSDG: [],
+      favoriteKPIs: [],
       SDGList: [],
       segmentKPIs: [],
       submissions: [],
@@ -122,11 +122,17 @@ const getDashboardDetails = async (req, res) => {
       .aggregate(pipeline)
       .toArray();
 
-    // const _KPIListWithSDG = await db
-    //   .collection("core_program_metrics")
-    //   .aggregate([])
-    //   .toArray()
-    // data.KPIListWithSDG = _KPIListWithSDG;
+    const favoriteKPIs = await db
+      .collection("core_program_metrics")
+      .aggregate([
+        {
+          $match: {
+            _id: { $in: req.user.favoriteKPIs.map((id) => new ObjectId(id)) },
+          },
+        },
+      ])
+      .toArray()
+    data.favoriteKPIs = favoriteKPIs;
 
     const sdgCountMap = {
       "No Poverty": 0,
