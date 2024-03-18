@@ -1755,6 +1755,7 @@ const SuiteDetails = () => {
               strategy={verticalListSortingStrategy}
             >
               <Table
+                className="program-kpi-table"
                 components={{
                   body: {
                     row: TableRow,
@@ -1790,6 +1791,7 @@ const SuiteDetails = () => {
             Add KPI
           </Button>
           <Modal
+            className="add-kpi-modal"
             width={1150}
             open={KPIModal}
             onCancel={() => setKPIModal(false)}
