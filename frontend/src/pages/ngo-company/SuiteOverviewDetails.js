@@ -1,12 +1,12 @@
-import { DndContext } from '@dnd-kit/core';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { DndContext } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import "allotment/dist/style.css";
 import {
   Breadcrumb,
@@ -42,17 +42,17 @@ import {
   AiOutlineMenu,
 } from "react-icons/ai";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/auth/selectors";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ExcelImport from "../../components/ExcelImport";
 import LoadingSpinner from "../../components/Loader";
 import StatsDashboard from "../../components/StatsDashboard";
+import { selectUser } from "../../redux/auth/selectors";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import StatsService from "../../service/StatsService";
 import StrapiService from "../../service/StrapiService";
-import UserService from '../../service/UserService';
+import UserService from "../../service/UserService";
 
 export const trackCategoriesList = [
   {
@@ -558,7 +558,7 @@ const TableRow = ({ children, ...props }) => {
     transition,
     isDragging,
   } = useSortable({
-    id: props['data-row-key'],
+    id: props["data-row-key"],
   });
   const style = {
     ...props.style,
@@ -566,12 +566,12 @@ const TableRow = ({ children, ...props }) => {
       transform && {
         ...transform,
         scaleY: 1,
-      },
+      }
     ),
     transition,
     ...(isDragging
       ? {
-          position: 'relative',
+          position: "relative",
           zIndex: 9999,
         }
       : {}),
@@ -579,15 +579,15 @@ const TableRow = ({ children, ...props }) => {
   return (
     <tr {...props} ref={setNodeRef} style={style} {...attributes}>
       {React.Children.map(children, (child) => {
-        if (child.key === 'sort') {
+        if (child.key === "sort") {
           return React.cloneElement(child, {
             children: (
               <AiOutlineMenu
                 size={30}
                 ref={setActivatorNodeRef}
                 style={{
-                  touchAction: 'none',
-                  cursor: 'move',
+                  touchAction: "none",
+                  cursor: "move",
                 }}
                 {...listeners}
               />
@@ -645,7 +645,9 @@ const SuiteDetails = () => {
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [KPISurveys, setKPISurveys] = useState([]);
   const [KPIDataForTable, setKPIDataForTable] = useState([]);
-  const [currentFavoriteKPIs, setCurrentFavoriteKPIs] = useState(user?.favoriteKPIs ?? []);
+  const [currentFavoriteKPIs, setCurrentFavoriteKPIs] = useState(
+    user?.favoriteKPIs ?? []
+  );
 
   const fileInputRef = useRef(null);
 
@@ -654,12 +656,16 @@ const SuiteDetails = () => {
   }, [user]);
 
   useEffect(() => {
-    if(programData && programData?.KPIs?.length) {
-      setKPIDataForTable(programData?.KPIs?.map?.((kpi) =>
-        allKPIs.find((k) => k._id.toString() === kpi)
-      )?.filter?.((a) => !!a).map((item, i) => ({ ...item, key: i + 1})));
+    if (programData && programData?.KPIs?.length) {
+      setKPIDataForTable(
+        programData?.KPIs?.map?.((kpi) =>
+          allKPIs.find((k) => k._id.toString() === kpi)
+        )
+          ?.filter?.((a) => !!a)
+          .map((item, i) => ({ ...item, key: i + 1 }))
+      );
     }
-  }, [programData, programData?.KPIs])
+  }, [programData, programData?.KPIs]);
 
   useEffect(() => {
     CrudService.search("UseCase", 10000, 1, {}).then(({ data }) => {
@@ -1021,7 +1027,7 @@ const SuiteDetails = () => {
 
   const KPIsColumns = [
     {
-      key: 'sort',
+      key: "sort",
     },
     {
       title: "Metric Name",
@@ -1108,10 +1114,10 @@ const SuiteDetails = () => {
       width: 300,
       render: (metric) => (
         <Space size={[12, 10]} wrap>
-          <div className='min-w-[150px] text-right'>
+          <div className="min-w-[150px] text-right">
             <Tooltip
               title={
-                currentFavoriteKPIs && 
+                currentFavoriteKPIs &&
                 currentFavoriteKPIs?.includes(metric?._id)
                   ? "Remove from Favorite"
                   : "Add to Favorite"
@@ -1131,8 +1137,8 @@ const SuiteDetails = () => {
                       ),
                     }).then((res) => {
                       setCurrentFavoriteKPIs((prev) =>
-                      prev.filter((p) => p != metric._id)
-                    );
+                        prev.filter((p) => p != metric._id)
+                      );
                     });
                   }}
                 />
@@ -1145,19 +1151,14 @@ const SuiteDetails = () => {
                     await UserService.updateUser(user._id, {
                       favoriteKPIs: [...currentFavoriteKPIs, metric._id],
                     }).then((res) => {
-                      setCurrentFavoriteKPIs((prev) =>
-                      [
-                        ...prev,
-                        metric?._id,
-                      ]
-                    );
+                      setCurrentFavoriteKPIs((prev) => [...prev, metric?._id]);
                     });
                   }}
                 />
               )}
             </Tooltip>
           </div>
-          
+
           <Button
             className="px-2 py-1 text-sm rounded"
             type="primary"
@@ -1452,7 +1453,6 @@ const SuiteDetails = () => {
 
   const onDragEnd = ({ active, over }) => {
     if (active.id !== over?.id) {
-      
       setKPIDataForTable((previous) => {
         const activeIndex = previous.findIndex((i) => i.key === active.id);
         const overIndex = previous.findIndex((i) => i.key === over?.id);
@@ -1745,7 +1745,10 @@ const SuiteDetails = () => {
             pagination={false}
             scroll={{ x: "700px" }}
           /> */}
-          <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
+          <DndContext
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={onDragEnd}
+          >
             <SortableContext
               // rowKey array
               items={KPIDataForTable.map((i) => i.key)}
@@ -2098,7 +2101,19 @@ const SuiteDetails = () => {
         <Breadcrumb
           items={[
             {
-              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+              title: (
+                <Link
+                  to={`/dashboard/${
+                    programData?.isGrantOpportunity
+                      ? "mygrantopporunities"
+                      : "myprograms"
+                  }`}
+                >
+                  {programData?.isGrantOpportunity
+                    ? "My Grant Opportunities"
+                    : "My Programs"}
+                </Link>
+              ),
             },
             {
               title: (
@@ -2116,22 +2131,9 @@ const SuiteDetails = () => {
           </h1>
 
           <div className="flex flex-col gap-2">
-            <Button
-              className="px-2 py-1 text-sm rounded"
-              type="primary"
-              onClick={() => {
-                const id = searchParams.get("id");
-                if (!id) return;
-
-                navigate(`/dashboard/suitepre?id=${id}`);
-              }}
-            >
-              Edit Program
-            </Button>
-
             {!programData?.published && (
               <Button
-                className="px-2 py-1 text-sm rounded"
+                className="px-2 py-1 text-sm rounded animate-bounce animation-once "
                 type="primary"
                 onClick={async () => {
                   const id = searchParams.get("id");
@@ -2148,6 +2150,23 @@ const SuiteDetails = () => {
               </Button>
             )}
 
+            <Button
+              className="px-2 py-1 text-sm rounded"
+              type="primary"
+              onClick={() => {
+                const id = searchParams.get("id");
+                if (!id) return;
+
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  }?id=${id}`
+                );
+              }}
+            >
+              Edit Program
+            </Button>
+
             <Popconfirm
               title="Are you sure to duplicate this program?"
               onConfirm={async () => {
@@ -2158,10 +2177,14 @@ const SuiteDetails = () => {
                   name: programData.name + " (Copy)",
                 };
                 const suite = await CrudService.create("Suite", body);
-                navigate(`/dashboard/suitepre?id=${suite.data._id}`);
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  }?id=${suite.data._id}`
+                );
               }}
             >
-              <Button type="primary">Duplicate Program</Button>
+              <Button>Duplicate Program</Button>
             </Popconfirm>
             <Popconfirm
               title="Are you sure to delete this program?"
@@ -2169,7 +2192,13 @@ const SuiteDetails = () => {
                 const id = searchParams.get("id");
                 if (!id) return;
                 await CrudService.delete("Suite", id);
-                navigate("/dashboard/myprograms");
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity
+                      ? "mygrantopporunities"
+                      : "myprograms"
+                  }`
+                );
               }}
             >
               <Button danger>Delete Program</Button>

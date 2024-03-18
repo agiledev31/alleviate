@@ -159,7 +159,6 @@ const getBlog = async (req, res) => {
   try {
     await connectToDatabase();
 
-    console.log(req.query.id);
     const blog = await db
       .collection("blogs")
       .findOne({ _id: new ObjectId(req.query.id) });

@@ -847,7 +847,7 @@ const MultiStepComponent = ({
   }, [defaultValues]);
 
   const handleFormChange = (fieldName, value) => {
-    console.log("multistep component handleFormChange", fieldName, "::", value)
+    console.log("multistep component handleFormChange", fieldName, "::", value);
     setFormData((prevData) => ({
       ...prevData,
       [fieldName]: value,
@@ -1010,108 +1010,110 @@ const MultiStepComponent = ({
           (formType === "createTemplate" && programDataDisplay)) ? (
           <>
             <div className={"flex sm:flex-row flex-col"}>
-              {/*<div className={"sm:w-4/12"}>*/}
-              {/*  <img*/}
-              {/*    className={"w-full rounded-lg"}*/}
-              {/*    src={programDataDisplay?.image}*/}
-              {/*    alt=""*/}
-              {/*  />*/}
-              {/*</div>*/}
               <div className={"pl-5 sm:w-8/12"}>
                 <p className={"p-2"}>
                   <strong>
                     {formType === "SuitePre" ? "Program" : "Template"} Name
-                  </strong>{" "}
-                  : {programDataDisplay?.name}
+                  </strong>
+                  : {(programDataDisplay ?? formData)?.name}
                 </p>
                 <p className={"p-2"}>
                   <strong>
                     {formType === "SuitePre" ? "Program" : "Template"}{" "}
                     Description
-                  </strong>{" "}
-                  : {programDataDisplay?.description}
+                  </strong>
+                  : {(programDataDisplay ?? formData)?.description}
                 </p>
                 <div>
-                  {programDataDisplay?.categoryDetail?.Name && (
+                  {(programDataDisplay ?? formData)?.categoryDetail?.Name && (
                     <p className={"p-2"}>
                       <strong>
                         {formType === "SuitePre" ? "Program" : "Template"}{" "}
                         Category
                       </strong>
-                      : {programDataDisplay?.categoryDetail.Name}
+                      : {(programDataDisplay ?? formData)?.categoryDetail.Name}
                     </p>
                   )}
-                  {programDataDisplay?.impactThemeDetails &&
-                    programDataDisplay?.impactThemeDetails.length > 0 && (
+                  {(programDataDisplay ?? formData)?.impactThemeDetails &&
+                    (programDataDisplay ?? formData)?.impactThemeDetails
+                      .length > 0 && (
                       <p className={"p-2"}>
                         <strong>
                           {formType === "SuitePre" ? "Program" : "Template"}{" "}
                           Impact
                         </strong>
                         :{" "}
-                        {programDataDisplay?.impactThemeDetails.map(
-                          (item, index) => (
-                            <>
-                              <span key={item._id}>{item.Name}</span>
-                              {index !==
-                              programDataDisplay?.impactThemeDetails.length - 1
-                                ? ", "
-                                : ""}
-                            </>
-                          )
-                        )}
+                        {(
+                          programDataDisplay ?? formData
+                        )?.impactThemeDetails.map((item, index) => (
+                          <>
+                            <span key={item._id}>{item.Name}</span>
+                            {index !==
+                            (programDataDisplay ?? formData)?.impactThemeDetails
+                              .length -
+                              1
+                              ? ", "
+                              : ""}
+                          </>
+                        ))}
                       </p>
                     )}
-                  {programDataDisplay?.startDate && (
+                  {(programDataDisplay ?? formData)?.startDate && (
                     <p className={"p-2"}>
                       <strong>
                         {formType === "SuitePre" ? "Program" : "Template"} Start
                         Date
-                      </strong>{" "}
+                      </strong>
                       :{" "}
-                      {moment(programDataDisplay?.startDate).format(
-                        "LLLL d, yyyy"
-                      )}
+                      {moment(
+                        (programDataDisplay ?? formData)?.startDate
+                      ).format("LLLL d, yyyy")}
                     </p>
                   )}
-                  {programDataDisplay?.endDate && (
+                  {(programDataDisplay ?? formData)?.endDate && (
                     <p className={"p-2"}>
                       <strong>
                         {formType === "SuitePre" ? "Program" : "Template"} End
                         Date
-                      </strong>{" "}
+                      </strong>
                       :{" "}
-                      {moment(programDataDisplay?.endDate).format(
+                      {moment((programDataDisplay ?? formData)?.endDate).format(
                         "LLLL d, yyyy"
                       )}
                     </p>
                   )}
                 </div>
-                {programDataDisplay?.objectives && (
+                {(programDataDisplay ?? formData)?.objectives && (
                   <p className={"p-2"}>
                     <strong>
                       {formType === "SuitePre" ? "Program" : "Template"}{" "}
                       Objectives
-                    </strong>{" "}
-                    : {programDataDisplay?.objectives}
+                    </strong>
+                    : {(programDataDisplay ?? formData)?.objectives}
                   </p>
                 )}
-                {programDataDisplay?.strategicGoalDetails && (
+                {(programDataDisplay ?? formData)?.strategicGoalDetails && (
                   <p className={"p-2"}>
-                    <strong>Strategic Goal</strong> :{" "}
-                    {programDataDisplay?.strategicGoalDetails.Name}
+                    <strong>Strategic Goal</strong>:{" "}
+                    {
+                      (programDataDisplay ?? formData)?.strategicGoalDetails
+                        .Name
+                    }
                   </p>
                 )}
-                {programDataDisplay?.deliveryModelDetails && (
+                {(programDataDisplay ?? formData)?.deliveryModelDetails && (
                   <p className={"p-2"}>
-                    <strong>Delivery Model</strong> :{" "}
-                    {programDataDisplay?.deliveryModelDetails.Name}
+                    <strong>Delivery Model</strong>:{" "}
+                    {
+                      (programDataDisplay ?? formData)?.deliveryModelDetails
+                        .Name
+                    }
                   </p>
                 )}
-                {programDataDisplay?.productDetails && (
+                {(programDataDisplay ?? formData)?.productDetails && (
                   <p className={"p-2"}>
-                    <strong>Products And Services</strong> :{" "}
-                    {programDataDisplay?.productDetails.Name}
+                    <strong>Products And Services</strong>:{" "}
+                    {(programDataDisplay ?? formData)?.productDetails.Name}
                   </p>
                 )}
               </div>

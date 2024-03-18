@@ -396,7 +396,11 @@ const SuiteDetails = () => {
                 const id = searchParams.get("id");
                 if (!id) return;
 
-                navigate(`/dashboard/suitepre?id=${id}`);
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  }?id=${id}`
+                );
               }}
             >
               Edit Program
@@ -411,10 +415,14 @@ const SuiteDetails = () => {
                   name: programData.name + " (Copy)",
                 };
                 const suite = await CrudService.create("Suite", body);
-                navigate(`/dashboard/suitepre?id=${suite.data._id}`);
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  }?id=${suite.data._id}`
+                );
               }}
             >
-              <Button type="primary">Duplicate Program</Button>
+              <Button>Duplicate Program</Button>
             </Popconfirm>
             <Popconfirm
               title="Are you sure to delete this program?"
@@ -422,7 +430,13 @@ const SuiteDetails = () => {
                 const id = searchParams.get("id");
                 if (!id) return;
                 await CrudService.delete("Suite", id);
-                navigate("/dashboard/myprograms");
+                navigate(
+                  `/dashboard/${
+                    programData?.isGrantOpportunity
+                      ? "mygrantopporunities"
+                      : "myprograms"
+                  }`
+                );
               }}
             >
               <Button danger>Delete Program</Button>

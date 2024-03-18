@@ -453,7 +453,6 @@ const otpVerify = async (req, res) => {
 
 const requestKyc = async (req, res) => {
   try {
-    console.log(stripe.identity.verifySessions);
     const session = await stripe.identity.verificationSessions.create({
       type: "document",
       return_url: `${req.body.origin}/auth/kyc`,

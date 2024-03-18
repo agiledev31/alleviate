@@ -264,105 +264,114 @@ const DashboardDetail = () => {
             </div>
           </div>
 
-          <div className={"col-span-12 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-              Favourite KPIs
-            </h2>
-            <div className="w-full justify-start items-center display-ruby-text">
-              { favoriteKPIs.map((item, i) => 
-                <div key={i} className="cursor-pointer min-w-[200px] m-1 p-3 text-md text-bold rounded-xl border border-2 bg-gray-300">
-                  { item.MetricName }
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={"col-span-12 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-              Recent Submissions
-            </h2>
-            <div
-              className={
-                "col-span-12 rounded-sm border border-stroke bg-white  pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
-              }
-            >
-              <div className="relative overflow-x-auto">
-                <Table
-                  dataSource={submittedProgramData.map((item, index) => ({
-                    key: index,
-                    userName:
-                      item.user_id?.firstName + " " + item.user_id?.lastName,
-                    userEmail: item.user_id?.email,
-                    assessmentName: item.programId.name,
-                    submissionType:
-                      (item.formData.hasOwnProperty("submittedData") &&
-                        "Online") ||
-                      (item.formData.hasOwnProperty("fileData") &&
-                        "Imported Data"),
-                    status: (() => {
-                      if (
-                        item.formData.isFinishClicked &&
-                        item.formData.hasOwnProperty("fileData")
-                      ) {
-                        return "Approved";
-                      } else if (item.status === "reject") {
-                        return "Rejected";
-                      } else if (item.status === "approve") {
-                        return "Approved";
-                      } else {
-                        return "Waiting";
-                      }
-                    })(),
-                    data: item,
-                  }))}
-                  columns={submissionColumns}
-                  pagination={false}
-                  bordered={false}
-                  scroll={{ x: "750px" }}
-                  rowKey="_id"
-                />
+          {favoriteKPIs?.length > 0 && (
+            <div className={"col-span-12 shadow-sm bg-white p-8"}>
+              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+                Favourite KPIs
+              </h2>
+              <div className="w-full justify-start items-center display-ruby-text">
+                {favoriteKPIs.map((item, i) => (
+                  <div
+                    key={i}
+                    className="cursor-pointer min-w-[200px] m-1 p-3 text-md text-bold rounded-xl border border-2 bg-gray-300"
+                  >
+                    {item.MetricName}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
-          <div className={"col-span-12 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
-              Pending Programs
-            </h2>
-            <div
-              className={
-                "col-span-12 rounded-sm border border-stroke bg-white pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
-              }
-            >
-              <div className="relative overflow-x-auto">
-                <Table
-                  dataSource={pendingProgramData.map((item, index) => {
-                    const incompleteSteps = [];
-                    if (!item.hasKPIs) incompleteSteps.push("No KPIs");
-                    if (!item.hasAssessment)
-                      incompleteSteps.push("No Assessment");
-                    if (!item.hasPublishAssessment)
-                      incompleteSteps.push("No Published Assessment");
-
-                    return {
+          {submittedProgramData?.length > 0 && (
+            <div className={"col-span-12 shadow-sm bg-white p-8"}>
+              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+                Recent Submissions
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white  pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  <Table
+                    dataSource={submittedProgramData.map((item, index) => ({
                       key: index,
-                      programName: item.name,
-                      categoryName: item.categoryDetails?.Name || "-",
-                      description: item.description,
-                      incompleteSteps:
-                        incompleteSteps.length > 0 ? incompleteSteps : ["-"],
+                      userName:
+                        item.user_id?.firstName + " " + item.user_id?.lastName,
+                      userEmail: item.user_id?.email,
+                      assessmentName: item.programId.name,
+                      submissionType:
+                        (item.formData.hasOwnProperty("submittedData") &&
+                          "Online") ||
+                        (item.formData.hasOwnProperty("fileData") &&
+                          "Imported Data"),
+                      status: (() => {
+                        if (
+                          item.formData.isFinishClicked &&
+                          item.formData.hasOwnProperty("fileData")
+                        ) {
+                          return "Approved";
+                        } else if (item.status === "reject") {
+                          return "Rejected";
+                        } else if (item.status === "approve") {
+                          return "Approved";
+                        } else {
+                          return "Waiting";
+                        }
+                      })(),
                       data: item,
-                    };
-                  })}
-                  columns={pendingProgramsColumns}
-                  pagination={false}
-                  bordered={false}
-                  scroll={{ x: "750px" }}
-                  rowKey="_id"
-                />
+                    }))}
+                    columns={submissionColumns}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ x: "750px" }}
+                    rowKey="_id"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {pendingProgramData?.length > 0 && (
+            <div className={"col-span-12 shadow-sm bg-white p-8"}>
+              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+                Pending Programs
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  <Table
+                    dataSource={pendingProgramData.map((item, index) => {
+                      const incompleteSteps = [];
+                      if (!item.hasKPIs) incompleteSteps.push("No KPIs");
+                      if (!item.hasAssessment)
+                        incompleteSteps.push("No Assessment");
+                      if (!item.hasPublishAssessment)
+                        incompleteSteps.push("No Published Assessment");
+
+                      return {
+                        key: index,
+                        programName: item.name,
+                        categoryName: item.categoryDetails?.Name || "-",
+                        description: item.description,
+                        incompleteSteps:
+                          incompleteSteps.length > 0 ? incompleteSteps : ["-"],
+                        data: item,
+                      };
+                    })}
+                    columns={pendingProgramsColumns}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ x: "750px" }}
+                    rowKey="_id"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

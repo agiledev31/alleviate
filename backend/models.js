@@ -278,14 +278,18 @@ const suiteSchema = new mongoose.Schema(
     listedForNGOBeneficiaries: { type: Boolean, default: false },
     listedForDonors: { type: Boolean, default: false },
     listedForExperts: { type: Boolean, default: false },
-    strategicGoals: { type: String, default: "" },
-    deliveryModel: { type: String, default: "" },
-    products: { type: String, default: "" },
+    strategicGoals: { type: [String], default: [] },
+    deliveryModel: { type: [String], default: [] },
+    products: { type: [String], default: [] },
     form: Object,
     reminderType: { type: String, default: "" },
     nextReminderDate: { type: Date },
     completedGoals: { type: [String], default: [] },
     invitedEmails: { type: [String], default: [] },
+
+    // Opportunity portal
+    isGrantOpportunity: { type: Boolean, default: false },
+    fundingAmount: { type: Number },
   },
   { timestamps: true }
 );

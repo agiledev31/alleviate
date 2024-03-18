@@ -18,7 +18,7 @@ import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
 const { Paragraph, Text } = Typography;
 
-const MyPrograms = () => {
+const MyGrantOpportunities = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
@@ -55,7 +55,7 @@ const MyPrograms = () => {
       if (text) {
         data.filters.name = { $regex: text };
       }
-      data.filters.isGrantOpportunity = false;
+      data.filters.isGrantOpportunity = true;
       const response = await CrudService.search("Suite", 25, page, data);
       setPrograms(response.data.items);
       // const newPrograms = response.data.items;
@@ -151,7 +151,7 @@ const MyPrograms = () => {
         <input
           type="text"
           id="search"
-          placeholder="Search Programs"
+          placeholder="Search Grant Opportunities"
           className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           value={searchTerm}
           onChange={handleInputChange}
@@ -264,7 +264,7 @@ const MyPrograms = () => {
           fileInputRef.current.click();
         }}
       >
-        Import Programs
+        Import Grant Opportunities
       </Button>
       <div className="container mx-auto p-4" id="programContainer">
         {loading && programs.length <= 0 && <Skeleton active />}
@@ -492,34 +492,15 @@ const MyPrograms = () => {
           },
         ]}
         handleImport={async (e) => {
-          const defaultAssessments = await CrudService.search(
-            "DefaultAssessment",
-            1,
-            1,
-            { sort: { createdAt: 1 } }
-          );
-          const defaultAssessment = defaultAssessments.data.items?.[0];
-
           await Promise.all(
-            e.mappedItems.map(async (item) => {
-              const program = await CrudService.create("Suite", {
-                ...item,
-                published: false,
-                isGrantOpportunity: false,
-              });
-
-              // Create default assessment
-              if (defaultAssessment)
-                await CrudService.create("Program", {
-                  suite: program.data._id,
-                  name: defaultAssessment.name,
-                  description: defaultAssessment.description,
-                  published: true,
-                  assessmentType: "enrollment",
-                  isDefaultAssessment: true,
-                  form: defaultAssessment.form,
-                });
-            })
+            e.mappedItems.map(
+              async (item) =>
+                await CrudService.create("Suite", {
+                  ...item,
+                  published: false,
+                  isGrantOpportunity: true,
+                })
+            )
           );
 
           window.location.reload();
@@ -530,4 +511,4 @@ const MyPrograms = () => {
   );
 };
 
-export default MyPrograms;
+export default MyGrantOpportunities;

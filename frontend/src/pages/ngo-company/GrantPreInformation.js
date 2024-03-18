@@ -5,7 +5,7 @@ import MultiStepComponent from "../../components/MultiStepComponent";
 import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
 
-const SuitePreInformation = () => {
+const GrantPreInformation = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [programData, setProgramData] = useState(null);
@@ -138,17 +138,22 @@ const SuitePreInformation = () => {
       form: [
         {
           fieldName: "name",
-          label: "What is the name of your organization's impact program? ",
+          label: "What is the title of your grant opportunity? ",
           type: "input",
           placeholder: "Enter program name",
           required: true,
         },
         {
           fieldName: "description",
-          label: "Program Description",
+          label: "Grant Opportunity Description",
           type: "textarea",
-          placeholder: "Enter program description",
+          placeholder: "Describe your grant opportunity",
           rows: 6,
+        },
+        {
+          fieldName: "fundingAmount",
+          label: "Funding Amount",
+          type: "inputNumber",
         },
         {
           fieldName: "image",
@@ -166,9 +171,7 @@ const SuitePreInformation = () => {
       form: [
         {
           fieldName: "category",
-          // label: "Program Category",
-          label:
-            "Which impact category best aligns with your organization's mission?",
+          label: "Which impact category best aligns with your mission?",
           type: "quiz",
           options: categories.map((c) => ({ value: c._id, label: c.Name })),
         },
@@ -220,24 +223,22 @@ const SuitePreInformation = () => {
         },
       ],
     },
-    // Step 3: Program Objectives
     {
       id: "step3",
-      name: "Program Objectives",
+      name: "Objectives",
       form: [
         {
           fieldName: "objectives",
-          label: "Program Objectives",
+          label: "Objectives",
           type: "textarea",
-          placeholder: "Describe the objectives of the program",
+          placeholder: "Describe the objectives of the grant opportunity",
           rows: 4,
         },
       ],
     },
-    // Ste 4: Program Preview
     {
       id: "step4",
-      name: "Preview Program",
+      name: "Preview Grant Opportunity",
       form: [],
     },
   ];
@@ -250,7 +251,7 @@ const SuitePreInformation = () => {
     <>
       <div style={{ height: "80vh" }}>
         <h2 className="text-xl mt-5 mx-3">
-          <strong>Program General Information</strong>
+          <strong>Grant General Information</strong>
         </h2>
         <MultiStepComponent
           displaySteps={false}
@@ -265,32 +266,11 @@ const SuitePreInformation = () => {
                 if (formData && formData.isFinishClicked) {
                   await CrudService.create("Suite", {
                     ...formData,
-                    isGrantOpportunity: false,
+                    isGrantOpportunity: true,
                   }).then(async (program) => {
                     if (!program.data) return;
 
-                    await CrudService.search("DefaultAssessment", 1, 1, {
-                      sort: { createdAt: 1 },
-                    }).then(async (res) => {
-                      if (!res.data) return;
-                      const assessment = res.data.items[0];
-
-                      await CrudService.create("Program", {
-                        suite: program.data._id,
-                        name: assessment.name,
-                        description: assessment.description,
-                        // image: program.data.image,
-                        published: true,
-                        assessmentType: "enrollment",
-                        isDefaultAssessment: true,
-                        form: assessment.form,
-                      }).then((res) => {
-                        if (!res) return;
-                        navigate(
-                          `/dashboard/suitedetails?id=${program.data._id}`
-                        );
-                      });
-                    });
+                    navigate(`/dashboard/suitedetails?id=${program.data._id}`);
                   });
                 }
               }
@@ -318,4 +298,4 @@ const SuitePreInformation = () => {
   );
 };
 
-export default SuitePreInformation;
+export default GrantPreInformation;

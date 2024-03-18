@@ -24,17 +24,21 @@ import { store } from "../../redux/store";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import { default as DashboardDetail } from "../DashboardDetail";
+import GrantOpportunities from "../GrantOpportunities";
 import MyBenchmarks from "../MyBenchmarks";
 import ProgramForm from "../ProgramForm";
-import ProgramOverview from "../ProgramOverview";
 import ProgramThankyou from "../ProgramThankyou";
 import Programs from "../Programs";
 import { default as SuiteDetail } from "../SuiteDetail";
 import Benchmarks from "../ngo-company/Benchmarks";
 import CategotyNotifications from "../ngo-company/CategoryNotifications";
+import CreateGrantOpportunity from "../ngo-company/CreateGrantOpportunity";
 import CreateSuite from "../ngo-company/CreateSuite";
 import { default as CreateTemplate } from "../ngo-company/CreateTemplate";
 import { default as EnrollmentPre } from "../ngo-company/EnrollmentPre";
+import GrantModal from "../ngo-company/GrantModal";
+import GrantPreInformation from "../ngo-company/GrantPreInformation";
+import MyGrantOpportunities from "../ngo-company/MyGrantOpportunities";
 import MyPrograms from "../ngo-company/MyPrograms";
 import ProgramDetails from "../ngo-company/ProgramDetails";
 import ProgramEdit from "../ngo-company/ProgramEdit";
@@ -243,9 +247,23 @@ const Dashboard = () => {
       display: user?.role === "ngo-company",
     },
     {
+      name: "My Grant Opportunities",
+      component: <MyGrantOpportunities />,
+      href: "/dashboard/mygrantopporunities",
+      icon: MyProgramsIcon,
+      display: user?.role === "ngo-company",
+    },
+    {
       name: "Build Program",
       component: <SuiteModal />,
       href: "/dashboard/suitemodal",
+      icon: BuildProgramIcon,
+      display: user?.role === "ngo-company",
+    },
+    {
+      name: "Post Grant Opportunity",
+      component: <GrantModal />,
+      href: "/dashboard/grantmodal",
       icon: BuildProgramIcon,
       display: user?.role === "ngo-company",
     },
@@ -284,6 +302,13 @@ const Dashboard = () => {
       icon: ChartPieIcon,
       display: user?.role !== "ngo-company",
     },
+    {
+      name: "Grant Opportunities",
+      component: <GrantOpportunities />,
+      href: "/dashboard/grantopportunities",
+      icon: ChartPieIcon,
+      display: user?.role !== "ngo-company",
+    },
   ]
     .filter((e) => e.display === true)
     .map((elem) => ({
@@ -297,37 +322,9 @@ const Dashboard = () => {
   useEffect(() => {
     if (user?.role !== "ngo-company") return;
 
-    CrudService.search("Program", 10, 1, {
+    CrudService.search("Suite", 5, 1, {
       filters: { published: false },
-    }).then((res) => {
-      if (res.data.items.length > 0)
-        setSubMenus((e) =>
-          [
-            ...e.filter((x) => x.title !== "Pending Assessments"),
-            {
-              title: "Pending Assessments",
-              items: res.data.items
-                .map((item) => ({
-                  id: item._id,
-                  name: item.name,
-                  component: <ProgramEdit />,
-                  href: `/dashboard/programedit?id=${item._id}`,
-                  initial: item.name?.[0]?.toUpperCase?.(),
-                }))
-                .map((elem) => ({
-                  ...elem,
-                  current: location.pathname === elem.href,
-                  path: elem.href.replace("/dashboard", "")?.split?.("?")?.[0],
-                })),
-            },
-          ].sort(function (a, b) {
-            return a.title === b.title ? 0 : a.title < b.title ? -1 : 1;
-          })
-        );
-    });
-
-    CrudService.search("Suite", 10, 1, {
-      filters: { published: false },
+      sort: { createdAt: -1 },
     }).then((res) => {
       if (res.data.items.length > 0)
         setSubMenus((e) =>
@@ -411,14 +408,18 @@ const Dashboard = () => {
         <Route path={"/programform"} element={<ProgramForm />} />
         <Route path={"/programthankyou"} element={<ProgramThankyou />} />
         <Route path={"/suite"} element={<CreateSuite />} />
+        <Route
+          path={"/grantopportunity"}
+          element={<CreateGrantOpportunity />}
+        />
         <Route path={"/templatedetails"} element={<TemplateDetails />} />
         <Route path={"/templatepre"} element={<TemplatePre />} />
         <Route path={"/assessmentedit"} element={<TemplateEdit />} />
         <Route path={"/enrollmentpre"} element={<EnrollmentPre />} />
-        <Route path={"/programoverview"} element={<ProgramOverview />} />
         <Route path={"/suitedetail"} element={<SuiteDetail />} />
         <Route path={"/benchmarks"} element={<Benchmarks />} />
         <Route path={"/suitepre"} element={<SuitePreInformation />} />
+        <Route path={"/grantpre"} element={<GrantPreInformation />} />
         <Route path={"/suitetrack"} element={<SuiteTrack />} />
         <Route path={"/suitetarget"} element={<SuiteTarget />} />
         <Route path={"/suiteobjective"} element={<SuiteObjective />} />

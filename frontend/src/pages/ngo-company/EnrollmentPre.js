@@ -122,7 +122,19 @@ const EnrollmentPre = () => {
         <Breadcrumb
           items={[
             {
-              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+              title: (
+                <Link
+                  to={`/dashboard/${
+                    suite?.isGrantOpportunity
+                      ? "mygrantopporunities"
+                      : "myprograms"
+                  }`}
+                >
+                  {suite?.isGrantOpportunity
+                    ? "My Grant Opportunities"
+                    : "My Programs"}
+                </Link>
+              ),
             },
             {
               title: (
