@@ -24,7 +24,8 @@ body {
   color: #ff2400;
 }
 
-:where(.css-dev-only-do-not-override-dj2uwg).ant-select-dropdown .ant-select-item-option-content {
+:where(.css-dev-only-do-not-override-dj2uwg).ant-select-dropdown
+  .ant-select-item-option-content {
   overflow: unset !important;
   white-space: unset !important;
   text-overflow: unset !important;
@@ -49,7 +50,7 @@ body {
   flex-wrap: wrap;
   gap: 15px;
   padding-bottom: 15px;
-  border-bottom: 1px solid rgba(0,0,0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   margin-bottom: 15px;
 }
 
@@ -67,4 +68,9 @@ body {
 
 .display-ruby-text {
   display: ruby-text;
+}
+
+.animation-once {
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
 }

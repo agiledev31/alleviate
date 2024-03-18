@@ -16,7 +16,7 @@ import { selectUser } from "../redux/auth/selectors";
 import CrudService from "../service/CrudService";
 import StrapiService from "../service/StrapiService";
 
-const Programs = () => {
+const GrantOpportunities = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
@@ -41,7 +41,7 @@ const Programs = () => {
           filters: { published: true, ...filters },
         };
         if (text) data.text = text;
-        data.filters.isGrantOpportunity = false;
+        data.filters.isGrantOpportunity = true;
         const response = await CrudService.search("Suite", 9, page, data);
 
         const hasInvitedEmails = response.data.items.some(
@@ -57,7 +57,7 @@ const Programs = () => {
             },
           };
           const updatedResponse = await CrudService.search("Suite", 9, page, {
-            filters: { published: true, isGrantOpportunity: false },
+            filters: { published: true, isGrantOpportunity: true },
           });
           const newPrograms = updatedResponse.data.items;
           setPrograms((prevPrograms) => [...prevPrograms, ...newPrograms]);
@@ -146,7 +146,7 @@ const Programs = () => {
         <input
           type="text"
           id="search"
-          placeholder="Search Programs"
+          placeholder="Search Grant Opportunities"
           className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           value={searchTerm}
           onChange={handleInputChange}
@@ -371,4 +371,4 @@ const Programs = () => {
   );
 };
 
-export default Programs;
+export default GrantOpportunities;

@@ -88,7 +88,19 @@ const ProgramPublish = () => {
         <Breadcrumb
           items={[
             {
-              title: <Link to="/dashboard/myprograms">My Programs</Link>,
+              title: (
+                <Link
+                  to={`/dashboard/${
+                    programData?.isGrantOpportunity
+                      ? "mygrantopporunities"
+                      : "myprograms"
+                  }`}
+                >
+                  {programData?.isGrantOpportunity
+                    ? "My Grant Opportunities"
+                    : "My Programs"}
+                </Link>
+              ),
             },
             {
               title: (

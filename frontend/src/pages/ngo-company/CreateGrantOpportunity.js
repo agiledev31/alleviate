@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { selectUser } from "../../redux/auth/selectors";
 import CrudService from "../../service/CrudService";
 
-const CreateSuite = () => {
+const CreateGrantOpportunity = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [programTypes, setProgramTypes] = useState([]);
@@ -27,7 +27,7 @@ const CreateSuite = () => {
       name: programType.name,
       description: programType.description,
       published: false,
-      isGrantOpportunity: false,
+      isGrantOpportunity: true,
       ...(programType.hasOwnProperty("KPIs") && programType.KPIs.length > 0
         ? { KPIs: programType.KPIs }
         : {}),
@@ -52,58 +52,7 @@ const CreateSuite = () => {
         : {}),
     });
 
-    if (programType.hasOwnProperty("assessments")) {
-      // Create assessment from template wise assessment
-      if (programType.assessments && programType.assessments.length > 0) {
-        const data = {
-          filters: { _id: programType.assessments },
-        };
-        CrudService.search("DefaultAssessment", 100, 1, data).then(
-          async (res) => {
-            if (res.data && res.data.items && res.data.items.length > 0) {
-              for (const item of res.data.items) {
-                const body = {
-                  suite: program.data._id,
-                  name: item.name,
-                  description: item.description,
-                  assessmentType: item.assessmentType,
-                  published: false,
-                  form: item.form,
-                  ...(item.name === "Personal Information"
-                    ? { isDefaultAssessment: true, published: true }
-                    : {}),
-                };
-                await CrudService.create("Program", body);
-              }
-            }
-          }
-        );
-      }
-    } else {
-      const defaultAssessment = await CrudService.search(
-        "DefaultAssessment",
-        1,
-        1,
-        { sort: { createdAt: 1 } }
-      );
-      // Create default assessment
-      await CrudService.getSingle(
-        "DefaultAssessment",
-        defaultAssessment.data.items[0]._id
-      ).then(async (res) => {
-        await CrudService.create("Program", {
-          suite: program.data._id,
-          name: res.data.name,
-          description: res.data.description,
-          // image: program.data.image,
-          published: true,
-          assessmentType: "enrollment",
-          isDefaultAssessment: true,
-          form: res.data.form,
-        });
-      });
-    }
-    navigate(`/dashboard/suitepre?id=${program.data._id}`);
+    navigate(`/dashboard/grantpre?id=${program.data._id}`);
   };
 
   return (
@@ -138,4 +87,4 @@ const CreateSuite = () => {
   );
 };
 
-export default CreateSuite;
+export default CreateGrantOpportunity;
