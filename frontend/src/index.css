@@ -74,3 +74,7 @@ body {
   -webkit-animation-iteration-count: 1;
   animation-iteration-count: 1;
 }
+
+.program-kpi-table .ant-table-placeholder {
+  z-index: 10 !important;
+}
