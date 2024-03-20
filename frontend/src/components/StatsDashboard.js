@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import StatsService from "../service/StatsService";
 import { Pie } from "@ant-design/charts";
 
-const StatsDashboard = ({type = ''}) => {
+const StatsDashboard = ({ type = '' }) => {
   let [searchParams] = useSearchParams();
   const [KPIs, setKPIs] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -22,25 +22,25 @@ const StatsDashboard = ({type = ''}) => {
 
     if (type === "assessment") {
       StatsService.getAssessmentSurveys(id ?? "")
-          .then(({ data }) => {
-            setKPIs(data.KPIs || []);
-            setChartKPIs(data.chartKPIs || []);
-          })
-          .finally(() => {
-            setLoading4(false);
-          });
+        .then(({ data }) => {
+          setKPIs(data.KPIs || []);
+          setChartKPIs(data.chartKPIs || []);
+        })
+        .finally(() => {
+          setLoading4(false);
+        });
     } else {
       StatsService.getSurveys(id ?? "")
-          .then(({ data }) => {
-            setKPIs(data.KPIs || []);
-            setChartKPIs(data.chartKPIs || []);
-            const _totalCount = data.KPIs.reduce((sum, item) => sum + item.count, 0);
-            const _chartData = data.KPIs.map(item => ({label: item.key, ratio: parseFloat((item.count / _totalCount * 100).toFixed(2)) }));
-            setChartData(_chartData);
-          })
-          .finally(() => {
-            setLoading4(false);
-          });
+        .then(({ data }) => {
+          setKPIs(data.KPIs || []);
+          setChartKPIs(data.chartKPIs || []);
+          const _totalCount = data.KPIs.reduce((sum, item) => sum + item.count, 0);
+          const _chartData = data.KPIs.map(item => ({ label: item.key, ratio: parseFloat((item.count / _totalCount * 100).toFixed(2)) }));
+          setChartData(_chartData);
+        })
+        .finally(() => {
+          setLoading4(false);
+        });
     }
   }, [searchParams]);
 
@@ -81,7 +81,7 @@ const StatsDashboard = ({type = ''}) => {
   return (
     <>
       <div>
-        {(KPIs?.length > 0 || chartKPIs?.length > 0)  && (
+        {(KPIs?.length > 0 || chartKPIs?.length > 0) && (
           <Row gutter={[16, 16]}>
             <Col span={24}>
               <Card>
@@ -100,7 +100,7 @@ const StatsDashboard = ({type = ''}) => {
 
                 <Row gutter={[16, 16]} className="mt-2">
                   <div style={{ width: '100%', height: '350px', position: 'relative' }}>
-                    <Pie {...generateChartData(chartData)}/>
+                    <Pie {...generateChartData(chartData)} />
                   </div>
                 </Row>
 
@@ -127,29 +127,29 @@ const StatsDashboard = ({type = ''}) => {
 
                 <Row gutter={[16, 16]} className="mt-2">
                   {chartKPIs?.length > 0 && (
-                      chartKPIs.map((kpi) => (
-                          <Col span={8} key={kpi.key}>
-                              <Card className={'grid justify-center'}>
-                                  <div style={{ textAlign: "center", textTransform: 'capitalize' }}>
-                                      <h3>{kpi.key}</h3>
-                                  </div>
-                                  <div style={{ width: '360px', height: '360px', position: 'relative' }}>
-                                    <Pie {...generateChartData(kpi.value)}/>
-                                  </div>
-                              </Card>
-                          </Col>
-                      ))
+                    chartKPIs.map((kpi) => (
+                      <Col span={8} key={kpi.key}>
+                        <Card className={'grid justify-center'}>
+                          <div style={{ textAlign: "center", textTransform: 'capitalize' }}>
+                            <h3>{kpi.key}</h3>
+                          </div>
+                          <div style={{ width: '360px', height: '360px', position: 'relative' }}>
+                            <Pie {...generateChartData(kpi.value)} />
+                          </div>
+                        </Card>
+                      </Col>
+                    ))
                   )}
-              </Row>
+                </Row>
               </Card>
             </Col>
           </Row>
         )}
 
-        {(KPIs?.length <= 0 && chartKPIs?.length <= 0)  && (
-            <span className="mt-2 font-bold">
-              Metrics data not found
-            </span>
+        {(KPIs?.length <= 0 && chartKPIs?.length <= 0) && (
+          <span className="mt-2 font-bold">
+            Metrics data not found
+          </span>
         )}
       </div>
     </>
