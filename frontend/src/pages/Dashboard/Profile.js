@@ -33,12 +33,13 @@ import {
 import { SiFiverr, SiFreelancer, SiGofundme, SiUpwork } from "react-icons/si";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectUser } from "../../redux/auth/selectors";
+import { selectDarkMode, selectUser } from "../../redux/auth/selectors";
 import CrudService from "../../service/CrudService";
 const { Paragraph } = Typography;
 
 const Profile = () => {
   const user = useSelector(selectUser);
+  const darkMode = useSelector(selectDarkMode);
   const navigate = useNavigate();
   const [profilePreviewModal, setProfilePreviewModal] = useState(false);
   const [upcomingPrograms, setUpcomingPrograms] = useState([]);
@@ -81,13 +82,14 @@ const Profile = () => {
       },
       isGrantOpportunity: true,
     };
-    await CrudService.search("Suite", 15, 1, { filters: filter }).then(
-      (res) => {
-        if (!res.data) return;
+    await CrudService.search("Suite", 15, 1, {
+      filters: filter,
+      sort: { createdAt: -1 },
+    }).then((res) => {
+      if (!res.data) return;
 
-        setUpcomingPrograms(res.data.items);
-      }
-    );
+      setUpcomingPrograms(res.data.items);
+    });
   };
 
   const toggleExpanded = (programId) => {
@@ -238,7 +240,7 @@ const Profile = () => {
                       />
                     ) : (
                       <PhotoIcon
-                        className="rounded-md text-gray-300"
+                        className="rounded-md dark:text-white text-gray-300"
                         aria-hidden="true"
                       />
                     )}
@@ -432,7 +434,7 @@ const Profile = () => {
                         </div>
                       </div>
                       <Paragraph
-                        className="text-gray-700 text-base m-0"
+                        className="dark:text-white dark:text-white text-gray-700 text-base m-0"
                         ellipsis={{
                           rows: 500,
                           expandable: false,
@@ -539,7 +541,7 @@ const Profile = () => {
                 />
               ) : (
                 <UserCircleIcon
-                  className="h-12 w-12 text-gray-300"
+                  className="h-12 w-12 dark:text-white text-gray-300"
                   aria-hidden="true"
                 />
               )}
@@ -607,6 +609,7 @@ const Profile = () => {
                     Profile Preview
                   </Button>
                   <Modal
+                    wrapClassName={`${darkMode ? "dark" : ""}`}
                     width={800}
                     height={300}
                     open={profilePreviewModal}
@@ -624,7 +627,7 @@ const Profile = () => {
                         />
                       ) : (
                         <PhotoIcon
-                          className="rounded-md w-full h-full object-cover text-gray-300"
+                          className="rounded-md w-full h-full object-cover dark:text-white text-gray-300"
                           aria-hidden="true"
                         />
                       )}
@@ -634,7 +637,7 @@ const Profile = () => {
                         <div className="w-[120px] h-[120px] rounded-full mt-[-86px] ms-[20px]">
                           {user.avatar ? (
                             <img
-                              className="object-cover w-full h-full rounded-full mt-5 text-gray-300"
+                              className="object-cover w-full h-full rounded-full mt-5 dark:text-white text-gray-300"
                               style={{
                                 border: "2px solid",
                                 "background-color": "white",
@@ -644,7 +647,7 @@ const Profile = () => {
                             />
                           ) : (
                             <UserCircleIcon
-                              className="object-cover w-full h-full mt-5 rounded-full text-gray-300"
+                              className="object-cover w-full h-full mt-5 rounded-full dark:text-white text-gray-300"
                               style={{
                                 border: "2px solid",
                                 "background-color": "white",

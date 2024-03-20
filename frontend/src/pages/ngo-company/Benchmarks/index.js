@@ -595,6 +595,7 @@ const Benchmarks = () => {
       <div>
         <input
           type="file"
+          className="dark:bg-gray-900"
           style={{ display: "none" }}
           ref={fileInputRef}
           onChange={handleFileUpload}

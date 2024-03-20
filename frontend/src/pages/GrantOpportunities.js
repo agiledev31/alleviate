@@ -1,7 +1,9 @@
 import { Menu, Transition } from "@headlessui/react";
 import { BarsArrowUpIcon } from "@heroicons/react/24/outline";
-import { Skeleton, Tooltip } from "antd";
+import { DatePicker, InputNumber, Skeleton, Space, Tooltip } from "antd";
 import classNames from "classnames";
+import dayjs from "dayjs";
+import moment from "moment";
 import React, {
   Fragment,
   useCallback,
@@ -9,9 +11,12 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { FaRegSave } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa6";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { STANDARD_MOMENT_FORMAT } from "../data/constants";
 import { selectUser } from "../redux/auth/selectors";
 import CrudService from "../service/CrudService";
 import StrapiService from "../service/StrapiService";
@@ -25,7 +30,11 @@ const GrantOpportunities = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
-  // const [programTypes, setProgramTypes] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
+  const [minFunding, setMinFunding] = useState();
+  const [maxFunding, setMaxFunding] = useState();
+  const [deadlineStart, setDeadlineStart] = useState();
+  const [deadlineEnd, setDeadlineEnd] = useState();
 
   useEffect(() => {
     StrapiService.getList("impact_categories").then(({ data }) =>
@@ -34,39 +43,25 @@ const GrantOpportunities = () => {
   }, []);
 
   const loadMorePrograms = useCallback(
-    async (filters = {}, text = "") => {
+    async (filters = {}, text = "", refresh = true) => {
       setLoading(true);
       try {
         const data = {
-          filters: { published: true, ...filters },
+          filters: {
+            published: true,
+            isGrantOpportunity: true,
+            ...filters,
+          },
         };
         if (text) data.text = text;
         data.filters.isGrantOpportunity = true;
         const response = await CrudService.search("Suite", 9, page, data);
 
-        const hasInvitedEmails = response.data.items.some(
-          (program) =>
-            program.invitedEmails && program.invitedEmails.includes(user.email)
-        );
-        if (hasInvitedEmails) {
-          const data = {
-            filters: {
-              published: true,
-              ...filters,
-              invitedEmails: { $in: [user.email] },
-            },
-          };
-          const updatedResponse = await CrudService.search("Suite", 9, page, {
-            filters: { published: true, isGrantOpportunity: true },
-          });
-          const newPrograms = updatedResponse.data.items;
-          setPrograms((prevPrograms) => [...prevPrograms, ...newPrograms]);
-          setPage((prevPage) => prevPage + 1);
-        } else {
-          const newPrograms = response.data.items;
-          setPrograms((prevPrograms) => [...prevPrograms, ...newPrograms]);
-          setPage((prevPage) => prevPage + 1);
-        }
+        const newPrograms = response.data.items;
+        setPrograms((prevPrograms) => [
+          ...(refresh ? [] : prevPrograms),
+          ...newPrograms,
+        ]);
       } catch (e) {
       } finally {
         setLoading(false);
@@ -77,21 +72,22 @@ const GrantOpportunities = () => {
 
   useEffect(() => {
     if (!user) return;
-    const filter = {};
-
-    // if (typeFilter !== "ALL") {
-    //   loadMorePrograms({ programType: typeFilter });
-    // } else {
-    //   loadMorePrograms();
-    // }
+    const filter = {
+      ...(minFunding ? { fundingAmount: { $gte: minFunding } } : {}),
+      ...(maxFunding ? { fundingAmount: { $lte: maxFunding } } : {}),
+      ...(deadlineStart
+        ? {
+            startDate: { $gte: new Date(deadlineStart) },
+          }
+        : {}),
+      ...(deadlineEnd ? { endDate: { $lte: new Date(deadlineEnd) } } : {}),
+    };
 
     if (typeFilter !== "ALL") {
       filter.category = typeFilter;
-    } else {
-      Object.keys(filter).forEach((key) => delete filter[key]);
     }
     loadMorePrograms(filter);
-  }, [user, typeFilter]);
+  }, [user, typeFilter, minFunding, maxFunding, deadlineStart, deadlineEnd]);
 
   useEffect(() => {
     if (loading) return;
@@ -102,7 +98,8 @@ const GrantOpportunities = () => {
         container &&
         window.innerHeight + window.scrollY >= container.scrollHeight - 100
       ) {
-        loadMorePrograms();
+        loadMorePrograms(undefined, undefined, false);
+        setPage((p) => p + 1);
       }
     };
 
@@ -115,16 +112,31 @@ const GrantOpportunities = () => {
 
   // Function to perform the actual search
   const performSearch = useCallback(
-    (text) => {
+    (text, search) => {
       setPage(1);
       setPrograms([]);
 
-      const query = {};
-      if (typeFilter !== "ALL") query.programType = typeFilter;
+      const minFundingR = search?.minFunding ?? minFunding;
+      const maxFundingR = search?.maxFunding ?? maxFunding;
+      const deadlineStartR = search?.deadlineStart ?? deadlineStart;
+      const deadlineEndR = search?.deadlineEnd ?? deadlineEnd;
+      const typeFilterR = search?.typeFilter ?? typeFilter;
+
+      const query = {
+        ...(minFundingR ? { fundingAmount: { $gte: minFundingR } } : {}),
+        ...(maxFundingR ? { fundingAmount: { $lte: maxFundingR } } : {}),
+        ...(deadlineStartR
+          ? {
+              startDate: { $gte: deadlineStartR },
+            }
+          : {}),
+        ...(deadlineEndR ? { endDate: { $lte: deadlineEndR } } : {}),
+      };
+      if (typeFilterR !== "ALL") query.programType = typeFilterR;
 
       loadMorePrograms(query, text);
     },
-    [typeFilter]
+    [typeFilter, minFunding, maxFunding, deadlineStart, deadlineEnd]
   );
 
   // Function to handle the input change with debounce
@@ -140,6 +152,73 @@ const GrantOpportunities = () => {
     }, 2000);
   };
 
+  const saveCurrentSearch = useCallback(async () => {
+    const searchCriteria = {
+      typeFilter,
+      minFunding,
+      maxFunding,
+      deadlineStart,
+      deadlineEnd,
+      searchTerm,
+    };
+
+    try {
+      await CrudService.create("SavedSearchGrantOpp", searchCriteria);
+      await fetchUserSavedSearches();
+    } catch (error) {}
+  }, [
+    typeFilter,
+    minFunding,
+    maxFunding,
+    deadlineStart,
+    deadlineEnd,
+    searchTerm,
+  ]);
+
+  const fetchUserSavedSearches = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await CrudService.search(
+        "SavedSearchGrantOpp",
+        100000,
+        1,
+        {
+          filters: { user_id: user._id },
+          sort: { createdAt: -1 },
+        }
+      );
+      setSavedSearches(response.data.items);
+    } catch (error) {
+      console.error("Failed to fetch saved searches", error);
+    }
+  }, [user]);
+  useEffect(() => {
+    fetchUserSavedSearches();
+  }, [fetchUserSavedSearches]);
+
+  const deleteSavedSearch = async (savedSearchId) => {
+    try {
+      await CrudService.delete("SavedSearchGrantOpp", savedSearchId);
+      await fetchUserSavedSearches();
+    } catch (error) {
+      console.error("Failed to delete saved search", error);
+    }
+  };
+
+  const loadSavedSearch = (search) => {
+    setTypeFilter(search.typeFilter || "ALL");
+    setMinFunding(search.minFunding);
+    setMaxFunding(search.maxFunding);
+    setDeadlineStart(search.deadlineStart);
+    setDeadlineEnd(search.deadlineEnd);
+
+    setSearchTerm(search.searchTerm);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      performSearch(search.searchTerm, search);
+    }, 2000);
+  };
+
   return (
     <>
       <div className="relative mt-2 flex items-center">
@@ -147,7 +226,7 @@ const GrantOpportunities = () => {
           type="text"
           id="search"
           placeholder="Search Grant Opportunities"
-          className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           value={searchTerm}
           onChange={handleInputChange}
         />
@@ -156,13 +235,13 @@ const GrantOpportunities = () => {
           <div style={{ width: "max-content" }}>
             <Menu.Button
               type="button"
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold dark:text-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
               <BarsArrowUpIcon
-                className="-ml-0.5 h-5 w-5 text-gray-400"
+                className="-ml-0.5 h-5 w-5 dark:text-white text-gray-400"
                 aria-hidden="true"
               />
-              Category:{" "}
+              Thematic Area:{" "}
               {typeFilter !== "ALL"
                 ? categories.find((item) => item._id === typeFilter)?.Name
                 : "All"}
@@ -177,14 +256,14 @@ const GrantOpportunities = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {[{ _id: "ALL", Name: "All" }, ...categories].map((item) => (
                 <Menu.Item key={item._id}>
                   {({ active }) => (
                     <div
                       className={classNames(
                         active || typeFilter === item._id ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                        "block px-4 py-2 text-sm dark:text-white text-gray-700 cursor-pointer"
                       )}
                       onClick={() => {
                         setPage(1);
@@ -200,6 +279,107 @@ const GrantOpportunities = () => {
             </Menu.Items>
           </Transition>
         </Menu>
+      </div>
+
+      <div className="flex flex-col md:flex-row justify-between gap-1 mt-1">
+        <InputNumber
+          style={{ width: "max-content" }}
+          placeholder="Minimum Funding"
+          onChange={(value) => setMinFunding(value)}
+          value={minFunding}
+        />
+        <InputNumber
+          style={{ width: "max-content" }}
+          placeholder="Maximum Funding"
+          onChange={(value) => setMaxFunding(value)}
+          value={maxFunding}
+        />
+        <DatePicker
+          style={{ width: "max-content" }}
+          placeholder="Start Deadline"
+          onChange={(date, dateString) => setDeadlineStart(dateString)}
+          value={deadlineStart ? dayjs(deadlineStart) : null}
+        />
+        <DatePicker
+          style={{ width: "max-content" }}
+          placeholder="End Deadline"
+          onChange={(date, dateString) => setDeadlineEnd(dateString)}
+          value={deadlineEnd ? dayjs(deadlineEnd) : null}
+        />
+        <Space size={0}>
+          <button
+            style={{
+              border: "solid 1px",
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
+            className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+            onClick={saveCurrentSearch}
+          >
+            <FaRegSave />
+          </button>
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button
+                style={{
+                  border: "solid 1px",
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                }}
+                className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+              >
+                <FaAngleDown />
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  {savedSearches.map((search) => (
+                    <Menu.Item key={search._id}>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          onClick={() => loadSavedSearch(search)}
+                          className={`${
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700"
+                          } flex justify-between w-full px-4 py-2 text-sm`}
+                        >
+                          {search.searchTerm ||
+                            moment(search.createdAt).format(
+                              STANDARD_MOMENT_FORMAT
+                            ) ||
+                            "Unnamed Search"}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent loading the search when attempting to delete
+                              deleteSavedSearch(search._id);
+                            }}
+                            className={`${
+                              active ? "text-gray-900" : "text-gray-400"
+                            } ml-2 hover:text-gray-600`}
+                          >
+                            &#x2715;{" "}
+                            {/* This is a 'X' character for the delete button */}
+                          </button>
+                        </a>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+        </Space>
       </div>
 
       <div className="container mx-auto p-4" id="programContainer">
@@ -282,82 +462,23 @@ const GrantOpportunities = () => {
                         }}
                       />
                     )}
-
-                    {/*{programType && programType.hasOwnProperty('isFavorite') && programType.isFavorite ? (*/}
-                    {/*    <MdFavorite*/}
-                    {/*        className={'mx-1 cursor-pointer'}*/}
-                    {/*        stroke={'red'}*/}
-                    {/*        color={'red'}*/}
-                    {/*        size={22}*/}
-                    {/*        onClick={async (value) => {*/}
-                    {/*            setPrograms((prevPrograms) =>*/}
-                    {/*                prevPrograms.map((p) =>*/}
-                    {/*                    p._id === programType._id*/}
-                    {/*                        ? { ...p, isFavorite: false }*/}
-                    {/*                        : p*/}
-                    {/*                )*/}
-                    {/*            );*/}
-                    {/*            await CrudService.update("Suite", programType._id, {*/}
-                    {/*                isFavorite: false,*/}
-                    {/*            })*/}
-                    {/*            .then((res) => {*/}
-                    {/*                if (res.data) {*/}
-                    {/*                }*/}
-                    {/*            })*/}
-                    {/*            .catch((error) => {*/}
-                    {/*                setPrograms((prevPrograms) =>*/}
-                    {/*                    prevPrograms.map((p) =>*/}
-                    {/*                        p._id === programType._id*/}
-                    {/*                            ? { ...p, isFavorite: false }*/}
-                    {/*                            : p*/}
-                    {/*                    )*/}
-                    {/*                );*/}
-                    {/*            });*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*) : (*/}
-                    {/*    <MdFavoriteBorder*/}
-                    {/*        className={'mx-1 cursor-pointer'}*/}
-                    {/*        stroke={'red'}*/}
-                    {/*        size={22}*/}
-                    {/*        onClick={async (value) => {*/}
-                    {/*            setPrograms((prevPrograms) =>*/}
-                    {/*                prevPrograms.map((p) =>*/}
-                    {/*                    p._id === programType._id*/}
-                    {/*                        ? { ...p, isFavorite: true }*/}
-                    {/*                        : p*/}
-                    {/*                )*/}
-                    {/*            );*/}
-                    {/*            await CrudService.update("Suite", programType._id, {*/}
-                    {/*                isFavorite: true,*/}
-                    {/*            })*/}
-                    {/*                .then((res) => {*/}
-                    {/*                    if (res.data) {*/}
-                    {/*                    }*/}
-                    {/*                })*/}
-                    {/*                .catch((error) => {*/}
-                    {/*                    setPrograms((prevPrograms) =>*/}
-                    {/*                        prevPrograms.map((p) =>*/}
-                    {/*                            p._id === programType._id*/}
-                    {/*                                ? { ...p, isFavorite: true }*/}
-                    {/*                                : p*/}
-                    {/*                        )*/}
-                    {/*                    );*/}
-                    {/*                });*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*)}*/}
                   </Tooltip>
                 </div>
-                <p className="text-gray-700 text-base">
+                <p className="dark:text-white dark:text-white text-gray-700 text-base">
                   {programType.description}
                 </p>
               </div>
-              <div className="px-6 pt-4 pb-2">
+              <div className="px-6 pt-4 pb-2 flex gap-1">
                 <button
                   className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
                   onClick={() => {
-                    navigate(`/dashboard/suitedetail?id=${programType._id}`);
+                    navigate(
+                      `/dashboard/${
+                        user.role === "admin"
+                          ? "suiteoverviewdetail"
+                          : "suitedetail"
+                      }?id=${programType._id}`
+                    );
                   }}
                 >
                   View

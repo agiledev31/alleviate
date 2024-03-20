@@ -65,7 +65,7 @@ const Templates = () => {
                     {templateType.name}
                   </div>
                 </div>
-                <p className="text-gray-700 text-base">
+                <p className="dark:text-white dark:text-white text-gray-700 text-base">
                   {templateType.description}
                 </p>
               </div>
@@ -73,7 +73,9 @@ const Templates = () => {
                 <button
                   className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
                   onClick={async () => {
-                    navigate(`/dashboard/templatedetails?id=${templateType._id}`);
+                    navigate(
+                      `/dashboard/templatedetails?id=${templateType._id}`
+                    );
                   }}
                 >
                   View

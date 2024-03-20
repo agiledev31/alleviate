@@ -1,4 +1,4 @@
-import { LOADING, LOGIN, LOGOUT } from "./constants";
+import { DARK_MODE, LOADING, LOGIN, LOGOUT } from "./constants";
 
 export const login = (user) => ({
   type: LOGIN,
@@ -12,4 +12,9 @@ export const logout = () => ({
 export const setLoading = (loading) => ({
   type: LOADING,
   payload: loading,
+});
+
+export const setDarkMode = (mode) => ({
+  type: DARK_MODE,
+  payload: mode,
 });

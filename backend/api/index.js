@@ -15,6 +15,7 @@ const strapiRoutes = require("../routes/strapiRoutes");
 const statsRoutes = require("../routes/statsRoutes");
 const placeRoutes = require("../routes/addressPlacesRoute");
 const dashboardRoutes = require("../routes/dashboardRoutes");
+const notificationRoutes = require("../routes/notificationRoutes");
 
 connectDB();
 const app = express();
@@ -62,6 +63,7 @@ app.use("/api/strapi/", strapiRoutes);
 app.use("/api/stats/", statsRoutes);
 app.use("/api/place/", placeRoutes);
 app.use("/api/dashboard/", dashboardRoutes);
+app.use("/api/notification/", notificationRoutes);
 
 //if you not use admin dashboard then these two route will not needed.
 

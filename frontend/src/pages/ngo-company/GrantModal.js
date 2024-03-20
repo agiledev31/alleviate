@@ -1,11 +1,14 @@
 import { Modal, Radio } from "antd";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { selectDarkMode } from "../../redux/auth/selectors";
 
 const GrantModal = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [selectedOption, setSelectedOption] = useState("scratch");
+  const darkMode = useSelector(selectDarkMode);
 
   const handleOk = async () => {
     if (selectedOption === "template") {
@@ -42,6 +45,7 @@ const GrantModal = () => {
   return (
     <>
       <Modal
+        wrapClassName={`${darkMode ? "dark" : ""}`}
         title={formData.label}
         open={isModalOpen}
         onOk={handleOk}

@@ -34,7 +34,7 @@ const Forgot = () => {
             </label>
             <input
               type="email"
-              className="field w-input"
+              className="dark:bg-gray-900 field w-input"
               maxLength={256}
               name="email"
               data-name="email"

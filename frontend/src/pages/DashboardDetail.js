@@ -183,10 +183,16 @@ const DashboardDetail = () => {
 
   return (
     <div className="">
-      <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6 bg-[#f1f5f9]"}>
+      <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          <div className={"col-span-12 shadow-sm bg-white p-8"}>
-            <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+          <div
+            className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+          >
+            <h2
+              className={
+                "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+              }
+            >
               Sustainable Development Goals
             </h2>
             <div className="flex flex-row justify-between items-center">
@@ -265,8 +271,14 @@ const DashboardDetail = () => {
           </div>
 
           {favoriteKPIs?.length > 0 && (
-            <div className={"col-span-12 shadow-sm bg-white p-8"}>
-              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
                 Favourite KPIs
               </h2>
               <div className="w-full justify-start items-center display-ruby-text">
@@ -283,13 +295,19 @@ const DashboardDetail = () => {
           )}
 
           {submittedProgramData?.length > 0 && (
-            <div className={"col-span-12 shadow-sm bg-white p-8"}>
-              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
                 Recent Submissions
               </h2>
               <div
                 className={
-                  "col-span-12 rounded-sm border border-stroke bg-white  pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900  pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
                 }
               >
                 <div className="relative overflow-x-auto">
@@ -333,13 +351,19 @@ const DashboardDetail = () => {
           )}
 
           {pendingProgramData?.length > 0 && (
-            <div className={"col-span-12 shadow-sm bg-white p-8"}>
-              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
                 Pending Programs
               </h2>
               <div
                 className={
-                  "col-span-12 rounded-sm border border-stroke bg-white pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
                 }
               >
                 <div className="relative overflow-x-auto">

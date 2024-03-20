@@ -14,7 +14,7 @@ import { RiSortAsc } from "react-icons/ri";
 import { TbDeviceHeartMonitor } from "react-icons/tb";
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
-import { selectLoading } from "../../../redux/auth/selectors";
+import { selectDarkMode, selectLoading } from "../../../redux/auth/selectors";
 import UserService from "../../../service/UserService";
 
 const PAGE_LIMIT = 18;
@@ -36,6 +36,7 @@ const Team = () => {
     phone: "",
   });
   const backendLoading = useSelector(selectLoading);
+  const darkMode = useSelector(selectDarkMode);
 
   const sortQuery = {
     recent_created: { createdAt: -1 },
@@ -124,7 +125,7 @@ const Team = () => {
         <input
           type="text"
           placeholder="Search Team Members"
-          className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 dark:text-gray-400  shadow-sm dark:shadow-gray-400/50  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-900 "
+          className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 dark:text-gray-400  shadow-sm dark:shadow-gray-400/50  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-900 "
           value={searchTerm}
           onChange={handleInputChange}
         />
@@ -133,7 +134,7 @@ const Team = () => {
           <div>
             <Menu.Button
               type="button"
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-400  ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold dark:text-white text-gray-900 dark:text-gray-400  ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
               <RiSortAsc />
               Sort
@@ -148,7 +149,7 @@ const Team = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 shadow-lg dark:shadow-gray-400/50 hover:shadow-gray-600/50  ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 dark:bg-gray-900 py-1 shadow-lg dark:shadow-gray-400/50 hover:shadow-gray-600/50  ring-1 ring-black ring-opacity-5 focus:outline-none">
               {[
                 { _id: "recent_created", name: "Newest first" },
                 { _id: "oldest_created", name: "Oldest first" },
@@ -160,7 +161,7 @@ const Team = () => {
                         active || sortId === item._id
                           ? "bg-gray-100 dark:bg-gray-400 dark:bg-gray-600"
                           : "",
-                        "block px-4 py-2 text-sm text-gray-700 dark:text-gray-300  cursor-pointer"
+                        "block px-4 py-2 text-sm dark:text-white text-gray-700 dark:text-gray-300  cursor-pointer"
                       )}
                       onClick={() => {
                         setPage(1);
@@ -223,7 +224,7 @@ const Team = () => {
                   <div>
                     <a
                       href={`mailto:${user.email}`}
-                      className="text-gray-700 dark:text-gray-300  text-base"
+                      className="dark:text-white dark:text-white text-gray-700 dark:text-gray-300  text-base"
                     >
                       {user.email}
                     </a>
@@ -231,7 +232,7 @@ const Team = () => {
                   <div>
                     <a
                       href={`tel:${user.phone}`}
-                      className="text-gray-700 dark:text-gray-300  text-base"
+                      className="dark:text-white dark:text-white text-gray-700 dark:text-gray-300  text-base"
                     >
                       {user.phone}
                     </a>
@@ -261,7 +262,7 @@ const Team = () => {
 
                 <div className="flex justify-between items-end">
                   <div>
-                    <p className="text-gray-400 text-[10px]">
+                    <p className="dark:text-white dark:text-white text-gray-400 text-[10px]">
                       Joined:{" "}
                       {moment(user.createdAt).format("Do MMM, YYYY, HH:mm")}
                     </p>
@@ -297,6 +298,7 @@ const Team = () => {
       </div>
 
       <Modal
+        wrapClassName={`${darkMode ? "dark" : ""}`}
         open={isInviteModalOpen}
         onCancel={() => setIsInviteModalOpen(false)}
         okButtonProps={{ style: { display: "none" } }}
@@ -340,7 +342,7 @@ const Team = () => {
             defaultCountry="US"
             className="w-full mt-2"
             inputClass="dark:!bg-gray-900"
-            dropdownClass="dark:!text-black"
+            dropdownClass="dark:!text-white"
             buttonClass="dark:!bg-gray-900"
             value={inviteData.phone}
             onChange={(e) => setInviteData({ ...inviteData, phone: e })}

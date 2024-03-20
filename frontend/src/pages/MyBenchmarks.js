@@ -414,15 +414,19 @@ const DashboardDetail = () => {
 
   return (
     <div className="">
-      <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6 bg-[#f1f5f9]"}>
+      <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
           <div
             className={
-              "col-span-12 sm:col-span-7 xl:col-span-8 shadow-sm bg-white p-8"
+              "col-span-12 sm:col-span-7 xl:col-span-8 shadow-sm bg-white dark:bg-gray-900 p-8"
             }
           >
             <div className="flex justify-between items-start mb-5">
-              <h2 className={"text-gray-900 text-2xl font-bold pb-4"}>
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
                 Benchmarks
               </h2>
               <Space className="min-h-[110px]" direction="vertical">
@@ -542,10 +546,16 @@ const DashboardDetail = () => {
           </div>
           <div
             className={
-              "col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white p-8"
+              "col-span-12 sm:col-span-5 xl:col-span-4 shadow-sm bg-white dark:bg-gray-900 p-8"
             }
           >
-            <h2 className={"text-gray-900 text-2xl pb-4"}>Disaggregation</h2>
+            <h2
+              className={
+                "dark:text-white dark:text-white text-gray-900 text-2xl pb-4"
+              }
+            >
+              Disaggregation
+            </h2>
 
             <div>
               {selectedKPI ? (

@@ -53,7 +53,7 @@ export default function Example() {
   if (!landingPageData) return <Skeleton active />;
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-900">
       <header className="absolute inset-x-0 top-0 z-50">
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
@@ -67,7 +67,7 @@ export default function Example() {
           <div className="flex lg:hidden">
             <button
               type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 dark:text-white text-gray-700"
               onClick={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
@@ -79,7 +79,7 @@ export default function Example() {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
               >
                 {item.name}
               </Link>
@@ -88,7 +88,7 @@ export default function Example() {
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Link
               to="/auth/login"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
             >
               Log in <span aria-hidden="true">&rarr;</span>
             </Link>
@@ -101,7 +101,7 @@ export default function Example() {
           onClose={setMobileMenuOpen}
         >
           <div className="fixed inset-0 z-50" />
-          <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white dark:bg-gray-900 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
               <Link to="/" className="-m-1.5 p-1.5">
                 <img
@@ -112,7 +112,7 @@ export default function Example() {
               </Link>
               <button
                 type="button"
-                className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                className="-m-2.5 rounded-md p-2.5 dark:text-white text-gray-700"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <span className="sr-only">Close menu</span>
@@ -126,7 +126,7 @@ export default function Example() {
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white text-gray-900 hover:bg-gray-50"
                     >
                       {item.name}
                     </Link>
@@ -135,7 +135,7 @@ export default function Example() {
                 <div className="py-6">
                   <Link
                     to="/auth/login"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 dark:text-white text-gray-900 hover:bg-gray-50"
                   >
                     Log in
                   </Link>
@@ -192,10 +192,10 @@ export default function Example() {
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                  <h1 className="text-4xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-6xl">
                     {landingPageData?.landingpage?.HeroTitle}
                   </h1>
-                  <p className="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
+                  <p className="mt-6 text-lg leading-8 dark:text-white text-gray-600 sm:max-w-md lg:max-w-none">
                     {landingPageData?.landingpage?.HeroText}
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
@@ -211,7 +211,7 @@ export default function Example() {
                           landingPageData?.landingpage?.HeroCTASecondaryLink
                         }
                         target="_blank"
-                        className="text-sm font-semibold leading-6 text-gray-900"
+                        className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
                       >
                         {landingPageData?.landingpage?.HeroCTASecondaryText}{" "}
                         <span aria-hidden="true">→</span>
@@ -299,24 +299,24 @@ export default function Example() {
         </div>
       </main>
 
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-white dark:bg-gray-900 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <div>
               <h2 className="text-base font-semibold leading-7 text-indigo-600">
                 {landingPageData?.landingpage?.FeaturesTag}
               </h2>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              <p className="mt-2 text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
                 {landingPageData?.landingpage?.FeaturesTitle}
               </p>
-              <p className="mt-6 text-base leading-7 text-gray-600">
+              <p className="mt-6 text-base leading-7 dark:text-white text-gray-600">
                 {landingPageData?.landingpage?.FeaturesText}
               </p>
             </div>
-            <dl className="col-span-2 grid grid-cols-1 gap-x-8 gap-y-10 text-base leading-7 text-gray-600 sm:grid-cols-2 lg:gap-y-16">
+            <dl className="col-span-2 grid grid-cols-1 gap-x-8 gap-y-10 text-base leading-7 dark:text-white text-gray-600 sm:grid-cols-2 lg:gap-y-16">
               {landingPageData?.features?.map?.((feature) => (
                 <div key={feature._id} className="relative pl-9">
-                  <dt className="font-semibold text-gray-900">
+                  <dt className="font-semibold dark:text-white text-gray-900">
                     <CheckIcon
                       className="absolute left-0 top-1 h-5 w-5 text-indigo-500"
                       aria-hidden="true"
@@ -331,13 +331,13 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
               {landingPageData?.landingpage?.ExpoTitle}
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 dark:text-white text-gray-600">
               {landingPageData?.landingpage?.ExpoText}
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -350,7 +350,7 @@ export default function Example() {
               {landingPageData?.landingpage?.ExpoCTASecondaryActive && (
                 <Link
                   to={landingPageData?.landingpage?.ExpoCTASecondaryLink}
-                  className="text-sm font-semibold leading-6 text-gray-900"
+                  className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
                 >
                   {landingPageData?.landingpage?.ExpoCTASecondaryText}{" "}
                   <span aria-hidden="true">→</span>
@@ -361,17 +361,17 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-white dark:bg-gray-900 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-base font-semibold leading-7 text-indigo-600">
               {landingPageData?.landingpage?.PricingTag}
             </h2>
-            <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            <p className="mt-2 text-4xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-5xl">
               {landingPageData?.landingpage?.PricingTitle}
             </p>
           </div>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
+          <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 dark:text-white text-gray-600">
             {landingPageData?.landingpage?.PricingText}
           </p>
           <div className="mt-16 flex justify-center">
@@ -389,7 +389,9 @@ export default function Example() {
                   value={option}
                   className={({ checked }) =>
                     classNames(
-                      checked ? "bg-indigo-600 text-white" : "text-gray-500",
+                      checked
+                        ? "bg-indigo-600 text-white"
+                        : "dark:text-white dark:text-white text-gray-500",
                       "cursor-pointer rounded-full px-2.5 py-1"
                     )
                   }
@@ -414,7 +416,9 @@ export default function Example() {
                   <h3
                     id={tier._id}
                     className={classNames(
-                      tier.Popular ? "text-indigo-600" : "text-gray-900",
+                      tier.Popular
+                        ? "text-indigo-600"
+                        : "dark:text-white dark:text-white text-gray-900",
                       "text-lg font-semibold leading-8"
                     )}
                   >
@@ -426,14 +430,14 @@ export default function Example() {
                     </p>
                   ) : null}
                 </div>
-                <p className="mt-4 text-sm leading-6 text-gray-600">
+                <p className="mt-4 text-sm leading-6 dark:text-white text-gray-600">
                   {tier.Description}
                 </p>
                 <p className="mt-6 flex items-baseline gap-x-1">
-                  <span className="text-sm font-semibold leading-6 text-gray-600">
+                  <span className="text-sm font-semibold leading-6 dark:text-white text-gray-600">
                     $
                   </span>
-                  <span className="text-4xl font-bold tracking-tight text-gray-900">
+                  <span className="text-4xl font-bold tracking-tight dark:text-white text-gray-900">
                     {frequency.value === "monthly"
                       ? tier.PriceMonth
                       : tier.PriceAnnual}
@@ -455,7 +459,7 @@ export default function Example() {
                 </a>
                 <ul
                   role="list"
-                  className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
+                  className="mt-8 space-y-3 text-sm leading-6 dark:text-white text-gray-600 xl:mt-10"
                 >
                   <li className="flex gap-x-3">
                     <CheckIcon
@@ -514,9 +518,9 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white py-16 sm:py-24 lg:py-32">
+      <div className="bg-white dark:bg-gray-900 py-16 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-2xl text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <div className="max-w-2xl text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
             <h2 className="inline sm:block">
               {landingPageData?.landingpage?.NewsletterText}
             </h2>{" "}
@@ -538,7 +542,7 @@ export default function Example() {
                 type="email"
                 autoComplete="email"
                 required
-                className="min-w-0 flex-auto rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="dark:bg-gray-900 min-w-0 flex-auto rounded-md border-0 px-3.5 py-2 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Enter your email"
               />
               <button
@@ -548,7 +552,7 @@ export default function Example() {
                 Subscribe
               </button>
             </div>
-            <p className="mt-4 text-sm leading-6 text-gray-900">
+            <p className="mt-4 text-sm leading-6 dark:text-white text-gray-900">
               We care about your data. Read our{" "}
               <a
                 href="https://termly.io/"
@@ -589,7 +593,7 @@ export default function Example() {
             <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               {landingPageData?.landingpage?.OurStatsTitle}
             </p>
-            <p className="mt-6 text-lg leading-8 text-gray-300">
+            <p className="mt-6 text-lg leading-8 dark:text-white text-gray-300">
               {landingPageData?.landingpage?.OurStatsDescription}
             </p>
           </div>
@@ -609,7 +613,7 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="relative isolate bg-white pb-32 pt-24 sm:pt-32">
+      <div className="relative isolate bg-white dark:bg-gray-900 pb-32 pt-24 sm:pt-32">
         <div
           className="absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 transform-gpu overflow-hidden opacity-30 blur-3xl"
           aria-hidden="true"
@@ -639,13 +643,13 @@ export default function Example() {
             <h2 className="text-lg font-semibold leading-8 tracking-tight text-indigo-600">
               {landingPageData?.landingpage?.TestimonialTag}
             </h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="mt-2 text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
               {landingPageData?.landingpage?.TestimonialTitle}
             </p>
           </div>
-          <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
-            <figure className="rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
-              <blockquote className="p-6 text-lg font-semibold leading-7 tracking-tight text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
+          <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 dark:text-white text-gray-900 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
+            <figure className="rounded-2xl bg-white dark:bg-gray-900 shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
+              <blockquote className="p-6 text-lg font-semibold leading-7 tracking-tight dark:text-white text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
                 <p>{`“${landingPageData?.testimonials?.[0].Testimonial}”`}</p>
               </blockquote>
               <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
@@ -663,7 +667,7 @@ export default function Example() {
                   <div className="font-semibold">
                     {landingPageData?.testimonials?.[0].Authorname}
                   </div>
-                  <div className="text-gray-600">{`@${landingPageData?.testimonials?.[0].AuthorTag}`}</div>
+                  <div className="dark:text-white dark:text-white text-gray-600">{`@${landingPageData?.testimonials?.[0].AuthorTag}`}</div>
                 </div>
                 <img
                   className="h-10 w-auto flex-none"
@@ -700,9 +704,9 @@ export default function Example() {
                     {column.map((testimonial) => (
                       <figure
                         key={testimonial._id}
-                        className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5"
+                        className="rounded-2xl bg-white dark:bg-gray-900 p-6 shadow-lg ring-1 ring-gray-900/5"
                       >
-                        <blockquote className="text-gray-900">
+                        <blockquote className="dark:text-white dark:text-white text-gray-900">
                           <p>{`“${testimonial.Testimonial}”`}</p>
                         </blockquote>
                         <figcaption className="mt-6 flex items-center gap-x-4">
@@ -719,7 +723,7 @@ export default function Example() {
                             <div className="font-semibold">
                               {testimonial.Authorname}
                             </div>
-                            <div className="text-gray-600">{`@${testimonial.AuthorTag}`}</div>
+                            <div className="dark:text-white dark:text-white text-gray-600">{`@${testimonial.AuthorTag}`}</div>
                           </div>
                         </figcaption>
                       </figure>
@@ -732,13 +736,13 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-white dark:bg-gray-900 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
               {landingPageData?.landingpage?.BlogTitle}
             </h2>
-            <p className="mt-2 text-lg leading-8 text-gray-600">
+            <p className="mt-2 text-lg leading-8 dark:text-white text-gray-600">
               {landingPageData?.landingpage?.BlogText}
             </p>
           </div>
@@ -757,7 +761,7 @@ export default function Example() {
                 <div className="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
                 <div className="absolute inset-0 -z-10 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
 
-                <div className="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                <div className="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 dark:text-white text-gray-300">
                   <time dateTime={post.published_at} className="mr-8">
                     {moment(post.published_at).format("Do MMM, YYYY")}
                   </time>
@@ -785,7 +789,7 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white py-12 sm:py-8">
+      <div className="bg-white dark:bg-gray-900 py-12 sm:py-8">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:max-w-4xl">
             <div className="mt-4 space-y-20 lg:mt-20 lg:space-y-20">
@@ -809,38 +813,38 @@ export default function Example() {
                     <div className="flex items-center gap-x-4 text-xs">
                       <time
                         dateTime={post.published_at}
-                        className="text-gray-500"
+                        className="dark:text-white dark:text-white text-gray-500"
                       >
                         {moment(post.published_at).format("Do MMM, YYYY")}
                       </time>
                       <Link
                         // to={post.category?.[0]?.href}
-                        className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
+                        className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium dark:text-white text-gray-600 hover:bg-gray-100"
                       >
                         {post.category?.[0]?.Title}
                       </Link>
                     </div>
                     <div className="group relative max-w-xl">
-                      <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                      <h3 className="mt-3 text-lg font-semibold leading-6 dark:text-white text-gray-900 group-hover:text-gray-600">
                         <Link to={`/blog/${post._id}`}>
                           <span className="absolute inset-0" />
                           {post.Title}
                         </Link>
                       </h3>
-                      <p className="mt-5 text-sm leading-6 text-gray-600">
+                      <p className="mt-5 text-sm leading-6 dark:text-white text-gray-600">
                         {post.Description}
                       </p>
                     </div>
                     <div className="mt-6 flex border-t border-gray-900/5 pt-6">
                       <div className="relative flex items-center gap-x-4">
                         {/* <div className="text-sm leading-6">
-                          <p className="font-semibold text-gray-900">
+                          <p className="font-semibold dark:text-white text-gray-900">
                             <Link to={post.author.href}>
                               <span className="absolute inset-0" />
                               {post.author.name}
                             </Link>
                           </p>
-                          <p className="text-gray-600">{post.author.role}</p>
+                          <p className="dark:text-white dark:text-white text-gray-600">{post.author.role}</p>
                         </div> */}
                       </div>
                     </div>
@@ -852,13 +856,13 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-white dark:bg-gray-900 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-4xl">
               {landingPageData?.landingpage?.OurTeamTitle}
             </h2>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p className="mt-6 text-lg leading-8 dark:text-white text-gray-600">
               {landingPageData?.landingpage?.OurTeamText}
             </p>
           </div>
@@ -881,19 +885,21 @@ export default function Example() {
                   }
                   alt=""
                 />
-                <h3 className="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">
+                <h3 className="mt-6 text-base font-semibold leading-7 tracking-tight dark:text-white text-gray-900">
                   {person.FullName}
                 </h3>
-                <p className="text-sm leading-6 text-gray-600">{person.Role}</p>
+                <p className="text-sm leading-6 dark:text-white text-gray-600">
+                  {person.Role}
+                </p>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-white dark:bg-gray-900 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <h2 className="text-center text-lg font-semibold leading-8 text-gray-900">
+          <h2 className="text-center text-lg font-semibold leading-8 dark:text-white text-gray-900">
             {landingPageData?.landingpage?.TrustedText}
           </h2>
           <div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
@@ -911,14 +917,14 @@ export default function Example() {
         </div>
       </div>
 
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold leading-10 tracking-tight text-gray-900">
+            <h2 className="text-2xl font-bold leading-10 tracking-tight dark:text-white text-gray-900">
               {landingPageData?.landingpage?.FAQTitle}
             </h2>
 
-            <p className="mt-6 text-base leading-7 text-gray-600">
+            <p className="mt-6 text-base leading-7 dark:text-white text-gray-600">
               <ReactMarkdown>
                 {landingPageData?.landingpage?.FAQText}
               </ReactMarkdown>
@@ -928,10 +934,10 @@ export default function Example() {
             <dl className="space-y-16 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:space-y-0 lg:gap-x-10">
               {landingPageData?.faqs?.map?.((faq) => (
                 <div key={faq._id}>
-                  <dt className="text-base font-semibold leading-7 text-gray-900">
+                  <dt className="text-base font-semibold leading-7 dark:text-white text-gray-900">
                     {faq.Question}
                   </dt>
-                  <dd className="mt-2 text-base leading-7 text-gray-600">
+                  <dd className="mt-2 text-base leading-7 dark:text-white text-gray-600">
                     {faq.Answer}
                   </dd>
                 </div>

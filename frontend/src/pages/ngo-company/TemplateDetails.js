@@ -16,8 +16,10 @@ import {
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { GrInfo } from "react-icons/gr";
+import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingSpinner from "../../components/Loader";
+import { selectDarkMode } from "../../redux/auth/selectors";
 import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
 
@@ -43,6 +45,7 @@ const TemplateDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDefaultAssessment, setSelectedDefaultAssessment] =
     useState(false);
+  const darkMode = useSelector(selectDarkMode);
 
   const load = useCallback(async () => {
     const id = searchParams.get("id");
@@ -422,6 +425,7 @@ const TemplateDetails = () => {
             Add KPI
           </Button>
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={1150}
             open={KPIModal}
             onCancel={() => setKPIModal(false)}
@@ -432,7 +436,7 @@ const TemplateDetails = () => {
                 name="search"
                 id="search"
                 placeholder="Search KPIs"
-                className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 value={kpiSearch}
                 onChange={handleKPISearchChange}
               />
@@ -554,6 +558,7 @@ const TemplateDetails = () => {
               Select Default Assessment
             </Button>
             <Modal
+              wrapClassName={`${darkMode ? "dark" : ""}`}
               width={500}
               open={isModalOpen}
               onOk={handleModalOk}

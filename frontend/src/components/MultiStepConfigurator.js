@@ -4,7 +4,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import { Input, InputNumber, Select, Typography } from "antd";
 import { GrInfo } from "react-icons/gr";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid"; // Import uuid to generate unique keys
+import { selectDarkMode } from "../redux/auth/selectors";
 const { Title } = Typography;
 
 const EditFormModal = ({
@@ -16,6 +18,8 @@ const EditFormModal = ({
   funnelSteps,
   kpis,
 }) => {
+  const darkMode = useSelector(selectDarkMode);
+
   const handleSave = () => {
     onSave(editedItem);
   };
@@ -126,6 +130,7 @@ const EditFormModal = ({
                 editedItem.type
               ) && (
                 <Input
+                  className="dark:bg-gray-900"
                   value={condition.value}
                   onChange={(e) =>
                     setEditedItem((item) => {
@@ -183,6 +188,7 @@ const EditFormModal = ({
   if (!editedItem) return null;
   return (
     <Modal
+      wrapClassName={`${darkMode ? "dark" : ""}`}
       title="Edit Form Input"
       open={isVisible}
       onCancel={onCancel}
@@ -198,6 +204,7 @@ const EditFormModal = ({
       <div>
         <label>Label:</label>
         <Input
+          className="dark:bg-gray-900"
           value={editedItem.label}
           onChange={(e) =>
             setEditedItem({ ...editedItem, label: e.target.value })
@@ -267,6 +274,7 @@ const EditFormModal = ({
           {editedItem.options?.map?.((option, index) => (
             <div key={option.value}>
               <Input
+                className="dark:bg-gray-900"
                 value={option.label}
                 onChange={(e) => {
                   const updatedOptions = [...editedItem.options];
@@ -368,6 +376,7 @@ const EditFormModal = ({
             </Select>
           ) : (
             <Input
+              className="dark:bg-gray-900"
               placeholder="Enter metric name to track as a KPI"
               value={editedItem?.kpi ?? ""}
               onChange={(e) =>
@@ -499,7 +508,7 @@ const MultiStepConfigurator = ({
                     >
                       {(provided) => (
                         <div
-                          className="bg-white rounded-md p-4 mb-4 shadow-md border border-gray-300"
+                          className="bg-white dark:bg-gray-900 rounded-md p-4 mb-4 shadow-md border border-gray-300"
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
@@ -591,7 +600,7 @@ const MultiStepConfigurator = ({
                 <Draggable key={step.id} draggableId={step.id} index={index}>
                   {(provided) => (
                     <div
-                      className="bg-white rounded-md p-4 mb-4 shadow-md border border-gray-300"
+                      className="bg-white dark:bg-gray-900 rounded-md p-4 mb-4 shadow-md border border-gray-300"
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
