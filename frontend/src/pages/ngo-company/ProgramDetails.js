@@ -24,6 +24,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { FaCopy } from "react-icons/fa";
 import { GrInfo } from "react-icons/gr";
+import { useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import CloudinaryUpload from "../../components/CloudinaryUpload";
 import LoadingSpinner from "../../components/Loader";
@@ -35,6 +36,7 @@ import {
   PAGE_NUMBER,
   convertCamelCaseStringToNormalString,
 } from "../../data/constants";
+import { selectDarkMode } from "../../redux/auth/selectors";
 import CrudService from "../../service/CrudService";
 import StatsService from "../../service/StatsService";
 
@@ -67,6 +69,7 @@ const ProgramDetails = () => {
   const [qualificationData, setQualificationData] = useState([]);
   const [unQualificationData, setUnQualificationData] = useState([]);
   const [showLoader, setShowLoader] = useState(false);
+  const darkMode = useSelector(selectDarkMode);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -172,6 +175,7 @@ const ProgramDetails = () => {
           </Button>
 
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={800}
             height={300}
             open={submissionModal}
@@ -356,6 +360,7 @@ const ProgramDetails = () => {
           </Button>
 
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={800}
             height={300}
             open={submissionModal}
@@ -845,6 +850,7 @@ const ProgramDetails = () => {
             View Data Summary
           </Button>
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={1000}
             open={dataSummeryModal}
             onOk={() => setDataSummeryModal(false)}
@@ -873,6 +879,7 @@ const ProgramDetails = () => {
               Qualifications
             </Button>
             <Modal
+              wrapClassName={`${darkMode ? "dark" : ""}`}
               width={1500}
               open={qualificationModal}
               onOk={handleQualificationModalClose}

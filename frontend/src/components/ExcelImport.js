@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
 import { Alert, Modal, Select, Typography, message } from "antd";
+import { useSelector } from "react-redux";
 import * as XLSX from "xlsx";
+import { selectDarkMode } from "../redux/auth/selectors";
 
 const handleXLSXTOJSON = async ({ sheet }, callback) => {
   const XLSXTOJSON = new Promise((resolve, reject) => {
@@ -35,45 +37,6 @@ const handleXLSXTOJSON = async ({ sheet }, callback) => {
   callback(json);
 };
 
-/**
- * 
- * How to use:
- * import { useRef, useState } from "react";
-
-const fileInputRef = useRef(null);
-
-
-// On import click:
-fileInputRef.current.value = "";
-fileInputRef.current.click();
-
-      <ExcelImport
-        modalName={"Shipment"}
-        targetMapping={[
-          {
-            value: "isCheckedForTaskNotification",
-            label: "isCheckedForTaskNotification",
-            type: "boolean",
-          },
-          {
-            value: "shipmentId",
-            label: "shipmentId",
-            type: "string",
-            required: true,
-          },
-          {
-            value: "status",
-            label: "status",
-            type: "string",
-            enum: ["declared", "not_declared", "incomplete"],
-          },
-        ]}
-        handleImport={async (e) => {
-          // e.mappedItems
-        }}
-        fileInputRef={fileInputRef}
-      />
- */
 const ExcelImport = ({
   targetMapping,
   handleImport,
@@ -82,6 +45,7 @@ const ExcelImport = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [bulkUploadProcess, setBulkUploadProcess] = useState({});
+  const darkMode = useSelector(selectDarkMode);
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -112,6 +76,7 @@ const ExcelImport = ({
   return (
     <>
       <Modal
+        wrapClassName={`${darkMode ? "dark" : ""}`}
         open={!!bulkUploadProcess?.json?.[0]}
         onCancel={() => setBulkUploadProcess({})}
         okButtonProps={{ style: { display: "none" } }}
@@ -132,14 +97,14 @@ const ExcelImport = ({
                     <th
                       key={target.value}
                       scope="col"
-                      className="px-6 py-3 text-left text-xs text-gray-500"
+                      className="px-6 py-3 text-left text-xs dark:text-white text-gray-500"
                     >
                       {target.label}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-900 dark:bg-gray-900 divide-y divide-gray-200">
                 {bulkUploadProcess?.mappedItems?.map((line, i) => (
                   <tr key={i}>
                     {targetMapping.map((target) => (
@@ -366,6 +331,7 @@ const ExcelImport = ({
       {/* For bulk upload */}
       <input
         type="file"
+        className="dark:bg-gray-900"
         style={{ display: "none" }}
         ref={fileInputRef}
         onChange={handleFileChange}

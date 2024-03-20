@@ -33,8 +33,10 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import { TbRobotFace } from "react-icons/tb";
 import PhoneInput from "react-phone-number-input";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { countries } from "../data/constants";
+import { selectDarkMode } from "../redux/auth/selectors";
 import CrudService from "../service/CrudService";
 import placeService from "../service/PlaceService";
 import CloudinaryUpload from "./CloudinaryUpload";
@@ -400,6 +402,7 @@ const DynamicForm = ({
         return (
           <>
             <Input
+              className="dark:bg-gray-900"
               placeholder={item.placeholder}
               onChange={(e) => onChange(item.fieldName, e.target.value)}
               value={formData?.[item.fieldName]}
@@ -419,6 +422,7 @@ const DynamicForm = ({
           return <>{JSON.stringify(formData?.[item.fieldName])}</>;
         return (
           <Input
+            className="dark:bg-gray-900"
             type="password"
             placeholder={item.placeholder}
             onChange={(e) => onChange(item.fieldName, e.target.value)}
@@ -431,6 +435,7 @@ const DynamicForm = ({
           return <>{renderDataSummaryItem(item)}</>;
         return (
           <Input.TextArea
+            className="dark:bg-gray-900"
             placeholder={item.placeholder}
             onChange={(e) => onChange(item.fieldName, e.target.value)}
             value={formData?.[item.fieldName]}
@@ -723,6 +728,7 @@ const DynamicForm = ({
             {inputVisible ? (
               <>
                 <Input
+                  className="dark:bg-gray-900"
                   ref={inputRef}
                   type="text"
                   size="small"
@@ -870,6 +876,7 @@ const DynamicForm = ({
           <div ref={wrapperRef}>
             <Dropdown overlay={menu} visible={showAddressResultsMenu}>
               <Input
+                className="dark:bg-gray-900"
                 placeholder={item.placeholder}
                 onChange={(e) => handleSearch(item.fieldName, e.target.value)}
                 value={formData?.[item.fieldName]}
@@ -1021,6 +1028,7 @@ const MultiStepComponent = ({
   const [programEditFormPreviewModal, setProgramEditFormPreviewModal] =
     useState(false);
   const fileInputRef = useRef(null);
+  const darkMode = useSelector(selectDarkMode);
 
   useEffect(() => {
     if (isClickedPublish) {
@@ -1211,9 +1219,9 @@ const MultiStepComponent = ({
         className={`flex-grow ${formType !== "SuitePre" && "p-5"} ${formType === "programPre" || isProgramEditForm ? "hidden" : ""
           }`}
       >
-        {activeStep === 3 &&
-          (formType === "SuitePre" ||
-            (formType === "createTemplate" && programDataDisplay)) ? (
+        {steps[activeStep]?.id === "previewstep" &&
+        (formType === "SuitePre" ||
+          (formType === "createTemplate" && programDataDisplay)) ? (
           <>
             <div className={"flex sm:flex-row flex-col"}>
               <div className={"pl-5 sm:w-8/12"}>
@@ -1226,10 +1234,36 @@ const MultiStepComponent = ({
                 <p className={"p-2"}>
                   <strong>
                     {formType === "SuitePre" ? "Program" : "Template"}{" "}
-                    Description
+                    {steps[activeStep]?.programPreviewDescriptionTitle ??
+                      "Description"}
                   </strong>
-                  : {(programDataDisplay ?? formData)?.description}
+                  :{" "}
+                  {
+                    (programDataDisplay ?? formData)?.[
+                      steps[activeStep]?.programPreviewDescriptionKey ??
+                        "description"
+                    ]
+                  }
                 </p>
+
+                {steps[activeStep]?.programPreviewEligibilityKey && (
+                  <>
+                    <p className={"p-2"}>
+                      <strong>
+                        {formType === "SuitePre" ? "Program" : "Template"}{" "}
+                        {steps[activeStep]?.programPreviewEligibilityTitle}
+                      </strong>
+                      :{" "}
+                      {
+                        (programDataDisplay ?? formData)?.[
+                          steps[activeStep]?.programPreviewEligibilityKey ??
+                            "description"
+                        ]
+                      }
+                    </p>
+                  </>
+                )}
+
                 <div>
                   {(programDataDisplay ?? formData)?.categoryDetail?.Name && (
                     <p className={"p-2"}>
@@ -1390,10 +1424,11 @@ const MultiStepComponent = ({
 
       {/* Sticky Footer */}
       <div
-        className={`bg-white p-4 shadow-md sticky bottom-0 ${formType === "programPre" || formType === "templatePre"
-          ? "hidden"
-          : ""
-          }`}
+        className={`bg-white dark:bg-gray-900 p-4 shadow-md sticky bottom-0 ${
+          formType === "programPre" || formType === "templatePre"
+            ? "hidden"
+            : ""
+        }`}
       >
         <div className="flex justify-between">
           <div>
@@ -1592,6 +1627,7 @@ const MultiStepComponent = ({
                   Preview
                 </Button>
                 <Modal
+                  wrapClassName={`${darkMode ? "dark" : ""}`}
                   width={800}
                   height={500}
                   open={programEditFormPreviewModal}

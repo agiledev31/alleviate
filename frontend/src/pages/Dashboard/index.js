@@ -18,8 +18,9 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { login } from "../../redux/auth/actions";
-import { selectUser } from "../../redux/auth/selectors";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
+import { login, setDarkMode } from "../../redux/auth/actions";
+import { selectDarkMode, selectUser } from "../../redux/auth/selectors";
 import { store } from "../../redux/store";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
@@ -102,6 +103,7 @@ function generateTailwindPalette(baseColor) {
 
 const Dashboard = () => {
   const user = useSelector(selectUser);
+  const darkMode = useSelector(selectDarkMode);
   const [theme, setTheme] = useState(null);
   const Theme = useCallback(
     (props) => {
@@ -247,26 +249,13 @@ const Dashboard = () => {
       display: user?.role === "ngo-company",
     },
     {
-      name: "My Grant Opportunities",
-      component: <MyGrantOpportunities />,
-      href: "/dashboard/mygrantopporunities",
-      icon: MyProgramsIcon,
-      display: user?.role === "ngo-company",
-    },
-    {
       name: "Build Program",
       component: <SuiteModal />,
       href: "/dashboard/suitemodal",
       icon: BuildProgramIcon,
       display: user?.role === "ngo-company",
     },
-    {
-      name: "Post Grant Opportunity",
-      component: <GrantModal />,
-      href: "/dashboard/grantmodal",
-      icon: BuildProgramIcon,
-      display: user?.role === "ngo-company",
-    },
+
     {
       name: "Category Notifications",
       component: <CategotyNotifications />,
@@ -303,11 +292,18 @@ const Dashboard = () => {
       display: user?.role !== "ngo-company",
     },
     {
+      name: "Post Grant Opportunity",
+      component: <GrantModal />,
+      href: "/dashboard/grantmodal",
+      icon: BuildProgramIcon,
+      display: user?.role === "admin",
+    },
+    {
       name: "Grant Opportunities",
       component: <GrantOpportunities />,
       href: "/dashboard/grantopportunities",
       icon: ChartPieIcon,
-      display: user?.role !== "ngo-company",
+      display: ["ngo-company", "admin"].includes(user?.role),
     },
   ]
     .filter((e) => e.display === true)
@@ -320,10 +316,9 @@ const Dashboard = () => {
   const [subMenus, setSubMenus] = useState([]);
 
   useEffect(() => {
-    if (user?.role !== "ngo-company") return;
-
+    if (!["ngo-company", "admin"].includes(user?.role)) return;
     CrudService.search("Suite", 5, 1, {
-      filters: { published: false },
+      filters: { published: false, user_id: user._id },
       sort: { createdAt: -1 },
     }).then((res) => {
       if (res.data.items.length > 0)
@@ -362,6 +357,24 @@ const Dashboard = () => {
       component: <Profile />,
     },
     { name: "Settings", href: "/dashboard/settings", component: <Settings /> },
+    {
+      name: (
+        <div
+          className="w-full flex justify-left"
+          onClick={() => store.dispatch(setDarkMode(!darkMode))}
+        >
+          <DarkModeSwitch
+            checked={darkMode}
+            onChange={(e) => store.dispatch(setDarkMode(e))}
+            size={20}
+          />
+        </div>
+      ),
+      href: "#",
+      onClick: (e) => {
+        e.preventDefault();
+      },
+    },
     {
       name: "Sign out",
       href: "/dashboard",

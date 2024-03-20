@@ -1,5 +1,5 @@
 import { Skeleton, Tabs } from "antd";
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AuthService from "../../service/AuthService";
 import StrapiService from "../../service/StrapiService";
 
@@ -24,24 +24,24 @@ const CategotyNotifications = () => {
   useEffect(() => {
     AuthService.me().then((data) => {
       setMe(data.data.me);
-      setCategoryNotifications(data.data.me.categoryNotifications)
+      setCategoryNotifications(data.data.me.categoryNotifications);
     });
     StrapiService.getList("impact_categories").then(({ data }) =>
-        setCategories(data)
+      setCategories(data)
     );
   }, []);
 
   useEffect(() => {
     if (categories && setCategoriesTabs.length > 0) {
-      const modifiedCategories = categories.map(item => ({
+      const modifiedCategories = categories.map((item) => ({
         ...item,
         key: item._id,
-        label: item.Name
+        label: item.Name,
       }));
-      setSelectedCategory(modifiedCategories[0]?.key)
-      setCategoriesTabs(modifiedCategories)
+      setSelectedCategory(modifiedCategories[0]?.key);
+      setCategoriesTabs(modifiedCategories);
     }
-  }, [categories])
+  }, [categories]);
 
   const notificationConfig = [
     {
@@ -95,7 +95,7 @@ const CategotyNotifications = () => {
       description: "Alerts for publish the assessments.",
       scope: "ngo-company",
       push: true,
-    }
+    },
   ];
 
   const handleCategoryTabChange = (category) => {
@@ -118,7 +118,7 @@ const CategotyNotifications = () => {
       });
 
       const categoryExists = categoryNotifications.some(
-          (item) => item.category === selectedCategory
+        (item) => item.category === selectedCategory
       );
       if (!categoryExists) {
         updatedNotifications.push({
@@ -141,89 +141,105 @@ const CategotyNotifications = () => {
     }
   };
 
-  useEffect( () => {
+  useEffect(() => {
     setSoftValue((v) => ({
-      ...v, categoryNotifications: categoryNotifications
-    }))
-  }, [categoryNotifications])
+      ...v,
+      categoryNotifications: categoryNotifications,
+    }));
+  }, [categoryNotifications]);
   if (!softValue) return <Skeleton />;
 
   return (
     <div className="space-y-2">
       <div>
-        <h2 className="text-base font-semibold leading-7 text-gray-900">
+        <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
           Categories
         </h2>
         {categories && categories.length > 0 && (
-            <>
-              <Tabs
-                  defaultActiveKey="1"
-                  items={categoriesTabs.map((item) => ({
-                    ...item,
-                  }))}
-                  onChange={handleCategoryTabChange}
-                  indicatorSize={(origin) => origin - 16}
-              />
-            </>
+          <>
+            <Tabs
+              defaultActiveKey="1"
+              items={categoriesTabs.map((item) => ({
+                ...item,
+              }))}
+              onChange={handleCategoryTabChange}
+              indicatorSize={(origin) => origin - 16}
+            />
+          </>
         )}
       </div>
 
       <div className="pt-1">
         <div className="px-4 mb-3 sm:px-0">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
             Notifications
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
             We'll always let you know about important changes, but you pick what
             else you want to hear about.
           </p>
         </div>
 
         <form
-          className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+          className="bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="px-4 py-6 sm:p-8">
             <div className="max-w-2xl space-y-10">
               <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-900">
+                <legend className="text-sm font-semibold leading-6 dark:text-white text-gray-900">
                   By Email
                 </legend>
                 <div className="mt-6 space-y-6">
                   {notificationConfig
-                      .filter((n) => !n.push && (!n.scope || n.scope === me?.role))
-                      .map((item, index) => (
-                        <div className="relative flex gap-x-3" key={index}>
-                          <div className="flex h-6 items-center">
-                            <input
-                                id={`notification-email-${index}`}
-                                name={`notification-email-${index}`}
-                                checked={categoryNotifications && categoryNotifications.length > 0 && categoryNotifications.find(item => item.category === selectedCategory)?.notifications[item.id] || false}
-                                onChange={(e) =>
-                                    handleCheckboxChange(item.category, item.id, e.target.checked)
-                                }
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                            />
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label
-                                htmlFor={`notification-email-${index}`}
-                                className="font-medium text-gray-900"
-                            >
-                              {item.title}
-                            </label>
-                            <p className="text-gray-500">{item.description}</p>
-                          </div>
+                    .filter(
+                      (n) => !n.push && (!n.scope || n.scope === me?.role)
+                    )
+                    .map((item, index) => (
+                      <div className="relative flex gap-x-3" key={index}>
+                        <div className="flex h-6 items-center">
+                          <input
+                            id={`notification-email-${index}`}
+                            name={`notification-email-${index}`}
+                            checked={
+                              (categoryNotifications &&
+                                categoryNotifications.length > 0 &&
+                                categoryNotifications.find(
+                                  (item) => item.category === selectedCategory
+                                )?.notifications[item.id]) ||
+                              false
+                            }
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                item.category,
+                                item.id,
+                                e.target.checked
+                              )
+                            }
+                            type="checkbox"
+                            className="dark:bg-gray-900 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                          />
                         </div>
-                  ))}
+                        <div className="text-sm leading-6">
+                          <label
+                            htmlFor={`notification-email-${index}`}
+                            className="font-medium dark:text-white text-gray-900"
+                          >
+                            {item.title}
+                          </label>
+                          <p className="dark:text-white dark:text-white text-gray-500">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </fieldset>
               <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-900">
+                <legend className="text-sm font-semibold leading-6 dark:text-white text-gray-900">
                   By Notifications
                 </legend>
-                <p className="mt-1 text-sm leading-6 text-gray-600 mb-4">
+                <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600 mb-4">
                   These are delivered via SMS to your mobile phone.
                 </p>
                 {notificationConfig
@@ -234,22 +250,35 @@ const CategotyNotifications = () => {
                         <input
                           id={`notification-phone-${index}`}
                           name={`notification-phone-${index}`}
-                          checked={categoryNotifications && categoryNotifications.length > 0 && categoryNotifications.find(item => item.category === selectedCategory)?.notifications[item.id] || false}
+                          checked={
+                            (categoryNotifications &&
+                              categoryNotifications.length > 0 &&
+                              categoryNotifications.find(
+                                (item) => item.category === selectedCategory
+                              )?.notifications[item.id]) ||
+                            false
+                          }
                           onChange={(e) =>
-                              handleCheckboxChange(item.category, item.id, e.target.checked)
+                            handleCheckboxChange(
+                              item.category,
+                              item.id,
+                              e.target.checked
+                            )
                           }
                           type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                          className="dark:bg-gray-900 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                         />
                       </div>
                       <div className="text-sm leading-6">
                         <label
                           htmlFor={`notification-phone-${index}`}
-                          className="font-medium text-gray-900"
+                          className="font-medium dark:text-white text-gray-900"
                         >
                           {item.title}
                         </label>
-                        <p className="text-gray-500">{item.description}</p>
+                        <p className="dark:text-white dark:text-white text-gray-500">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -259,7 +288,7 @@ const CategotyNotifications = () => {
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
             <button
               type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
             >
               Cancel
             </button>
@@ -274,6 +303,6 @@ const CategotyNotifications = () => {
       </div>
     </div>
   );
-}
+};
 
 export default CategotyNotifications;

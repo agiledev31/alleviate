@@ -29,8 +29,8 @@ const Business = () => {
   const handleUpdate = useCallback(async () => {
     await AuthService.updateMe(softValue);
     const res = await AuthService.me();
-    
-    if(res.data.me.role == "ngo-company" && res.data.me.businessId) {
+
+    if (res.data.me.role == "ngo-company" && res.data.me.businessId) {
       await GarbageService.approveCompanyApplication();
       window.location.reload();
     }
@@ -54,7 +54,7 @@ const Business = () => {
           <div className="col-span-full">
             <label
               htmlFor="street-address"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
             >
               Business ID
             </label>
@@ -62,7 +62,7 @@ const Business = () => {
               <input
                 type="text"
                 placeholder="Please provide the business ID of your organization"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 {...getProps("businessId")}
               />
             </div>
@@ -92,7 +92,7 @@ const Business = () => {
               id="file-upload"
               name="file-upload"
               type="file"
-              className="sr-only w-full h-full left-0 top-0"
+              className="dark:bg-gray-900 sr-only w-full h-full left-0 top-0"
               onChange={async (e) => {
                 const selectedFile = e.target.files?.[0];
                 if (selectedFile) {
@@ -110,7 +110,7 @@ const Business = () => {
             />
 
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 dark:text-white text-gray-400"
               stroke="currentColor"
               fill="currentColor"
               stroke-width="0"
@@ -121,7 +121,7 @@ const Business = () => {
             >
               <path d="M288 48H136c-22.092 0-40 17.908-40 40v336c0 22.092 17.908 40 40 40h240c22.092 0 40-17.908 40-40V176L288 48zm-16 144V80l112 112H272z"></path>
             </svg>
-            <span className="mt-2 block text-sm font-semibold text-gray-900">
+            <span className="mt-2 block text-sm font-semibold dark:text-white text-gray-900">
               Upload your business ID supporting document
             </span>
           </label>
@@ -144,7 +144,7 @@ const Business = () => {
             className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 cursor-pointer"
             onClick={() => window.open(me.businessIdDocument)}
           >
-            <span className="mt-2 block text-sm font-semibold text-gray-900">
+            <span className="mt-2 block text-sm font-semibold dark:text-white text-gray-900">
               Click here to view your document
             </span>
           </label>

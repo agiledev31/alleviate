@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingSpinner from "../components/Loader";
 import MultiStepComponent from "../components/MultiStepComponent";
-import { selectUser } from "../redux/auth/selectors";
+import { selectDarkMode, selectUser } from "../redux/auth/selectors";
 import CrudService from "../service/CrudService";
 
 const SuiteDetail = () => {
@@ -34,6 +34,7 @@ const SuiteDetail = () => {
   const [selectedSubmissionData, setSelectedSubmissionData] = useState(null);
   const [activeSubmissionTab, setActiveSubmissionTab] = useState("all");
   const user = useSelector(selectUser);
+  const darkMode = useSelector(selectDarkMode);
 
   const load = useCallback(() => {
     const id = searchParams.get("id");
@@ -218,6 +219,7 @@ const SuiteDetail = () => {
           </Button>
 
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={800}
             height={300}
             open={submissionModal}

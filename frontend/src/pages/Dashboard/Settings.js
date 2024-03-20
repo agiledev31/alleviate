@@ -29,6 +29,7 @@ import { THEME_OPTIONS } from ".";
 import Select from "../../components/Select";
 import { benchmarksSectorType, countries } from "../../data/constants";
 import AuthService from "../../service/AuthService";
+import StrapiService from "../../service/StrapiService";
 import UploadService from "../../service/UploadService";
 
 function replaceAtIndex(arr, index, newValue) {
@@ -76,6 +77,7 @@ function getColorFun(r, g, b) {
 export default function Example() {
   const [me, setMe] = useState(null);
   const [softValue, setSoftValue] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [onboardingStatus, setOnboardingStatus] = useState(null);
   const [coverPhotoDimensions, setCoverPhotoDimensions] = useState({
     width: 0,
@@ -116,6 +118,12 @@ export default function Example() {
     });
   }, []);
 
+  useEffect(() => {
+    StrapiService.getList("impact_categories").then(({ data }) =>
+      setCategories(data)
+    );
+  }, []);
+
   const getProps = (fieldKey) => ({
     value: softValue?.[fieldKey],
     onChange: (e) =>
@@ -135,7 +143,6 @@ export default function Example() {
       id: "securityalerts",
       description:
         "Notifications regarding account security, like login from a new device or location.",
-      push: true,
     },
     {
       title: "Platform Updates",
@@ -151,28 +158,22 @@ export default function Example() {
     },
 
     {
-      title: "Program Milestone Reminders",
-      id: "programmilestonereminders",
-      description:
-        "Alerts for upcoming deadlines or milestones for ongoing programs.",
+      title: "New Grant Proposals",
+      id: "newgrantproposals",
+      description: "Reminders about new grant proposals.",
       scope: "ngo-company",
-      push: true,
     },
-
+    {
+      title: "Grant Proposal Updates",
+      id: "grantproposalupdates",
+      description: "Reminders about updated grant proposals.",
+      scope: "ngo-company",
+    },
     {
       title: "Grant Proposal Deadlines",
       id: "grantproposaldeadlines",
       description: "Reminders about upcoming grant application deadlines.",
       scope: "ngo-company",
-      push: true,
-    },
-
-    {
-      title: "Donor Engagement Opportunities",
-      id: "donorengagementopportunities",
-      description: "Notifications about potential donors expressing interest.",
-      scope: "ngo-company",
-      push: true,
     },
 
     {
@@ -227,7 +228,6 @@ export default function Example() {
       description:
         "Urgent notifications relevant to their welfare or program participation.",
       scope: "ngo-beneficiary",
-      push: true,
     },
 
     {
@@ -235,7 +235,6 @@ export default function Example() {
       id: "consultationrequests",
       description: "Alerts when an NGO requests a consultation session.",
       scope: "expert",
-      push: true,
     },
 
     {
@@ -260,7 +259,6 @@ export default function Example() {
       description:
         "Notifications about new NGOs joining the platform seeking expertise.",
       scope: "expert",
-      push: true,
     },
 
     {
@@ -313,7 +311,7 @@ export default function Example() {
 
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
-      <div className="sticky top-16 z-30 flex h-12 shrink-0 items-center  border-b border-gray-200 bg-white  shadow-sm">
+      <div className="sticky top-16 z-30 flex h-12 shrink-0 items-center  border-b border-gray-200 bg-white dark:bg-gray-900  shadow-sm">
         <div>Profile Completion</div>
         <Progress
           percent={onboardingStatus?.profileCompletion}
@@ -322,16 +320,16 @@ export default function Example() {
       </div>
       <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
         <div className="px-4 sm:px-0">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
             Personal Information
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
             Use a permanent address where you can receive mail.
           </p>
         </div>
 
         <form
-          className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+          className="bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="px-4 py-6 sm:p-8">
@@ -339,7 +337,7 @@ export default function Example() {
               <div className="sm:col-span-3">
                 <label
                   htmlFor="first-name"
-                  className={`"block text-sm font-medium leading-6 text-gray-900" ${
+                  className={`"block text-sm font-medium leading-6 dark:text-white text-gray-900" ${
                     !softValue?.firstName ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -351,7 +349,7 @@ export default function Example() {
                     name="first-name"
                     id="first-name"
                     autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("firstName")}
                   />
                 </div>
@@ -360,7 +358,7 @@ export default function Example() {
               <div className="sm:col-span-3">
                 <label
                   htmlFor="last-name"
-                  className={`block text-sm font-medium leading-6 text-gray-900 ${
+                  className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                     !softValue?.lastName ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -372,7 +370,7 @@ export default function Example() {
                     name="last-name"
                     id="last-name"
                     autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("lastName")}
                   />
                 </div>
@@ -381,7 +379,7 @@ export default function Example() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Email address
                 </label>
@@ -392,7 +390,7 @@ export default function Example() {
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("email")}
                   />
                 </div>
@@ -401,14 +399,14 @@ export default function Example() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Phone
                 </label>
                 <div className="mt-2">
                   <input
                     disabled
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("phone")}
                   />
                 </div>
@@ -417,7 +415,7 @@ export default function Example() {
               <div className="col-span-full">
                 <label
                   htmlFor="street-address"
-                  className={`block text-sm font-medium leading-6 text-gray-900 ${
+                  className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                     !softValue?.line1 ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -429,7 +427,7 @@ export default function Example() {
                     name="street-address"
                     id="street-address"
                     autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("line1")}
                   />
                 </div>
@@ -437,7 +435,7 @@ export default function Example() {
               <div className="col-span-full">
                 <label
                   htmlFor="street-address"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Line 2
                 </label>
@@ -447,7 +445,7 @@ export default function Example() {
                     name="street-address"
                     id="street-address"
                     autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("line2")}
                   />
                 </div>
@@ -455,7 +453,7 @@ export default function Example() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="country"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Country
                 </label>
@@ -471,7 +469,7 @@ export default function Example() {
               <div className="sm:col-span-2 sm:col-start-1">
                 <label
                   htmlFor="region"
-                  className={`block text-sm font-medium leading-6 text-gray-900 ${
+                  className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                     !softValue?.state ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -483,7 +481,7 @@ export default function Example() {
                     name="region"
                     id="region"
                     autoComplete="address-level1"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("state")}
                   />
                 </div>
@@ -491,7 +489,7 @@ export default function Example() {
               <div className="sm:col-span-2 ">
                 <label
                   htmlFor="city"
-                  className={`block text-sm font-medium leading-6 text-gray-900 ${
+                  className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                     !softValue?.city ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -503,7 +501,7 @@ export default function Example() {
                     name="city"
                     id="city"
                     autoComplete="address-level2"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("city")}
                   />
                 </div>
@@ -512,7 +510,7 @@ export default function Example() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="postal-code"
-                  className={`block text-sm font-medium leading-6 text-gray-900 ${
+                  className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                     !softValue?.zipCode ? "text-red font-semibold" : ""
                   }`}
                 >
@@ -524,7 +522,7 @@ export default function Example() {
                     name="postal-code"
                     id="postal-code"
                     autoComplete="postal-code"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     {...getProps("zipCode")}
                   />
                 </div>
@@ -533,7 +531,7 @@ export default function Example() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="country"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Country
                 </label>
@@ -549,7 +547,7 @@ export default function Example() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="sector"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                 >
                   Sector
                 </label>
@@ -560,12 +558,32 @@ export default function Example() {
                   />
                 </div>
               </div>
+
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="interests"
+                  className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
+                >
+                  Interests
+                </label>
+                <div className="mt-2">
+                  <AntdSelect
+                    mode="multiple"
+                    style={{ width: "100%" }}
+                    options={categories.map((c) => ({
+                      value: c._id,
+                      label: c.Name,
+                    }))}
+                    {...getProps("impactThemeInterests")}
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
             <button
               type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
             >
               Cancel
             </button>
@@ -582,16 +600,16 @@ export default function Example() {
       {me?.role !== "admin" && (
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
           <div className="px-4 sm:px-0 mt-4">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
+            <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
               Profile
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
               This information will be displayed publicly.
             </p>
           </div>
 
           <form
-            className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 mt-4"
+            className="bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 mt-4"
             onSubmit={(e) => e.preventDefault()}
           >
             <div className="px-4 py-6 sm:p-8 ">
@@ -601,7 +619,7 @@ export default function Example() {
                     <div className="col-span-full">
                       <label
                         htmlFor="street-address"
-                        className={`block text-sm font-medium leading-6 text-gray-900 ${
+                        className={`block text-sm font-medium leading-6 dark:text-white text-gray-900 ${
                           !softValue?.companyName
                             ? "text-red font-semibold"
                             : ""
@@ -612,13 +630,13 @@ export default function Example() {
                       <div className="mt-2">
                         <input
                           type="text"
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           {...getProps("companyName")}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                      <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                         Organization Type
                       </label>
                       <div className="mt-2">
@@ -640,14 +658,14 @@ export default function Example() {
                 {me?.role === "expert" && (
                   <>
                     <div className="col-span-full">
-                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                      <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                         Experience Years
                       </label>
                       <div className="mt-2">
                         <input
                           type="number"
                           placeholder="Experience Years"
-                          className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           {...getProps("experienceYears")}
                         />
                       </div>
@@ -655,7 +673,7 @@ export default function Example() {
 
                     <div className="col-span-full">
                       <label
-                        className={`"block text-sm font-medium leading-6 text-gray-900" ${
+                        className={`"block text-sm font-medium leading-6 dark:text-white text-gray-900" ${
                           softValue?.expertiseAreas?.length === 0
                             ? "text-red font-semibold"
                             : ""
@@ -672,7 +690,7 @@ export default function Example() {
                             <input
                               type="text"
                               placeholder="Expertise Area"
-                              className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               value={area}
                               onChange={(e) => {
                                 setSoftValue((v) => ({
@@ -702,7 +720,7 @@ export default function Example() {
                           </div>
                         ))}
                         <button
-                          className={`"block text-sm font-medium leading-6 text-gray-900" ${
+                          className={`"block text-sm font-medium leading-6 dark:text-white text-gray-900" ${
                             softValue?.expertiseAreas?.length === 0
                               ? "text-red font-semibold"
                               : ""
@@ -717,7 +735,7 @@ export default function Example() {
                           + Add Expertise Area
                         </button>
                       </div>
-                      <p className="mt-3 text-sm leading-6 text-gray-600">
+                      <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                         Share your areas of expertise to help others understand
                         your skills and knowledge. List the fields you excel in
                         and contribute your expertise to the community.
@@ -726,7 +744,7 @@ export default function Example() {
                     </div>
 
                     <div className="col-span-full">
-                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                      <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                         Education
                       </label>
                       <div className="mt-2">
@@ -736,7 +754,7 @@ export default function Example() {
                               <input
                                 type="text"
                                 placeholder="Institution"
-                                className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 value={edu.institution}
                                 onChange={(e) => {
                                   setSoftValue((v) => ({
@@ -755,7 +773,7 @@ export default function Example() {
                               <input
                                 type="text"
                                 placeholder="Details"
-                                className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 value={edu.details}
                                 onChange={(e) => {
                                   setSoftValue((v) => ({
@@ -793,7 +811,7 @@ export default function Example() {
                               <input
                                 type="date"
                                 id={`${index}-from`}
-                                className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 value={moment(edu.startYear).format(
                                   "YYYY-MM-DD"
                                 )}
@@ -816,7 +834,7 @@ export default function Example() {
                               <input
                                 type="date"
                                 id={`${index}-to`}
-                                className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 value={moment(edu.endYear).format("YYYY-MM-DD")}
                                 min={1900}
                                 onChange={(e) => {
@@ -854,7 +872,7 @@ export default function Example() {
                         >
                           + Add Education
                         </button>
-                        <p className="mt-3 text-sm leading-6 text-gray-600">
+                        <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                           Share your educational background. Add details about
                           your institutions, degrees, and academic achievements.
                         </p>
@@ -862,7 +880,7 @@ export default function Example() {
                       </div>
 
                       <div className="col-span-full">
-                        <label className="block text-sm font-medium leading-6 text-gray-900">
+                        <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                           Certifications
                         </label>
                         <div className="mt-2">
@@ -872,7 +890,7 @@ export default function Example() {
                                 <input
                                   type="text"
                                   placeholder="Institution"
-                                  className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   value={edu.institution}
                                   onChange={(e) => {
                                     setSoftValue((v) => ({
@@ -891,7 +909,7 @@ export default function Example() {
                                 <input
                                   type="text"
                                   placeholder="Link"
-                                  className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   value={edu.link}
                                   onChange={(e) => {
                                     setSoftValue((v) => ({
@@ -929,7 +947,7 @@ export default function Example() {
                                 <input
                                   type="date"
                                   id={`${index}-c-date`}
-                                  className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   value={moment(edu.year).format("YYYY-MM-DD")}
                                   min={1900}
                                   onChange={(e) => {
@@ -967,7 +985,7 @@ export default function Example() {
                           >
                             + Add Certification
                           </button>
-                          <p className="mt-3 text-sm leading-6 text-gray-600">
+                          <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                             Highlight your certifications and qualifications to
                             demonstrate your expertise in specific areas.
                             Provide information about the institutions, dates,
@@ -983,7 +1001,7 @@ export default function Example() {
                   <>
                     <div className="col-span-full">
                       <label
-                        className={`"block text-sm font-medium leading-6 text-gray-900" ${
+                        className={`"block text-sm font-medium leading-6 dark:text-white text-gray-900" ${
                           softValue?.preferredCauses?.length === 0
                             ? "text-red font-semibold"
                             : ""
@@ -1000,7 +1018,7 @@ export default function Example() {
                             <input
                               type="text"
                               placeholder="Preferred Cause"
-                              className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               value={area}
                               onChange={(e) => {
                                 setSoftValue((v) => ({
@@ -1030,7 +1048,7 @@ export default function Example() {
                           </div>
                         ))}
                         <button
-                          className={`"block text-sm font-medium leading-6 text-gray-900" ${
+                          className={`"block text-sm font-medium leading-6 dark:text-white text-gray-900" ${
                             softValue?.preferredCauses?.length === 0
                               ? "text-red font-semibold"
                               : ""
@@ -1045,7 +1063,7 @@ export default function Example() {
                           + Add Preferred Cause
                         </button>
                       </div>
-                      <p className="mt-3 text-sm leading-6 text-gray-600">
+                      <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                         Show your support for meaningful causes by listing your
                         preferred causes. Let others know what you care about
                         and how you contribute to making a difference.
@@ -1055,29 +1073,10 @@ export default function Example() {
                   </>
                 )}
 
-                {/*<div className="col-span-full">*/}
-                {/*  <label*/}
-                {/*    htmlFor="street-address"*/}
-                {/*    className={`"block text-sm font-medium leading-6 text-gray-900" ${*/}
-                {/*      !softValue?.website && softValue?.role === "ngo-company"*/}
-                {/*        ? "text-red font-semibold"*/}
-                {/*        : ""*/}
-                {/*    }`}*/}
-                {/*  >*/}
-                {/*    Website*/}
-                {/*  </label>*/}
-                {/*  <div className="mt-2">*/}
-                {/*    <input*/}
-                {/*      type="text"*/}
-                {/*      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"*/}
-                {/*      {...getProps("website")}*/}
-                {/*    />*/}
-                {/*  </div>*/}
-                {/*</div>*/}
                 <div className="col-span-full">
                   <label
                     className={
-                      "block text-sm font-medium leading-6 text-gray-900"
+                      "block text-sm font-medium leading-6 dark:text-white text-gray-900"
                     }
                   >
                     Curriculum Vitae
@@ -1128,7 +1127,7 @@ export default function Example() {
                     Upload CV
                   </Button>
 
-                  <p className="mt-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                     Upload a Curriculum Vitae PDF file
                   </p>
 
@@ -1137,7 +1136,7 @@ export default function Example() {
                 <div className="col-span-full">
                   <label
                     htmlFor="about"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                   >
                     About
                   </label>
@@ -1146,12 +1145,12 @@ export default function Example() {
                       id="about"
                       name="about"
                       rows={3}
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      className="block w-full rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       defaultValue={""}
                       {...getProps("about")}
                     />
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                     Write a few sentences about yourself to introduce yourself
                     to the community.
                   </p>
@@ -1159,7 +1158,7 @@ export default function Example() {
                 </div>
 
                 <div className="col-span-full">
-                  <label className="block text-sm font-medium leading-6 text-gray-900">
+                  <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                     Social Media Links
                   </label>
                   <div className="mt-2">
@@ -1202,12 +1201,12 @@ export default function Example() {
                             }));
                           }}
                           value={link.platform}
-                          className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                         <input
                           type="text"
                           placeholder="Link"
-                          className="block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="dark:bg-gray-900 block w-1/2 rounded-md border-0 py-1.5 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           value={link.link}
                           onChange={(e) => {
                             setSoftValue((v) => ({
@@ -1253,7 +1252,7 @@ export default function Example() {
                     >
                       + Add Link
                     </button>
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
+                    <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                       Connect with your audience by sharing your social media
                       profiles. Add your LinkedIn profile, and include other
                       relevant links to showcase your online presence.
@@ -1265,25 +1264,25 @@ export default function Example() {
                 <div className="col-span-full">
                   <label
                     htmlFor="photo"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                   >
                     Photo
                   </label>
                   <div className="mt-2 flex items-center gap-x-3">
                     {softValue?.avatar ? (
                       <img
-                        className="h-12 w-12 text-gray-300 rounded-full"
+                        className="h-12 w-12 dark:text-white text-gray-300 rounded-full"
                         src={softValue.avatar}
                       />
                     ) : (
                       <UserCircleIcon
-                        className="h-12 w-12 text-gray-300"
+                        className="h-12 w-12 dark:text-white text-gray-300"
                         aria-hidden="true"
                       />
                     )}
                     <button
                       type="button"
-                      className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                      className="rounded-md bg-white dark:bg-gray-900 px-2.5 py-1.5 text-sm font-semibold dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                       onClick={async () => {
                         const fileInput = document.getElementById("fileInput");
                         fileInput.click();
@@ -1316,7 +1315,7 @@ export default function Example() {
                     </button>
                   </div>
 
-                  <p className="mt-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-3 text-sm leading-6 dark:text-white text-gray-600">
                     Upload a clean profile avatar to personalize your profile
                     and make a positive first impression.
                   </p>
@@ -1326,7 +1325,7 @@ export default function Example() {
                 <div className="col-span-full">
                   <label
                     htmlFor="cover-photo"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
                   >
                     Cover photo
                   </label>
@@ -1334,27 +1333,27 @@ export default function Example() {
                     <div className="text-center">
                       {softValue?.coverPhoto ? (
                         <img
-                          className="mx-auto  text-gray-300 max-w-[75%]"
+                          className="mx-auto  dark:text-white text-gray-300 max-w-[75%]"
                           src={softValue.coverPhoto}
                         />
                       ) : (
                         <PhotoIcon
-                          className="mx-auto h-12 w-12 text-gray-300"
+                          className="mx-auto h-12 w-12 dark:text-white text-gray-300"
                           aria-hidden="true"
                         />
                       )}
 
-                      <div className="mt-4 flex text-sm leading-6 text-gray-600 flex justify-center">
+                      <div className="mt-4 flex text-sm leading-6 dark:text-white text-gray-600 flex justify-center">
                         <label
                           htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                          className="relative cursor-pointer rounded-md bg-white dark:bg-gray-900 font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                         >
                           <span>Upload a file</span>
                           <input
                             id="file-upload"
                             name="file-upload"
                             type="file"
-                            className="sr-only"
+                            className="dark:bg-gray-900 sr-only"
                             onChange={async (e) => {
                               const selectedFile = e.target.files?.[0];
                               if (selectedFile) {
@@ -1390,7 +1389,7 @@ export default function Example() {
                         </label>
                         <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs leading-5 text-gray-600">
+                      <p className="text-xs leading-5 dark:text-white text-gray-600">
                         PNG, JPG, GIF up to 10MB
                       </p>
                     </div>
@@ -1402,14 +1401,14 @@ export default function Example() {
                 {coverPhotoDimensions.width} w x {coverPhotoDimensions.height} h
                 pixels
               </p>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
+              <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
                 Upload an appealing cover photo for your profile.
               </p>
             </div>
             <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
               <button
                 type="button"
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
               >
                 Cancel
               </button>
@@ -1426,23 +1425,23 @@ export default function Example() {
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
         <div className="px-4 sm:px-0">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
             Notifications
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
             We'll always let you know about important changes, but you pick what
             else you want to hear about.
           </p>
         </div>
 
         <form
-          className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+          className="bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="px-4 py-6 sm:p-8">
             <div className="max-w-2xl space-y-10">
               <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-900">
+                <legend className="text-sm font-semibold leading-6 dark:text-white text-gray-900">
                   By Email
                 </legend>
                 <div className="mt-6 space-y-6">
@@ -1467,69 +1466,30 @@ export default function Example() {
                               }));
                             }}
                             type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                            className="dark:bg-gray-900 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                           />
                         </div>
                         <div className="text-sm leading-6">
                           <label
                             htmlFor={`notification-email-${index}`}
-                            className="font-medium text-gray-900"
+                            className="font-medium dark:text-white text-gray-900"
                           >
                             {item.title}
                           </label>
-                          <p className="text-gray-500">{item.description}</p>
+                          <p className="dark:text-white dark:text-white text-gray-500">
+                            {item.description}
+                          </p>
                         </div>
                       </div>
                     ))}
                 </div>
-              </fieldset>
-              <fieldset>
-                <legend className="text-sm font-semibold leading-6 text-gray-900">
-                  Push Notifications
-                </legend>
-                <p className="mt-1 text-sm leading-6 text-gray-600 mb-4">
-                  These are delivered via SMS to your mobile phone.
-                </p>
-                {notificationConfig
-                  .filter((n) => !!n.push && (!n.scope || n.scope === me?.role))
-                  .map((item, index) => (
-                    <div className="relative flex gap-x-3 mt-4" key={index}>
-                      <div className="flex h-6 items-center">
-                        <input
-                          id={`notification-phone-${index}`}
-                          name={`notification-phone-${index}`}
-                          checked={softValue?.notification?.[`${item.id}`]}
-                          onChange={(e) => {
-                            setSoftValue((v) => ({
-                              ...v,
-                              notification: {
-                                ...v.notification,
-                                [`${item.id}`]: e.target.checked,
-                              },
-                            }));
-                          }}
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                      </div>
-                      <div className="text-sm leading-6">
-                        <label
-                          htmlFor={`notification-phone-${index}`}
-                          className="font-medium text-gray-900"
-                        >
-                          {item.title}
-                        </label>
-                        <p className="text-gray-500">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
               </fieldset>
             </div>
           </div>
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
             <button
               type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
             >
               Cancel
             </button>
@@ -1545,23 +1505,23 @@ export default function Example() {
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
         <div className="px-4 sm:px-0">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="text-base font-semibold leading-7 dark:text-white text-gray-900">
             Theme Configuration
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-sm leading-6 dark:text-white text-gray-600">
             Adjust the UI according to your preferences.
           </p>
         </div>
 
         <form
-          className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+          className="bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="px-4 py-6 sm:p-8">
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <label
                 htmlFor="photo"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
               >
                 Theme
               </label>
@@ -1580,7 +1540,7 @@ export default function Example() {
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <label
                 htmlFor="photo"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 dark:text-white text-gray-900"
               >
                 Theme Color
               </label>
@@ -1600,7 +1560,7 @@ export default function Example() {
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
+              <label className="block text-sm font-medium leading-6 dark:text-white text-gray-900">
                 Prefered Language
               </label>
               <div className="mt-2">
@@ -1618,7 +1578,7 @@ export default function Example() {
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
             <button
               type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6 dark:text-white text-gray-900"
             >
               Cancel
             </button>

@@ -56,10 +56,10 @@ const ProgramThankyou = () => {
 
         <div className="text-center">
           <p className="text-base font-semibold text-indigo-600">Success!</p>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="mt-4 text-3xl font-bold tracking-tight dark:text-white text-gray-900 sm:text-5xl">
             Thank you!
           </h1>
-          <p className="mt-6 text-base leading-7 text-gray-600">
+          <p className="mt-6 text-base leading-7 dark:text-white text-gray-600">
             Your participation in the program {programData.name} is highly
             appreciated!
           </p>
@@ -74,7 +74,7 @@ const ProgramThankyou = () => {
             >
               Discover further programs
             </Link>
-            {/* <a href="#" className="text-sm font-semibold text-gray-900">
+            {/* <a href="#" className="text-sm font-semibold dark:text-white text-gray-900">
               Contact support <span aria-hidden="true">&rarr;</span>
             </a> */}
           </div>

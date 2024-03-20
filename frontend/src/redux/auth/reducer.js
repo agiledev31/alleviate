@@ -1,4 +1,4 @@
-import { LOADING, LOGIN, LOGOUT } from "./constants";
+import { DARK_MODE, LOADING, LOGIN, LOGOUT } from "./constants";
 
 const initialState = {
   user: null,
@@ -20,6 +20,11 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: action.payload,
+      };
+    case DARK_MODE:
+      return {
+        ...state,
+        darkMode: action.payload,
       };
     default:
       return state;

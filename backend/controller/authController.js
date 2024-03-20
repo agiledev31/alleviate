@@ -352,6 +352,7 @@ const updateMe = async (req, res) => {
       relevantDataset: req.body.relevantDataset,
       categoryNotifications: req.body.categoryNotifications,
       cvDocument: req.body.cvDocument,
+      impactThemeInterests: req.body.impactThemeInterests,
     });
 
     if (req.body.businessIdDocument) {

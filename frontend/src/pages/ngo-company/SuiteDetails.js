@@ -34,12 +34,14 @@ import {
 import { FaCopy, FaInfo } from "react-icons/fa";
 import { GrCircleInformation, GrInfo } from "react-icons/gr";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CloudinaryUpload from "../../components/CloudinaryUpload";
 import ExcelImport from "../../components/ExcelImport";
 import LoadingSpinner from "../../components/Loader";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import StatsDashboard from "../../components/StatsDashboard";
+import { selectDarkMode } from "../../redux/auth/selectors";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
 import StrapiService from "../../service/StrapiService";
@@ -83,6 +85,7 @@ const SuiteDetails = () => {
   const [reminderUpdateLoader, setReminderUpdateLoader] = useState(false);
   const [KPILoader, setKPILoader] = useState(false);
   const fileInputRef = useRef(null);
+  const darkMode = useSelector(selectDarkMode);
 
   useEffect(() => {
     if (inputVisible) {
@@ -825,7 +828,14 @@ const SuiteDetails = () => {
                 {programData.productDetails.Name}
               </p>
             )}
-            {programData?.objectives && (
+            {programData?.isGrantOpportunity &&
+              programData?.grantEligibilityCriteria && (
+                <p className={"py-2"}>
+                  <strong>Eligibility Criteria</strong>:{" "}
+                  {programData.grantEligibilityCriteria}
+                </p>
+              )}
+            {!programData?.isGrantOpportunity && programData?.objectives && (
               <p className={"py-2"}>
                 <strong>Objectives</strong>: {programData.objectives}
               </p>
@@ -941,6 +951,7 @@ const SuiteDetails = () => {
             Add KPI
           </Button>
           <Modal
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={1150}
             open={KPIModal}
             onCancel={() => setKPIModal(false)}
@@ -952,7 +963,7 @@ const SuiteDetails = () => {
                 name="search"
                 id="search"
                 placeholder="Search KPIs"
-                className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 value={kpiSearch}
                 onChange={handleKPISearchChange}
               />
@@ -1122,6 +1133,7 @@ const SuiteDetails = () => {
           {inputVisible ? (
             <>
               <Input
+                className="dark:bg-gray-900"
                 ref={inputRef}
                 type="text"
                 size="small"
@@ -1332,6 +1344,7 @@ const SuiteDetails = () => {
         />
 
         <Modal
+          wrapClassName={`${darkMode ? "dark" : ""}`}
           width={1000}
           open={KPILinkedQuestionModal}
           onOk={() => setKPILinkedQuestionModal(false)}

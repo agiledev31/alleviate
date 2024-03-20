@@ -67,7 +67,7 @@ const CreateGrantOpportunity = () => {
               {/*<img className="w-full" src={programType.image} alt="" />*/}
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{programType.name}</div>
-                <p className="text-gray-700 text-base">
+                <p className="dark:text-white dark:text-white text-gray-700 text-base">
                   {programType.description}
                 </p>
               </div>

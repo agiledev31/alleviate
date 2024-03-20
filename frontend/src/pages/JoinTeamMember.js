@@ -10,12 +10,12 @@ import { store } from "../redux/store";
 import AuthService from "../service/AuthService";
 
 const formClasses =
-  "block w-full appearance-none rounded-md border border-gray-200 dark:border-gray-600  bg-gray-50 px-3 py-2 text-gray-900 dark:text-gray-400  placeholder-gray-400 focus:border-blue-500 focus:bg-white dark:bg-gray-900 focus:outline-none focus:ring-blue-500 sm:text-sm dark:bg-gray-900";
+  "dark:bg-gray-900 block w-full appearance-none rounded-md border border-gray-200 dark:border-gray-600  bg-gray-50 px-3 py-2 dark:text-white text-gray-900 dark:text-gray-400  placeholder-gray-400 focus:border-blue-500 focus:bg-white dark:bg-gray-900 dark:bg-gray-900 focus:outline-none focus:ring-blue-500 sm:text-sm dark:bg-gray-900";
 function Label({ id, children }) {
   return (
     <label
       htmlFor={id}
-      className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300 "
+      className="mb-3 block text-sm font-medium dark:text-white text-gray-700 dark:text-gray-300 "
     >
       {children}
     </label>
@@ -36,7 +36,7 @@ export function SlimLayout({ children }) {
   return (
     <>
       <div className="relative flex min-h-full justify-center md:px-12 lg:px-0">
-        <div className="relative z-10 flex flex-1 flex-col bg-white dark:bg-gray-900 px-4 py-10  sm:justify-center md:flex-none ">
+        <div className="relative z-10 flex flex-1 flex-col bg-white dark:bg-gray-900 dark:bg-gray-900 px-4 py-10  sm:justify-center md:flex-none ">
           <main className="mx-auto w-full  pb-10">{children}</main>
         </div>
       </div>
@@ -97,10 +97,10 @@ const JoinTeamMember = () => {
     <>
       <div className="flex h-[100vh] flex-col">
         <SlimLayout>
-          <h2 className="mt-20 text-lg font-semibold text-gray-900 dark:text-gray-400 ">
+          <h2 className="mt-20 text-lg font-semibold dark:text-white text-gray-900 dark:text-gray-400 ">
             Get started
           </h2>
-          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 ">
+          <p className="mt-2 text-sm dark:text-white text-gray-700 dark:text-gray-300 ">
             Already registered?{" "}
             <Link
               to="/auth/login"

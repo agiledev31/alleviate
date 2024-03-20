@@ -1,3 +1,5 @@
+const { VersionControlSuite } = require("../models");
+
 const search = async (req, Model) => {
   let filterQuery = req.body.filters ?? {};
   if (req.user.role !== "ngo-beneficiary") {
@@ -8,7 +10,6 @@ const search = async (req, Model) => {
       filterQuery = { ...filterQuery, ...condition };
     }
   }
-  console.log(filterQuery);
 
   const sortQuery = req.body.sort ?? {};
 
@@ -91,7 +92,46 @@ const updateItem = async (req, Model) => {
       query = { ...query, ...condition };
     }
   }
-  const item = await Model.findOneAndUpdate(query, req.body);
+  const original = await Model.findOne(query);
+  const item = await Model.findOneAndUpdate(query, req.body, { new: true });
+  if (req.query.ModelName === "Suite") {
+    let changedKeys = [];
+    Object.keys(req.body).forEach((key) => {
+      if (
+        (!original ||
+          JSON.stringify(original[key]) !== JSON.stringify(item[key])) &&
+        key !== "updatedAt" &&
+        key !== "favoriteBy"
+      ) {
+        changedKeys.push(key);
+      }
+    });
+
+    if (changedKeys.length > 0) {
+      // Filter `original` and `suiteObj` to only include changed keys
+      const filteredOriginal = {};
+      const filteredSuiteObj = {};
+
+      // Populate `filteredOriginal` and `filteredSuiteObj` with only changed keys
+      changedKeys.forEach((key) => {
+        if (original[key] !== undefined) {
+          filteredOriginal[key] = original[key];
+        }
+        if (item[key] !== undefined) {
+          filteredSuiteObj[key] = item[key];
+        }
+      });
+
+      const version = new VersionControlSuite({
+        user_id: req.user._id,
+        suite: req.query.id,
+        original: filteredOriginal,
+        suiteObj: filteredSuiteObj,
+        changedKeys,
+      });
+      await version.save();
+    }
+  }
   return item;
 };
 

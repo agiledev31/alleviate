@@ -42,14 +42,17 @@ import {
   AiOutlineMenu,
 } from "react-icons/ai";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import ReactJson from "react-json-view";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ExcelImport from "../../components/ExcelImport";
 import LoadingSpinner from "../../components/Loader";
 import StatsDashboard from "../../components/StatsDashboard";
-import { selectUser } from "../../redux/auth/selectors";
+import { STANDARD_MOMENT_FORMAT } from "../../data/constants";
+import { selectDarkMode, selectUser } from "../../redux/auth/selectors";
 import AuthService from "../../service/AuthService";
 import CrudService from "../../service/CrudService";
+import NotificationService from "../../service/NotificationService";
 import StatsService from "../../service/StatsService";
 import StrapiService from "../../service/StrapiService";
 import UserService from "../../service/UserService";
@@ -644,10 +647,12 @@ const SuiteDetails = () => {
   const [hasSubmission, setHasSubmission] = useState(false);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [KPISurveys, setKPISurveys] = useState([]);
+  const [versionControlHistory, setVersionControlHistory] = useState([]);
   const [KPIDataForTable, setKPIDataForTable] = useState([]);
   const [currentFavoriteKPIs, setCurrentFavoriteKPIs] = useState(
     user?.favoriteKPIs ?? []
   );
+  const darkMode = useSelector(selectDarkMode);
 
   const fileInputRef = useRef(null);
 
@@ -674,6 +679,16 @@ const SuiteDetails = () => {
       });
     });
   }, []);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id)
+      CrudService.search("VersionControlSuite", 10000, 1, {
+        sort: { createdAt: -1 },
+      }).then(({ data }) => {
+        setVersionControlHistory(data.items);
+      });
+  }, [searchParams]);
 
   useEffect(() => {
     let assessement_ids = assessmentData.map((i) => i._id);
@@ -1075,7 +1090,7 @@ const SuiteDetails = () => {
               <span>TimeLine: </span>
               {_data?.timeline ? (
                 <input
-                  className="w-[150px] border-none"
+                  className="dark:bg-gray-900 w-[150px] border-none"
                   type="date"
                   name="timeline"
                   disabled
@@ -1632,26 +1647,53 @@ const SuiteDetails = () => {
             </Typography.Paragraph>
           </div>
 
-          <div className="text-lg text-indigo-700 mb-6">
-            <label>Objectives</label>
-            <Typography.Paragraph
-              editable={{
-                onChange: async (e) => {
-                  const id = searchParams.get("id");
-                  if (!id) return;
+          {programData?.isGrantOpportunity &&
+            programData?.grantEligibilityCriteria && (
+              <div className="text-lg text-indigo-700 mb-6">
+                <label>Eligibility Criteria</label>
+                <Typography.Paragraph
+                  editable={{
+                    onChange: async (e) => {
+                      const id = searchParams.get("id");
+                      if (!id) return;
 
-                  await CrudService.update("Suite", id, { objectives: e });
-                  CrudService.getSingle("Suite", id).then((res) => {
-                    if (!res.data) return;
-                    setProgramData(res.data);
-                  });
-                },
-                text: programData?.objectives,
-              }}
-            >
-              {programData?.objectives}
-            </Typography.Paragraph>
-          </div>
+                      await CrudService.update("Suite", id, {
+                        grantEligibilityCriteria: e,
+                      });
+                      CrudService.getSingle("Suite", id).then((res) => {
+                        if (!res.data) return;
+                        setProgramData(res.data);
+                      });
+                    },
+                    text: programData?.grantEligibilityCriteria,
+                  }}
+                >
+                  {programData?.grantEligibilityCriteria}
+                </Typography.Paragraph>
+              </div>
+            )}
+          {!programData?.isGrantOpportunity && programData?.objectives && (
+            <div className="text-lg text-indigo-700 mb-6">
+              <label>Objectives</label>
+              <Typography.Paragraph
+                editable={{
+                  onChange: async (e) => {
+                    const id = searchParams.get("id");
+                    if (!id) return;
+
+                    await CrudService.update("Suite", id, { objectives: e });
+                    CrudService.getSingle("Suite", id).then((res) => {
+                      if (!res.data) return;
+                      setProgramData(res.data);
+                    });
+                  },
+                  text: programData?.objectives,
+                }}
+              >
+                {programData?.objectives}
+              </Typography.Paragraph>
+            </div>
+          )}
 
           <div>
             {programData?.categoryDetail?.Name && (
@@ -1706,6 +1748,7 @@ const SuiteDetails = () => {
               <strong>End Date</strong>:{" "}
               <input
                 type="date"
+                className="dark:bg-gray-900"
                 defaultValue={
                   programData?.endDate
                     ? moment(programData?.endDate).format("YYYY-MM-DD")
@@ -1792,6 +1835,7 @@ const SuiteDetails = () => {
           </Button>
           <Modal
             className="add-kpi-modal"
+            wrapClassName={`${darkMode ? "dark" : ""}`}
             width={1150}
             open={KPIModal}
             onCancel={() => setKPIModal(false)}
@@ -1803,7 +1847,7 @@ const SuiteDetails = () => {
                 name="search"
                 id="search"
                 placeholder="Search KPIs"
-                className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 value={kpiSearch}
                 onChange={handleKPISearchChange}
               />
@@ -1972,6 +2016,7 @@ const SuiteDetails = () => {
           {inputVisible ? (
             <>
               <Input
+                className="dark:bg-gray-900"
                 ref={inputRef}
                 type="text"
                 size="small"
@@ -2094,6 +2139,29 @@ const SuiteDetails = () => {
         </div>
       ),
     },
+    {
+      key: "versionControl",
+      label: "Version Control",
+      children: (
+        <div className="relative">
+          {versionControlHistory.map((elem) => (
+            <div key={elem._id}>
+              <div>
+                <strong>Old Version:</strong> <ReactJson src={elem.original} />
+              </div>
+              <div>
+                <strong>New Version:</strong> <ReactJson src={elem.suiteObj} />
+              </div>
+              <div>
+                <strong>Updated At:</strong>{" "}
+                {moment(elem.createdAt).format(STANDARD_MOMENT_FORMAT)}
+              </div>
+              <Divider />
+            </div>
+          ))}
+        </div>
+      ),
+    },
   ];
 
   if (!programData) return <Skeleton active />;
@@ -2146,6 +2214,8 @@ const SuiteDetails = () => {
                   }).then((res) => {
                     setProgramData(res.data);
                   });
+
+                  await NotificationService.newGrant({ id });
                 }}
               >
                 Publish Program
@@ -2218,6 +2288,7 @@ const SuiteDetails = () => {
         />
 
         <Modal
+          wrapClassName={`${darkMode ? "dark" : ""}`}
           width={1000}
           open={KPILinkedQuestionModal}
           onOk={() => setKPILinkedQuestionModal(false)}
@@ -2296,6 +2367,7 @@ const SuiteDetails = () => {
           )}
         </Modal>
         <Modal
+          wrapClassName={`${darkMode ? "dark" : ""}`}
           width={600}
           open={KPIAdditionalDataModal}
           onOk={saveKPIAdditionalData}
@@ -2308,7 +2380,7 @@ const SuiteDetails = () => {
               name="baseline"
               id="baseline"
               placeholder="Baseline"
-              className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={selectedKPIAdditionalData?.baseline ?? ""}
               onChange={handleAdditionalKPIDataChange}
             />
@@ -2320,7 +2392,7 @@ const SuiteDetails = () => {
               name="targetValue"
               id="targetValue"
               placeholder="Target"
-              className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={selectedKPIAdditionalData?.targetValue ?? ""}
               onChange={handleAdditionalKPIDataChange}
             />
@@ -2332,7 +2404,7 @@ const SuiteDetails = () => {
               name="targetUnit"
               id="targetUnit"
               placeholder="Unit"
-              className="block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={selectedKPIAdditionalData?.targetUnit ?? ""}
               onChange={handleAdditionalKPIDataChange}
             />
@@ -2342,6 +2414,7 @@ const SuiteDetails = () => {
             <input
               type="date"
               name="timeline"
+              className="dark:bg-gray-900"
               value={
                 selectedKPIAdditionalData?.timeline
                   ? moment(selectedKPIAdditionalData?.timeline).format(

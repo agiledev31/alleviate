@@ -143,13 +143,6 @@ const SuitePre = () => {
           placeholder: "Enter program description",
           rows: 6,
         },
-        {
-          fieldName: "image",
-          label: "Thumbnail",
-          type: "upload",
-          placeholder: "Upload a thumbnail",
-          rows: 6,
-        },
       ],
     },
 
@@ -229,7 +222,7 @@ const SuitePre = () => {
     },
     // Ste 4: Program Preview
     {
-      id: "step4",
+      id: "previewstep",
       name: "Preview Program",
       form: [],
     },

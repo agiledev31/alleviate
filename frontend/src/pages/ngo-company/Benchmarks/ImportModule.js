@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import * as XLSX from "xlsx";
-import { selectLoading } from "../../../redux/auth/selectors";
+import { selectDarkMode, selectLoading } from "../../../redux/auth/selectors";
 import CrudService from "../../../service/CrudService";
 
 // const targetFields = [
@@ -26,6 +26,7 @@ const ImportModule = ({
   const [bulkUploadProcess, setBulkUploadProcess] = useState({});
   const loading = useSelector(selectLoading);
   const targetFields = header.map((i) => ({ value: i, label: i }));
+  const darkMode = useSelector(selectDarkMode);
 
   return (
     <>
@@ -48,6 +49,7 @@ const ImportModule = ({
       </Button>
 
       <Modal
+        wrapClassName={`${darkMode ? "dark" : ""}`}
         open={!!bulkUploadProcess?.json?.[0]}
         onCancel={() => setBulkUploadProcess({})}
         okButtonProps={{ style: { display: "none" } }}
@@ -67,7 +69,7 @@ const ImportModule = ({
                 <tr className="font-bold">
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs text-gray-500"
+                    className="px-6 py-3 text-left text-xs dark:text-white text-gray-500"
                   >
                     Delete
                   </th>
@@ -75,14 +77,14 @@ const ImportModule = ({
                     <th
                       key={idx}
                       scope="col"
-                      className="px-6 py-3 text-left text-xs text-gray-500"
+                      className="px-6 py-3 text-left text-xs dark:text-white text-gray-500"
                     >
                       {t.label}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-900 dark:bg-gray-900 divide-y divide-gray-200">
                 {bulkUploadProcess?.mappedItems?.map((line, i) => (
                   <tr key={i}>
                     <td className="px-6 py-4 whitespace-nowrap">

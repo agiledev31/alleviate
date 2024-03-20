@@ -116,6 +116,7 @@ const userSchema = new mongoose.Schema(
 
     website: { type: String, default: "" },
     cvDocument: { type: String, default: "" },
+    impactThemeInterests: { type: [String], default: [] },
     socialMediaLinks: [{ platform: String, link: String }],
 
     // Notification settings
@@ -123,7 +124,8 @@ const userSchema = new mongoose.Schema(
       securityalerts: { type: Boolean, default: true },
       platformupdates: { type: Boolean, default: true },
       newsletter: { type: Boolean, default: true },
-      programmilestonereminders: { type: Boolean, default: true },
+      newgrantproposals: { type: Boolean, default: true },
+      grantproposalupdates: { type: Boolean, default: true },
       grantproposaldeadlines: { type: Boolean, default: true },
       donorengagementopportunities: { type: Boolean, default: true },
       volunteercoordinationupdates: { type: Boolean, default: true },
@@ -290,6 +292,7 @@ const suiteSchema = new mongoose.Schema(
     // Opportunity portal
     isGrantOpportunity: { type: Boolean, default: false },
     fundingAmount: { type: Number },
+    grantEligibilityCriteria: { type: String },
   },
   { timestamps: true }
 );
@@ -319,6 +322,17 @@ const templateSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const versionControlSuiteSchema = new mongoose.Schema(
+  {
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    suite: { type: mongoose.Schema.Types.ObjectId, ref: "Suite" },
+    original: Object,
+    suiteObj: Object,
+    changedKeys: [String],
+  },
+  { timestamps: true }
+);
+
 const defaultAssessmentSchema = new mongoose.Schema(
   {
     name: { type: String, default: "" },
@@ -329,6 +343,19 @@ const defaultAssessmentSchema = new mongoose.Schema(
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     template: { type: mongoose.Schema.Types.ObjectId, ref: "Template" },
     isTemplateAssessment: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+const savedSearchGrantOppSchema = new mongoose.Schema(
+  {
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    typeFilter: { type: String, default: "" },
+    minFunding: { type: Number },
+    maxFunding: { type: Number },
+    deadlineStart: { type: Date },
+    deadlineEnd: { type: Date },
+    searchTerm: { type: String, default: "" },
   },
   { timestamps: true }
 );
@@ -400,7 +427,15 @@ const DefaultAssessment = mongoose.model(
   defaultAssessmentSchema
 );
 const Template = mongoose.model("Template", templateSchema);
+const VersionControlSuite = mongoose.model(
+  "VersionControlSuite",
+  versionControlSuiteSchema
+);
 const BenchMark = mongoose.model("BenchMark", benchMarkSchema);
+const SavedSearchGrantOpp = mongoose.model(
+  "SavedSearchGrantOpp",
+  savedSearchGrantOppSchema
+);
 
 const models = {
   User,
@@ -414,6 +449,8 @@ const models = {
   DefaultAssessment,
   Template,
   BenchMark,
+  VersionControlSuite,
+  SavedSearchGrantOpp,
 };
 
 module.exports = {

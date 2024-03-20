@@ -39,6 +39,7 @@ const Programs = () => {
       try {
         const data = {
           filters: { published: true, ...filters },
+          sort: { createdAt: -1 },
         };
         if (text) data.text = text;
         data.filters.isGrantOpportunity = false;
@@ -55,6 +56,7 @@ const Programs = () => {
               ...filters,
               invitedEmails: { $in: [user.email] },
             },
+            sort: { createdAt: -1 },
           };
           const updatedResponse = await CrudService.search("Suite", 9, page, {
             filters: { published: true, isGrantOpportunity: false },
@@ -87,8 +89,6 @@ const Programs = () => {
 
     if (typeFilter !== "ALL") {
       filter.category = typeFilter;
-    } else {
-      Object.keys(filter).forEach((key) => delete filter[key]);
     }
     loadMorePrograms(filter);
   }, [user, typeFilter]);
@@ -147,7 +147,7 @@ const Programs = () => {
           type="text"
           id="search"
           placeholder="Search Programs"
-          className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="dark:bg-gray-900 block w-full rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           value={searchTerm}
           onChange={handleInputChange}
         />
@@ -156,10 +156,10 @@ const Programs = () => {
           <div style={{ width: "max-content" }}>
             <Menu.Button
               type="button"
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold dark:text-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
               <BarsArrowUpIcon
-                className="-ml-0.5 h-5 w-5 text-gray-400"
+                className="-ml-0.5 h-5 w-5 dark:text-white text-gray-400"
                 aria-hidden="true"
               />
               Category:{" "}
@@ -177,14 +177,14 @@ const Programs = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {[{ _id: "ALL", Name: "All" }, ...categories].map((item) => (
                 <Menu.Item key={item._id}>
                   {({ active }) => (
                     <div
                       className={classNames(
                         active || typeFilter === item._id ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                        "block px-4 py-2 text-sm dark:text-white text-gray-700 cursor-pointer"
                       )}
                       onClick={() => {
                         setPage(1);
@@ -349,7 +349,7 @@ const Programs = () => {
                     {/*)}*/}
                   </Tooltip>
                 </div>
-                <p className="text-gray-700 text-base">
+                <p className="dark:text-white dark:text-white text-gray-700 text-base">
                   {programType.description}
                 </p>
               </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import CrudService from "../../service/CrudService";
+import NotificationService from "../../service/NotificationService";
 import StrapiService from "../../service/StrapiService";
 
 const GrantPreInformation = () => {
@@ -138,29 +139,29 @@ const GrantPreInformation = () => {
       form: [
         {
           fieldName: "name",
-          label: "What is the title of your grant opportunity? ",
+          label: "Title of Grant Opportunity",
           type: "input",
-          placeholder: "Enter program name",
+          placeholder: "What is the title of your grant opportunity?",
           required: true,
         },
         {
           fieldName: "description",
-          label: "Grant Opportunity Description",
+          label: "Application Instructions",
           type: "textarea",
           placeholder: "Describe your grant opportunity",
+          rows: 6,
+        },
+        {
+          fieldName: "grantEligibilityCriteria",
+          label: "Eligibility Criteria",
+          type: "textarea",
+          placeholder: "Describe the eligibility criteria of the opportunity",
           rows: 6,
         },
         {
           fieldName: "fundingAmount",
           label: "Funding Amount",
           type: "inputNumber",
-        },
-        {
-          fieldName: "image",
-          label: "Thumbnail",
-          type: "upload",
-          placeholder: "Upload a thumbnail",
-          rows: 6,
         },
       ],
     },
@@ -224,22 +225,13 @@ const GrantPreInformation = () => {
       ],
     },
     {
-      id: "step3",
-      name: "Objectives",
-      form: [
-        {
-          fieldName: "objectives",
-          label: "Objectives",
-          type: "textarea",
-          placeholder: "Describe the objectives of the grant opportunity",
-          rows: 4,
-        },
-      ],
-    },
-    {
-      id: "step4",
+      id: "previewstep",
       name: "Preview Grant Opportunity",
       form: [],
+      programPreviewDescriptionTitle: "Application Instructions",
+      programPreviewDescriptionKey: "description",
+      programPreviewEligibilityKey: "grantEligibilityCriteria",
+      programPreviewEligibilityTitle: "Eligibility Criteria",
     },
   ];
 
@@ -282,6 +274,9 @@ const GrantPreInformation = () => {
                   if (!res.data) return;
                   setProgramDataForDisplay(res.data);
                 });
+                if (programData.published && formData.isFinishClicked) {
+                  await NotificationService.updatedGrant({ id });
+                }
                 if (formData.isFinishClicked)
                   navigate(`/dashboard/suitedetails?id=${programData._id}`);
               }

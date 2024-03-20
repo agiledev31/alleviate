@@ -158,13 +158,6 @@ const CreateTemplate = () => {
           placeholder: "Enter program description",
           rows: 6,
         },
-        {
-          fieldName: "image",
-          label: "Thumbnail",
-          type: "upload",
-          placeholder: "Upload a thumbnail",
-          rows: 6,
-        },
       ],
     },
     {
@@ -230,7 +223,7 @@ const CreateTemplate = () => {
       ],
     },
     {
-      id: "step4",
+      id: "previewstep",
       name: "Preview Template",
       form: [],
     },
