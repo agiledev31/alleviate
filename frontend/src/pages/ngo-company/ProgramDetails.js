@@ -68,8 +68,6 @@ const ProgramDetails = () => {
   const [unQualificationData, setUnQualificationData] = useState([]);
   const [showLoader, setShowLoader] = useState(false);
 
-  console.log("program data form", programData?.form);
-
   useEffect(() => {
     const id = searchParams.get("id");
     if (!id) return;
@@ -844,7 +842,7 @@ const ProgramDetails = () => {
               setDataSummeryModal(true);
             }}
           >
-            View Data Summery
+            View Data Summary
           </Button>
           <Modal
             width={1000}
