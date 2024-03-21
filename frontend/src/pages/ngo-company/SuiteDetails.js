@@ -900,7 +900,7 @@ const SuiteDetails = () => {
                 navigate(
                   `/dashboard/${
                     programData?.isGrantOpportunity
-                      ? "mygrantopporunities"
+                      ? "grantopportunities"
                       : "myprograms"
                   }`
                 );

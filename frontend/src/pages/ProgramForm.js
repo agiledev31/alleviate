@@ -10,6 +10,7 @@ const ProgramForm = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [programData, setProgramData] = useState(null);
+  const [suite, setSuite] = useState(null);
   const [defaultAssessmentValue, setDefaultAssessmentValue] = useState(null);
   const [programSubmittedData, setProgramSubmittedData] = useState(null);
   const user = useSelector(selectUser);
@@ -36,6 +37,10 @@ const ProgramForm = () => {
     CrudService.getSingle("Program", id).then((res) => {
       if (!res.data) return;
       setProgramData(res.data);
+      if (res.data?.suite?._id)
+        CrudService.getSingle("Suite", res.data.suite._id).then((res) => {
+          setSuite(res.data);
+        });
 
       if (res.data.isDefaultAssessment) {
         if (user) {
@@ -93,14 +98,14 @@ const ProgramForm = () => {
                     title: (
                       <Link
                         to={`/dashboard/${
-                          programData?.isGrantOpportunity
-                            ? "mygrantopporunities"
-                            : "myprograms"
+                          suite?.isGrantOpportunity
+                            ? "grantopportunities"
+                            : "programs"
                         }`}
                       >
-                        {programData?.isGrantOpportunity
-                          ? "My Grant Opportunities"
-                          : "My Programs"}
+                        {suite?.isGrantOpportunity
+                          ? "Grant Opportunities"
+                          : "Programs"}
                       </Link>
                     ),
                   },

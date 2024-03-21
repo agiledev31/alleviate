@@ -44,6 +44,12 @@ const MyPrograms = () => {
     );
   }, []);
 
+  useEffect(() => {
+    if (user?.role == "ngo-beneficiary") {
+      setStatusFilter("published");
+    }
+  }, [user, window.location.href])
+
   const loadMorePrograms = async (filters = {}, text = "") => {
     setLoading(true);
     try {
@@ -56,8 +62,46 @@ const MyPrograms = () => {
         data.filters.name = { $regex: text };
       }
       data.filters.isGrantOpportunity = false;
-      const response = await CrudService.search("Suite", 25, page, data);
-      setPrograms(response.data.items);
+      const programRes = await CrudService.search("Suite", 25, page, data);
+      setPrograms(programRes.data.items);
+      console.log("programRes", programRes)
+      if (user?.role !== "ngo-beneficiary") {
+        setPrograms(programRes.data.items);
+      } else {
+        setPrograms(programRes.data.items);
+        setStatusFilter("published");
+        if (window.location.href.includes("myapplications")) {
+          setStatusFilter("unPublished");
+        //   setPrograms(
+        //     programRes.data.items.filter(async (item) => {
+        //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
+        //         filters: { 
+        //           suite: item._id, 
+        //           isDefaultAssessment: false,
+        //           status: "approve"
+        //         },
+        //       });
+        //       return !!assessmentRes.data.length;
+        //     })
+        //   )
+        } else {
+          setStatusFilter("unPublished");
+        //   setPrograms(
+        //     programRes.data.items.filter(async (item) => {
+        //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
+        //         filters: { 
+        //           suite: item._id, 
+        //           isDefaultAssessment: false,
+        //           status: "approve"
+        //         },
+        //       });
+        //       return !!assessmentRes.data.length;
+        //     })
+        //   )
+        }
+        
+      }
+
       // const newPrograms = response.data.items;
       // setPrograms((prevPrograms) => [...prevPrograms, ...newPrograms]);
       // setPage((prevPage) => prevPage + 1);
@@ -208,64 +252,68 @@ const MyPrograms = () => {
           </Transition>
         </Menu>
 
-        <Menu as="div" className="relative ml-3">
-          <div style={{ width: "max-content" }}>
-            <Menu.Button
-              type="button"
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold dark:text-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        {user?.role !== "ngo-beneficiary" &&
+          <Menu as="div" className="relative ml-3">
+            <div style={{ width: "max-content" }}>
+              <Menu.Button
+                type="button"
+                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold dark:text-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              >
+                <BarsArrowUpIcon
+                  className="-ml-0.5 h-5 w-5 dark:text-white text-gray-400"
+                  aria-hidden="true"
+                />
+                Status:{" "}
+                {programStatus.find((item) => item._id === statusFilter)?.name}
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
             >
-              <BarsArrowUpIcon
-                className="-ml-0.5 h-5 w-5 dark:text-white text-gray-400"
-                aria-hidden="true"
-              />
-              Status:{" "}
-              {programStatus.find((item) => item._id === statusFilter)?.name}
-            </Menu.Button>
-          </div>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-200"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              {programStatus.map((item) => (
-                <Menu.Item key={item._id}>
-                  {({ active }) => (
-                    <div
-                      className={classNames(
-                        active || statusFilter === item._id
-                          ? "bg-gray-100"
-                          : "",
-                        "block px-4 py-2 text-sm dark:text-white text-gray-700 cursor-pointer"
-                      )}
-                      onClick={() => {
-                        setPage(1);
-                        setPrograms([]);
-                        setStatusFilter(item._id);
-                      }}
-                    >
-                      {item.name}
-                    </div>
-                  )}
-                </Menu.Item>
-              ))}
-            </Menu.Items>
-          </Transition>
-        </Menu>
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {programStatus.map((item) => (
+                  <Menu.Item key={item._id}>
+                    {({ active }) => (
+                      <div
+                        className={classNames(
+                          active || statusFilter === item._id
+                            ? "bg-gray-100"
+                            : "",
+                          "block px-4 py-2 text-sm dark:text-white text-gray-700 cursor-pointer"
+                        )}
+                        onClick={() => {
+                          setPage(1);
+                          setPrograms([]);
+                          setStatusFilter(item._id);
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    )}
+                  </Menu.Item>
+                ))}
+              </Menu.Items>
+            </Transition>
+          </Menu>
+        }
       </div>
-      <Button
-        type="primary"
-        onClick={() => {
-          fileInputRef.current.value = "";
-          fileInputRef.current.click();
-        }}
-      >
-        Import Programs
-      </Button>
+      {user?.role !== "ngo-beneficiary" &&
+        <Button
+          type="primary"
+          onClick={() => {
+            fileInputRef.current.value = "";
+            fileInputRef.current.click();
+          }}
+        >
+          Import Programs
+        </Button>
+      }
       <div className="container mx-auto p-4" id="programContainer">
         {loading && programs.length <= 0 && <Skeleton active />}
         {!loading && programs.length === 0 && (
@@ -285,7 +333,7 @@ const MyPrograms = () => {
                     {programType.name}
                   </div>
                   <div className="flex items-center justify-between">
-                    <Tooltip
+                    {user?.role !== "ngo-beneficiary" && <Tooltip
                       title={
                         programType.published ? "Published" : "Unpublished"
                       }
@@ -321,17 +369,18 @@ const MyPrograms = () => {
                         }}
                       />
                     </Tooltip>
+                    }
                     <Tooltip
                       title={
                         programType.hasOwnProperty("favoriteBy") &&
-                        programType?.favoriteBy?.includes(user._id)
+                          programType?.favoriteBy?.includes(user._id)
                           ? "Remove from Favorite"
                           : "Add to Favorite"
                       }
                     >
                       {programType &&
-                      programType.hasOwnProperty("favoriteBy") &&
-                      programType?.favoriteBy.includes(user._id) ? (
+                        programType.hasOwnProperty("favoriteBy") &&
+                        programType?.favoriteBy.includes(user._id) ? (
                         <MdFavorite
                           className={"mx-1 cursor-pointer"}
                           stroke={"red"}
@@ -342,11 +391,11 @@ const MyPrograms = () => {
                               prevPrograms.map((p) =>
                                 p._id === programType._id
                                   ? {
-                                      ...p,
-                                      favoriteBy: p.favoriteBy.filter(
-                                        (id) => id !== user._id
-                                      ),
-                                    }
+                                    ...p,
+                                    favoriteBy: p.favoriteBy.filter(
+                                      (id) => id !== user._id
+                                    ),
+                                  }
                                   : p
                               )
                             );
@@ -354,7 +403,7 @@ const MyPrograms = () => {
                               favoriteBy: programType.favoriteBy.filter(
                                 (id) => id !== user._id
                               ),
-                            }).then((res) => {});
+                            }).then((res) => { });
                           }}
                         />
                       ) : (
@@ -367,15 +416,15 @@ const MyPrograms = () => {
                               prevPrograms.map((p) =>
                                 p._id === programType._id
                                   ? {
-                                      ...p,
-                                      favoriteBy: [...p.favoriteBy, user._id],
-                                    }
+                                    ...p,
+                                    favoriteBy: [...p.favoriteBy, user._id],
+                                  }
                                   : p
                               )
                             );
                             await CrudService.update("Suite", programType._id, {
                               favoriteBy: [...programType.favoriteBy, user._id],
-                            }).then((res) => {});
+                            }).then((res) => { });
                           }}
                         />
                       )}
@@ -390,7 +439,7 @@ const MyPrograms = () => {
                   }}
                 >
                   {expandedMap[programType._id] ||
-                  !shouldShowReadMore(programType) ? (
+                    !shouldShowReadMore(programType) ? (
                     programType.description
                   ) : (
                     <>

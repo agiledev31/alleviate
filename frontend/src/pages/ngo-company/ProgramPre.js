@@ -81,12 +81,12 @@ const ProgramPre = () => {
                 <Link
                   to={`/dashboard/${
                     programData?.isGrantOpportunity
-                      ? "mygrantopporunities"
+                      ? "grantopportunities"
                       : "myprograms"
                   }`}
                 >
                   {programData?.isGrantOpportunity
-                    ? "My Grant Opportunities"
+                    ? "Grant Opportunities"
                     : "My Programs"}
                 </Link>
               ),

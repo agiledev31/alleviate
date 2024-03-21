@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
       when: { role: "company" },
     },
 
+    myDocuments: {
+      type: [Object],
+      default: [],
+    },
+
     // Expert specific fields
     expertiseAreas: [{ type: String, default: "", when: { role: "expert" } }],
     experienceYears: { type: Number, default: 0, when: { role: "expert" } },

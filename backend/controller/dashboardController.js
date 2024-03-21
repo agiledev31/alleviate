@@ -22,6 +22,7 @@ const getDashboardDetails = async (req, res) => {
     await connectToDatabase();
 
     const data = {
+      userSuites: [],
       KPIs: [],
       favoriteKPIs: [],
       SDGList: [],
@@ -34,6 +35,25 @@ const getDashboardDetails = async (req, res) => {
       user_id: req.user._id,
       published: true,
     });
+
+    const recentUserSuites = await Suite.find({
+        user_id: req.user._id,
+        // published: true,
+      })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+    
+    const recentSuiteData = [];
+    for (const suite of recentUserSuites) {
+      if (suite.category) {
+        suite.categoryDetails = await db
+          .collection("impact_categories")
+          .findOne({ _id: new ObjectId(suite.category) });
+        recentSuiteData.push(suite);
+      }
+    }
+    data.userSuites = recentSuiteData;
 
     const userSuiteIds = userSuite.map((item) => item._id);
     const suitWiseProgram = await Program.find({

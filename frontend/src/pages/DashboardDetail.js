@@ -15,7 +15,9 @@ const DashboardDetail = () => {
   const [pendingProgramData, setPendingProgramData] = useState([]);
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [favoriteKPIs, setFavoriteKPIs] = useState([]);
+  const [myRecentSuites, setMyRecentSuites] = useState([]);
   const user = useSelector(selectUser);
+  console.log("user", user)
 
   const load = useCallback(() => {
     DashboardService.getDashboardDetails().then((res) => {
@@ -34,6 +36,7 @@ const DashboardDetail = () => {
       setPendingProgramData(res.data.pendingPrograms);
       setSubmittedProgramData(res.data.submissions);
       setFavoriteKPIs(res.data.favoriteKPIs);
+      setMyRecentSuites(res.data.userSuites);
     });
   }, []);
 
@@ -82,10 +85,10 @@ const DashboardDetail = () => {
             text === "Submitted"
               ? "green"
               : text === "Waiting"
-              ? "orange"
-              : text === "Approved"
-              ? "green"
-              : "red"
+                ? "orange"
+                : text === "Approved"
+                  ? "green"
+                  : "red"
           }
         >
           {text === "Waiting" ? "Submitted" : text}
@@ -121,6 +124,44 @@ const DashboardDetail = () => {
             View Submission
           </Button>
         </Space>
+      ),
+    },
+  ];
+
+  const programsColumns = [
+    {
+      title: "Program Name",
+      dataIndex: "programName",
+      key: "programName",
+      width: 160,
+    },
+    {
+      title: "Category",
+      dataIndex: "categoryName",
+      key: "categoryName",
+      width: 150,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: 350,
+      render: (text) => <div className="line-clamp-3">{text}</div>,
+    },
+    {
+      title: "Actions",
+      key: "action",
+      width: 100,
+      render: (record) => (
+        <Button
+          className="px-2 py-1 text-sm rounded"
+          type="primary"
+          onClick={() => {
+            navigate(`/dashboard/suitedetails?id=${record.data._id}`);
+          }}
+        >
+          View Program
+        </Button>
       ),
     },
   ];
@@ -185,90 +226,92 @@ const DashboardDetail = () => {
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          <div
-            className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
-          >
-            <h2
-              className={
-                "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
-              }
+          {submittedProgramData?.length > 0 && (
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
             >
-              Sustainable Development Goals
-            </h2>
-            <div className="flex flex-row justify-between items-center">
-              <div className="h-[700px] w-[90%]">
-                <ResponsivePieCanvas
-                  onClick={(node, event) => {
-                    clickSGDNode(node, event);
-                  }}
-                  data={sdgs}
-                  margin={{ top: 100, right: 200, bottom: 100, left: 100 }}
-                  innerRadius={0.5}
-                  padAngle={0.3}
-                  cornerRadius={3}
-                  activeOuterRadiusOffset={8}
-                  colors={sdgDefault.map((i) => i.color)}
-                  borderColor={{
-                    from: "color",
-                    modifiers: [["darker", 0.6]],
-                  }}
-                  arcLinkLabelsSkipAngle={10}
-                  arcLinkLabelsTextColor="#333333"
-                  arcLinkLabelsThickness={2}
-                  arcLinkLabelsColor={{ from: "color" }}
-                  arcLabel={(e) => e.value + "%"}
-                  arcLabelsSkipAngle={10}
-                  arcLabelsTextColor="#ffffff"
-                  defs={[
-                    {
-                      id: "dots",
-                      type: "patternDots",
-                      background: "inherit",
-                      color: "rgba(255, 255, 255, 0.3)",
-                      size: 4,
-                      padding: 1,
-                      stagger: true,
-                    },
-                    {
-                      id: "lines",
-                      type: "patternLines",
-                      background: "inherit",
-                      color: "rgba(255, 255, 255, 0.3)",
-                      rotation: -45,
-                      lineWidth: 6,
-                      spacing: 10,
-                    },
-                  ]}
-                  fill={[
-                    {
-                      match: {
-                        id: "python",
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
+                Sustainable Development Goals
+              </h2>
+              <div className="flex flex-row justify-between items-center">
+                <div className="h-[700px] w-[90%]">
+                  <ResponsivePieCanvas
+                    onClick={(node, event) => {
+                      clickSGDNode(node, event);
+                    }}
+                    data={sdgs}
+                    margin={{ top: 100, right: 200, bottom: 100, left: 100 }}
+                    innerRadius={0.5}
+                    padAngle={0.3}
+                    cornerRadius={3}
+                    activeOuterRadiusOffset={8}
+                    colors={sdgDefault.map((i) => i.color)}
+                    borderColor={{
+                      from: "color",
+                      modifiers: [["darker", 0.6]],
+                    }}
+                    arcLinkLabelsSkipAngle={10}
+                    arcLinkLabelsTextColor="#333333"
+                    arcLinkLabelsThickness={2}
+                    arcLinkLabelsColor={{ from: "color" }}
+                    arcLabel={(e) => e.value + "%"}
+                    arcLabelsSkipAngle={10}
+                    arcLabelsTextColor="#ffffff"
+                    defs={[
+                      {
+                        id: "dots",
+                        type: "patternDots",
+                        background: "inherit",
+                        color: "rgba(255, 255, 255, 0.3)",
+                        size: 4,
+                        padding: 1,
+                        stagger: true,
                       },
-                      id: "dots",
-                    },
-                    {
-                      match: {
-                        id: "scala",
+                      {
+                        id: "lines",
+                        type: "patternLines",
+                        background: "inherit",
+                        color: "rgba(255, 255, 255, 0.3)",
+                        rotation: -45,
+                        lineWidth: 6,
+                        spacing: 10,
                       },
-                      id: "lines",
-                    },
-                  ]}
-                  legends={[]}
-                />
+                    ]}
+                    fill={[
+                      {
+                        match: {
+                          id: "python",
+                        },
+                        id: "dots",
+                      },
+                      {
+                        match: {
+                          id: "scala",
+                        },
+                        id: "lines",
+                      },
+                    ]}
+                    legends={[]}
+                  />
+                </div>
+                <ul role="list" className="list-disc space-y-1 pl-2">
+                  {sdgDefault?.map((sdg, index) => (
+                    <li key={index} className="flex items-center">
+                      <img
+                        className="h-8 w-auto rounded-md"
+                        src={`/images/sdg-icons/E_WEB_${index + 1}.png`}
+                        alt={sdg.Name}
+                      />
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul role="list" className="list-disc space-y-1 pl-2">
-                {sdgDefault?.map((sdg, index) => (
-                  <li key={index} className="flex items-center">
-                    <img
-                      className="h-8 w-auto rounded-md"
-                      src={`/images/sdg-icons/E_WEB_${index + 1}.png`}
-                      alt={sdg.Name}
-                    />
-                  </li>
-                ))}
-              </ul>
             </div>
-          </div>
+          )}
 
           {favoriteKPIs?.length > 0 && (
             <div
@@ -350,6 +393,44 @@ const DashboardDetail = () => {
             </div>
           )}
 
+          {myRecentSuites?.length > 0 && (
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
+                Recent Programs
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  <Table
+                    dataSource={myRecentSuites.map((item, index) => {
+                      return {
+                        key: index,
+                        programName: item.name,
+                        categoryName: item.categoryDetails?.Name || "-",
+                        description: item.description,
+                        data: item,
+                      };
+                    })}
+                    columns={programsColumns}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ x: "750px" }}
+                    rowKey="_id"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {pendingProgramData?.length > 0 && (
             <div
               className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
@@ -396,7 +477,38 @@ const DashboardDetail = () => {
               </div>
             </div>
           )}
+          {user?.myDocuments.length &&
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
+                My Documents
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  {user?.myDocuments?.map((document, index) => (
+                    <div
+                      key={index}
+                      className="m-3 p-1 block cursor-pointer text-md font-bold hover:opacity-80 hover:underline"
+                      onClick={() => window.open(document.url)}
+                    >
+                      {document.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          }
         </div>
+
       </div>
     </div>
   );

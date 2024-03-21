@@ -197,7 +197,7 @@ export const trackCategoriesList = [
             text: ({ assessmentData }) => {
               let _count = 0;
               assessmentData.map((i) => {
-                if (i.name && i.form.length) _count++;
+                if (i.name && i.form?.length) _count++;
               });
               let _text =
                 "Platform measures program outcomes (" +
@@ -2175,12 +2175,12 @@ const SuiteDetails = () => {
                 <Link
                   to={`/dashboard/${
                     programData?.isGrantOpportunity
-                      ? "mygrantopporunities"
+                      ? "grantopportunities"
                       : "myprograms"
                   }`}
                 >
                   {programData?.isGrantOpportunity
-                    ? "My Grant Opportunities"
+                    ? "Grant Opportunities"
                     : "My Programs"}
                 </Link>
               ),
@@ -2267,7 +2267,7 @@ const SuiteDetails = () => {
                 navigate(
                   `/dashboard/${
                     programData?.isGrantOpportunity
-                      ? "mygrantopporunities"
+                      ? "grantopportunities"
                       : "myprograms"
                   }`
                 );
