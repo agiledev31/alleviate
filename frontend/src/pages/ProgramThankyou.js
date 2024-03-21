@@ -8,6 +8,7 @@ const ProgramThankyou = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [programData, setProgramData] = useState(null);
+  const [suite, setSuite] = useState(null);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -17,6 +18,10 @@ const ProgramThankyou = () => {
     CrudService.getSingle("Program", id).then((res) => {
       if (!res.data) return;
       setProgramData(res.data);
+      if (res.data?.suite?._id)
+        CrudService.getSingle("Suite", res.data.suite._id).then((res) => {
+          setSuite(res.data);
+        });
     });
   }, [searchParams]);
 
@@ -30,14 +35,14 @@ const ProgramThankyou = () => {
               title: (
                 <Link
                   to={`/dashboard/${
-                    programData?.isGrantOpportunity
-                      ? "mygrantopporunities"
-                      : "myprograms"
+                    suite?.isGrantOpportunity
+                      ? "grantopportunities"
+                      : "programs"
                   }`}
                 >
-                  {programData?.isGrantOpportunity
-                    ? "My Grant Opportunities"
-                    : "My Programs"}
+                  {suite?.isGrantOpportunity
+                    ? "Grant Opportunities"
+                    : "Programs"}
                 </Link>
               ),
             },
@@ -66,9 +71,7 @@ const ProgramThankyou = () => {
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
               to={`/dashboard/${
-                programData?.isGrantOpportunity
-                  ? "mygrantopporunities"
-                  : "myprograms"
+                suite?.isGrantOpportunity ? "grantopportunities" : "programs"
               }`}
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >

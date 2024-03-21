@@ -326,6 +326,7 @@ const updateMe = async (req, res) => {
       locale: req.body.locale,
       businessId: req.body.businessId,
       businessIdDocument: req.body.businessIdDocument,
+      myDocuments: req.body.myDocuments,
       businessIdApproved: req.body.businessIdApproved,
       expertiseAreas: req.body.expertiseAreas,
       experienceYears: req.body.experienceYears,

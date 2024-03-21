@@ -64,6 +64,7 @@ import ThemeFive from "./ThemeFive";
 import ThemeOne from "./ThemeOne";
 import ThemeThree from "./ThemeThree";
 import ThemeTwo from "./ThemeTwo";
+import MyDocuments from "../MyDocuments";
 
 export const THEME_OPTIONS = [
   { value: 1, label: "Default" },
@@ -225,7 +226,14 @@ const Dashboard = () => {
       component: <DashboardDetail />,
       href: "/dashboard",
       icon: HomeIcon,
-      display: true,
+      display: ["ngo-company", "admin"].includes(user?.role),
+    },
+    {
+      name: "Home",
+      component: <DashboardDetail />,
+      href: "/dashboard",
+      icon: HomeIcon,
+      display: user?.role === "ngo-beneficiary",
     },
     {
       name: "My Benchmarks",
@@ -239,14 +247,21 @@ const Dashboard = () => {
       component: <Team />,
       href: "/dashboard/team",
       icon: UsersIcon,
-      display: !user?.parent,
+      display: !user?.parent && ["ngo-company", "admin"].includes(user?.role),
     },
     {
       name: "My Programs",
       component: <MyPrograms />,
       href: "/dashboard/myprograms",
       icon: MyProgramsIcon,
-      display: user?.role === "ngo-company",
+      display: ["ngo-company", "ngo-beneficiary"].includes(user?.role),
+    },
+    {
+      name: "My Applications",
+      component: <MyPrograms />,
+      href: "/dashboard/myapplications",
+      icon: MyProgramsIcon,
+      display: ["ngo-beneficiary"].includes(user?.role),
     },
     {
       name: "Build Program",
@@ -261,7 +276,7 @@ const Dashboard = () => {
       component: <CategotyNotifications />,
       href: "/dashboard/categotynofications",
       icon: BellIcon,
-      display: user?.role === "ngo-company",
+      display: ["ngo-company", "ngo-beneficiary"].includes(user?.role),
     },
     {
       name: "Create Template",
@@ -289,7 +304,7 @@ const Dashboard = () => {
       component: <Programs />,
       href: "/dashboard/programs",
       icon: ChartPieIcon,
-      display: user?.role !== "ngo-company",
+      display: ["admin"].includes(user?.role),
     },
     {
       name: "Post Grant Opportunity",
@@ -303,8 +318,16 @@ const Dashboard = () => {
       component: <GrantOpportunities />,
       href: "/dashboard/grantopportunities",
       icon: ChartPieIcon,
-      display: ["ngo-company", "admin"].includes(user?.role),
+      display: true, //["ngo-company", "admin"].includes(user?.role),
     },
+    {
+      name: "My Documents",
+      component: <MyDocuments />,
+      href: "/dashboard/mydocuments",
+      icon: BuildProgramIcon,
+      display: ["ngo-beneficiary"].includes(user?.role),
+    },
+    
   ]
     .filter((e) => e.display === true)
     .map((elem) => ({
@@ -437,6 +460,7 @@ const Dashboard = () => {
         <Route path={"/suitetarget"} element={<SuiteTarget />} />
         <Route path={"/suiteobjective"} element={<SuiteObjective />} />
         <Route path={"/sdgdetails"} element={<SDGDetails />} />
+        <Route path={"/programedit"} element={<ProgramEdit />} />
       </Routes>
     </Theme>
   );

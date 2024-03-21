@@ -126,12 +126,12 @@ const EnrollmentPre = () => {
                 <Link
                   to={`/dashboard/${
                     suite?.isGrantOpportunity
-                      ? "mygrantopporunities"
+                      ? "grantopportunities"
                       : "myprograms"
                   }`}
                 >
                   {suite?.isGrantOpportunity
-                    ? "My Grant Opportunities"
+                    ? "Grant Opportunities"
                     : "My Programs"}
                 </Link>
               ),
