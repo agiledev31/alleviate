@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema(
   {
     subscription: Object,
     KYCProcess: Object,
-    accessControl: Object,
 
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
@@ -297,15 +296,8 @@ const suiteSchema = new mongoose.Schema(
 
     // Opportunity portal
     isGrantOpportunity: { type: Boolean, default: false },
-    fundingAmount: { type: [Number], default: [0, 20000000] },
-
-    locations: { type: [Object], default: [] },
-    eligibleNationalities: { type: [Object], default: [] },
-    sectors: { type: [Object], default: [] },
-    fundingAgencies: { type: [Object], default: [] },
-    applicationDeadline: { type: Date, default: new Date() },
-    attachments: { type: [String], default: [] },
-    urlLinks: { type: [Object], default: [] },
+    fundingAmount: { type: Number },
+    grantEligibilityCriteria: { type: String },
   },
   { timestamps: true }
 );
@@ -394,6 +386,32 @@ const benchMarkSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const taskSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+    description: {type: String },
+    suite: { type: mongoose.Schema.Types.ObjectId, ref: "Suite" },
+    type: { type: String },
+    active: { type: Boolean, default: true}
+  },
+  { timestamps: true }
+);
+
+const TaskUserSchema = new mongoose.Schema(
+  {
+    suite: { type: mongoose.Schema.Types.ObjectId, ref: "Suite" },
+    task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    status: {
+      type: String,
+      // enum: ["progress", "review", "approved", "waiting"],
+      default: "waiting",
+    },
+    active: { type: Boolean, default: true}
+  },
+  { timestamps: true }
+);
+
 // Indexes
 userSchema.index({
   email: "text",
@@ -423,6 +441,9 @@ defaultAssessmentSchema.index({
   name: "text",
   description: "text",
 });
+taskSchema.index({
+  name: "text",
+});
 
 const User = mongoose.model("User", userSchema);
 const Role = mongoose.model("Role", roleSchema);
@@ -449,7 +470,8 @@ const SavedSearchGrantOpp = mongoose.model(
   "SavedSearchGrantOpp",
   savedSearchGrantOppSchema
 );
-
+const Task = mongoose.model("Task", taskSchema);
+const TaskUser = mongoose.model("TaskUser", TaskUserSchema);
 const models = {
   User,
   Role,
@@ -464,6 +486,8 @@ const models = {
   BenchMark,
   VersionControlSuite,
   SavedSearchGrantOpp,
+  Task,
+  TaskUser,
 };
 
 module.exports = {

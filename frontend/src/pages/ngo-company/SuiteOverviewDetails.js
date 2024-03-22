@@ -57,6 +57,17 @@ import StatsService from "../../service/StatsService";
 import StrapiService from "../../service/StrapiService";
 import UserService from "../../service/UserService";
 
+const colors = [
+  "yellow", "blue", "red", "green"
+];
+
+const taskStatus = [
+  { label: "Approved", value: "approved" },
+  { label: "In Progress", value: "progress" },
+  { label: "In Review", value: "review" },
+  { label: "Waiting", value: "waiting" },
+];
+
 export const trackCategoriesList = [
   {
     type: "Education",
@@ -574,9 +585,9 @@ const TableRow = ({ children, ...props }) => {
     transition,
     ...(isDragging
       ? {
-          position: "relative",
-          zIndex: 9999,
-        }
+        position: "relative",
+        zIndex: 9999,
+      }
       : {}),
   };
   return (
@@ -652,9 +663,43 @@ const SuiteDetails = () => {
   const [currentFavoriteKPIs, setCurrentFavoriteKPIs] = useState(
     user?.favoriteKPIs ?? []
   );
+
+  const [tasks, setTasks] = useState([]);
+  const [taskUsers, setTaskUsers] = useState([]);
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [addTaskModal, setAddTaskModal] = useState(false);
+  const [participants, setParticipants] = useState([]);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
   const darkMode = useSelector(selectDarkMode);
 
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchTotalProgramSubmission = async () => {
+      const data = {
+        filters: { suite: programData?._id },
+      };
+      CrudService.search("Program", limit, page, data)
+        .then(programRes => {
+          const assessement_ids = programRes?.data?.items.map((a) => a._id) ?? [];
+          CrudService.search("ProgramSubmission", 100000, 1, {
+            filters: {
+              programId: { $in: assessement_ids },
+            },
+          }).then(({ data }) => {
+            const _participants = data?.items.length ? data?.items.map(i => ({
+              ...i.user_id,
+            })) : []
+            const _uniqueList = Array.from(new Set(_participants.map(obj => obj._id))).map(_id => {
+              return _participants.find(obj => obj._id === _id);
+            });
+            setParticipants(_uniqueList)
+          });
+        })
+    }
+    fetchTotalProgramSubmission();
+  }, [programData])
 
   useEffect(() => {
     setCurrentFavoriteKPIs(user?.favoriteKPIs);
@@ -708,6 +753,31 @@ const SuiteDetails = () => {
       setIsEmailError(inputRef.current.input.value === "");
     }
   }, [inputVisible]);
+
+  useEffect(() => {
+    fetchTasks();
+    fetchTaskUsers();
+  }, [programData])
+
+  const fetchTasks = async () => {
+    if (!programData?._id) return;
+    CrudService.search("Task", 100000, 1, {
+      filters: { suite: programData._id },
+      sort: { createdAt: -1 },
+    }).then((res) => {
+      setTasks(res.data.items);
+    });
+  }
+
+  const fetchTaskUsers = async () => {
+    if (!programData?._id) return;
+    CrudService.search("TaskUser", 100000, 1, {
+      filters: { suite: programData?._id },
+      sort: { createdAt: -1 },
+    }).then((res) => {
+      setTaskUsers(res.data.items);
+    });
+  }
 
   const handleClose = (removedTag, field) => {
     const newTags = tags.filter((tag) => tag !== removedTag);
@@ -791,8 +861,8 @@ const SuiteDetails = () => {
       setProgramData(res.data);
       setProgramCategoryName(
         res.data.hasOwnProperty("categoryDetail") &&
-          res.data.categoryDetail.Name &&
-          res.data.categoryDetail.Name
+        res.data.categoryDetail.Name &&
+        res.data.categoryDetail.Name
       );
       setReminderType(
         res.data.hasOwnProperty("reminderType") && res.data.reminderType
@@ -807,7 +877,7 @@ const SuiteDetails = () => {
       .then(({ data }) => {
         setKPISurveys(data.KPIs || []);
       })
-      .finally(() => {});
+      .finally(() => { });
   }, [searchParams]);
 
   useEffect(() => {
@@ -1133,13 +1203,13 @@ const SuiteDetails = () => {
             <Tooltip
               title={
                 currentFavoriteKPIs &&
-                currentFavoriteKPIs?.includes(metric?._id)
+                  currentFavoriteKPIs?.includes(metric?._id)
                   ? "Remove from Favorite"
                   : "Add to Favorite"
               }
             >
               {currentFavoriteKPIs &&
-              currentFavoriteKPIs.includes(metric._id) ? (
+                currentFavoriteKPIs.includes(metric._id) ? (
                 <MdFavorite
                   className={"mx-1 cursor-pointer"}
                   stroke={"red"}
@@ -1573,7 +1643,7 @@ const SuiteDetails = () => {
                                   }}
                                 >
                                   <Checkbox
-                                    checked={
+                                    defaultChecked={
                                       action.checker &&
                                       !!action.checker({
                                         programData,
@@ -1583,6 +1653,7 @@ const SuiteDetails = () => {
                                         allKPIs,
                                       })
                                     }
+                                    onChange={() => {}}
                                     value={action.id}
                                   >
                                     {action.text({
@@ -2065,8 +2136,8 @@ const SuiteDetails = () => {
                   programData && !programData.published
                     ? "Please publish the program first, and then proceed to invite people."
                     : tags.length === 0
-                    ? "Add emails"
-                    : ""
+                      ? "Add emails"
+                      : ""
                 }
               >
                 <button
@@ -2144,6 +2215,173 @@ const SuiteDetails = () => {
         </div>
       ),
     },
+    {
+      key: "tasks",
+      label: "Tasks",
+      children: (
+        <>
+          <div className="task-manager">
+            <div className="page-content mt-0 pt-0">
+              <div className="header mt-0 flex justify-between items-center">
+                Current Tasks
+                <Button
+                  className="!bg-gradient-to-r !from-indigo-100 !to-indigo-500 hover:!from-indigo-300 hover:!to-indigo-700 !text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                  type="primary"
+                  onClick={() => {
+                    setTaskName("New Task");
+                    setTaskDescription("");
+                    setAddTaskModal(true);
+                  }}
+                >
+                  Add New Task
+                </Button>
+                <Modal
+                  wrapClassName={`${darkMode ? "dark" : ""}`}
+                  width={600}
+                  open={addTaskModal}
+                  onOk={async () => {
+                    const id = searchParams.get("id");
+                    if (!id) return;
+                    CrudService.create("Task", {
+                      name: taskName,
+                      description: taskDescription,
+                      suite: id,
+                      type: "",
+                    }).then(res => {
+                      fetchTasks();
+                    })
+                    setAddTaskModal(false);
+                  }}
+                  onCancel={() => setAddTaskModal(false)}
+                >
+                  <h2>Add New Task</h2>
+                  <hr />
+                  <div>
+                    <span>Name: </span>
+                    <input
+                      type="text"
+                      name="task"
+                      id="task"
+                      placeholder="New Task"
+                      className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={taskName}
+                      onChange={(e) => setTaskName(e.target.value)}
+                    />
+                  </div>
+                  {/* <div>
+                    <span>Description: </span>
+                    <input
+                      type="text"
+                      name="description"
+                      id="description"
+                      placeholder="Description"
+                      className="dark:bg-gray-900 block w-col-9 mb-4 rounded-md border-0 py-1.5 pr-14 dark:text-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={taskDescription}
+                      onChange={(e) => setTaskDescription(e.target.value)}
+                    />
+                  </div> */}
+                </Modal>
+              </div>
+              <div className="content-categories">
+                <div className="label-wrapper">
+                  <input className="nav-item" name="nav" type="radio" id="opt-1" />
+                  <label className="category" htmlFor="opt-1">All</label>
+                </div>
+                <div className="label-wrapper">
+                  <input className="nav-item" name="nav" type="radio" id="opt-2" checked onChange={() => {}} />
+                  <label className="category" htmlFor="opt-2">Important</label>
+                </div>
+                <div className="label-wrapper">
+                  <input className="nav-item" name="nav" type="radio" id="opt-3" />
+                  <label className="category" htmlFor="opt-3">Notes</label>
+                </div>
+                <div className="label-wrapper">
+                  <input className="nav-item" name="nav" type="radio" id="opt-4" />
+                  <label className="category" htmlFor="opt-4">Links</label>
+                </div>
+              </div>
+              <div className="tasks-wrapper">
+                {tasks.map((task, index) => {
+                  const _taskUser = taskUsers.filter(taskUser => taskUser.task == task._id && taskUser.user == selectedParticipant?._id)
+                  const taskUser = _taskUser.length ? _taskUser[0] : null;
+                  return <div key={index} className="task">
+                    <input
+                      className="task-item"
+                      name="task"
+                      type="checkbox"
+                      id={index}
+                      checked={!!taskUser}
+                      onChange={(e) => {
+                        if (!selectedParticipant) return;
+                        if (e.target.checked) {
+                          CrudService.create("TaskUser", {
+                            suite: programData?._id,
+                            task: task?._id,
+                            user: selectedParticipant._id,
+                            status: "waiting",
+                          }).then(res => {
+                            fetchTaskUsers();
+                          })
+                        } else {
+                          if (!taskUser) return;
+                          CrudService.delete("TaskUser", taskUser._id)
+                            .then(res => {
+                              fetchTaskUsers();
+                            })
+                        }
+                      }}
+                    />
+                    <label htmlFor={index}>
+                      <span className="label-text">{task.name}</span>
+                    </label>
+                    {taskUser && selectedParticipant &&
+                      <span className={`tag ${taskUser.status}`}>
+                        {taskStatus.filter(i => i.value == taskUser.status)?.[0]?.label}
+                      </span>
+                    }
+                  </div>
+                })}
+                {/* <div className="header upcoming">Upcoming Tasks</div> */}
+              </div>
+            </div>
+            <div className="right-bar max-w-[300px]">
+              <div className="header !mt-5">
+                Participants
+                <span className="count"> ({participants.length ?? 0})</span>
+              </div>
+              <div className="right-content !px-[10px]">
+                {participants.map((participant, index) =>
+                  <div
+                    key={index}
+                    className={`task-box ${colors[index % 4]} ${participant == selectedParticipant ? "border !border-green-600" : ""}`}
+                    onClick={() => setSelectedParticipant(participant)}
+                  >
+                    <div className="members flex items-center ">
+                      {participant.avatar
+                        ? <img
+                          src={participant.avatar}
+                          alt="member"
+                        />
+                        : <div className="!w-10 !h-10 text-center rounded-full bg-gray-400 p-2 break-none">
+                          {participant.firstName?.slice(0, 1).toUpperCase() + participant.lastName?.slice(0, 1).toUpperCase()}
+                        </div>
+                      }
+                      <div className="ml-3">{participant.firstName + " " + participant.lastName}</div>
+                    </div>
+                    <div className="description-task">
+                      <div className="task-name mt-2">
+                        {participant.email}
+                      </div>
+                    </div>
+                    {/* <div className="more-button"></div> */}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )
+    }
   ];
 
   if (!programData) return <Skeleton active />;
@@ -2155,11 +2393,10 @@ const SuiteDetails = () => {
             {
               title: (
                 <Link
-                  to={`/dashboard/${
-                    programData?.isGrantOpportunity
-                      ? "grantopportunities"
-                      : "myprograms"
-                  }`}
+                  to={`/dashboard/${programData?.isGrantOpportunity
+                    ? "grantopportunities"
+                    : "myprograms"
+                    }`}
                 >
                   {programData?.isGrantOpportunity
                     ? "Grant Opportunities"
@@ -2212,8 +2449,7 @@ const SuiteDetails = () => {
                 if (!id) return;
 
                 navigate(
-                  `/dashboard/${
-                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  `/dashboard/${programData?.isGrantOpportunity ? "grantpre" : "suitepre"
                   }?id=${id}`
                 );
               }}
@@ -2232,8 +2468,7 @@ const SuiteDetails = () => {
                 };
                 const suite = await CrudService.create("Suite", body);
                 navigate(
-                  `/dashboard/${
-                    programData?.isGrantOpportunity ? "grantpre" : "suitepre"
+                  `/dashboard/${programData?.isGrantOpportunity ? "grantpre" : "suitepre"
                   }?id=${suite.data._id}`
                 );
               }}
@@ -2249,10 +2484,9 @@ const SuiteDetails = () => {
                 if (!id) return;
                 await CrudService.delete("Suite", id);
                 navigate(
-                  `/dashboard/${
-                    programData?.isGrantOpportunity
-                      ? "grantopportunities"
-                      : "myprograms"
+                  `/dashboard/${programData?.isGrantOpportunity
+                    ? "grantopportunities"
+                    : "myprograms"
                   }`
                 );
               }}
@@ -2407,8 +2641,8 @@ const SuiteDetails = () => {
               value={
                 selectedKPIAdditionalData?.timeline
                   ? moment(selectedKPIAdditionalData?.timeline).format(
-                      "YYYY-MM-DD"
-                    )
+                    "YYYY-MM-DD"
+                  )
                   : moment("").format("YYYY-MM-DD")
               }
               onChange={handleAdditionalKPIDataChange}
