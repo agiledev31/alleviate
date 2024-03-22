@@ -191,19 +191,7 @@ const ProgramEdit = () => {
         </Allotment>
       </div>
 
-      <Space>
-        <Popconfirm
-          title="Are you sure to delete this program?"
-          onConfirm={async () => {
-            const id = searchParams.get("id");
-            if (!id) return;
-            await CrudService.delete("Program", id);
-            navigate("/dashboard/program");
-          }}
-        >
-          <Button danger>Delete Assessment</Button>
-        </Popconfirm>
-
+      <div className="w-full flex justify-end">
         <Tooltip
           title={
             programData && !programData.suite.published
@@ -213,6 +201,7 @@ const ProgramEdit = () => {
         >
           <Button
             type="primary"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             onClick={() => {
               if (programData && !programData.suite.published) return;
               const id = searchParams.get("id");
@@ -228,7 +217,7 @@ const ProgramEdit = () => {
             Publish Assessment
           </Button>
         </Tooltip>
-      </Space>
+      </div>
     </>
   );
 };

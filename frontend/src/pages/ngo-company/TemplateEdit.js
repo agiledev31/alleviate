@@ -1,8 +1,8 @@
-import {Allotment} from "allotment";
+import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import {Button, Popconfirm, Skeleton, Space} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import { Button, Popconfirm, Skeleton, Space } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import MultiStepComponent from "../../components/MultiStepComponent";
 import MultiStepConfigurator from "../../components/MultiStepConfigurator";
 import CrudService from "../../service/CrudService";
@@ -31,7 +31,7 @@ const TemplateEdit = () => {
   useEffect(() => {
     const id = searchParams.get("id");
     const formType = searchParams.get("formType");
-    setFormType(formType)
+    setFormType(formType);
     if (!id) return;
     setProgramData(null);
     setFunnelSteps([]);
@@ -44,13 +44,13 @@ const TemplateEdit = () => {
       if (!res.data?.form) {
         setThinking(true);
         socket.current = new WebSocket(
-            `wss://booklified-chat-socket.herokuapp.com`
+          `wss://booklified-chat-socket.herokuapp.com`
         );
 
         socket.current.addEventListener("open", async () => {
           setInterval(
-              () => socket.current.send(JSON.stringify({ id: "PING" })),
-              30000
+            () => socket.current.send(JSON.stringify({ id: "PING" })),
+            30000
           );
           // const content = getFormPrompt(`
           // We need a multistep form for an assessment that will be used by an NGO organization. The assessment is for a program:
@@ -60,17 +60,20 @@ const TemplateEdit = () => {
           // Please create a form that asks as much qualifying questions as possible!
           // `);
 
-          const metrics = (res.data.KpiDetails && res.data.KpiDetails.length > 0) ? res.data.KpiDetails.map(item => item.MetricName) : []
+          const metrics =
+            res.data.KpiDetails && res.data.KpiDetails.length > 0
+              ? res.data.KpiDetails.map((item) => item.MetricName)
+              : [];
           const content = getMetricsPrompt(metrics, res.data);
 
           socket.current.send(
-              JSON.stringify({
-                id: "OPEN_AI_PROMPT",
-                payload: {
-                  content,
-                  model: "gpt-3.5-turbo-16k",
-                },
-              })
+            JSON.stringify({
+              id: "OPEN_AI_PROMPT",
+              payload: {
+                content,
+                model: "gpt-3.5-turbo-16k",
+              },
+            })
           );
         });
 
@@ -80,13 +83,13 @@ const TemplateEdit = () => {
           const response = message.payload?.response;
           try {
             formData = JSON.parse(
-                `[${response
-                    .split("[")
-                    ?.slice(1)
-                    .join("[")
-                    .split("]")
-                    .slice(0, -1)
-                    .join("]")}]`
+              `[${response
+                .split("[")
+                ?.slice(1)
+                .join("[")
+                .split("]")
+                .slice(0, -1)
+                .join("]")}]`
             );
             if (!Array.isArray(formData)) throw new Error("Not an array");
           } catch (e) {}
@@ -134,28 +137,28 @@ const TemplateEdit = () => {
   return (
     <>
       <div style={{ height: "80vh" }}>
-        {formType === 'templatePre' && (
-            <MultiStepComponent
-                displaySteps={true}
-                AIEnhancements={true}
-                steps={steps}
-                formType={'templatePre'}
-                isClickedPublish={isClickPublish}
-                activeStep={activeStep}
-                onPublish={async (formData) => {
-                  const id = searchParams.get("id");
-                  if (!id) return;
-                  if (formData.isPublished) {
-                    setTimeout(() => {
-                      if (formType === "templatePre") {
-                        navigate(`/dashboard/templatedetails?id=${id}`);
-                      } else {
-                        navigate(`/dashboard/programpublish?id=${id}`);
-                      }
-                    }, 300)
+        {formType === "templatePre" && (
+          <MultiStepComponent
+            displaySteps={true}
+            AIEnhancements={true}
+            steps={steps}
+            formType={"templatePre"}
+            isClickedPublish={isClickPublish}
+            activeStep={activeStep}
+            onPublish={async (formData) => {
+              const id = searchParams.get("id");
+              if (!id) return;
+              if (formData.isPublished) {
+                setTimeout(() => {
+                  if (formType === "templatePre") {
+                    navigate(`/dashboard/templatedetails?id=${id}`);
+                  } else {
+                    navigate(`/dashboard/programpublish?id=${id}`);
                   }
-                }}
-            />
+                }, 300);
+              }
+            }}
+          />
         )}
 
         <Allotment defaultSizes={[150, 150]}>
@@ -191,14 +194,20 @@ const TemplateEdit = () => {
             navigate("/dashboard/template");
           }}
         >
-          <Button danger>Delete Assessment</Button>
+          <Button
+            danger
+            className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+          >
+            Delete Assessment
+          </Button>
         </Popconfirm>
         <Button
+          className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
           type="primary"
           onClick={() => {
             const id = searchParams.get("id");
             if (!id) return;
-            if (formType === 'templatePre') {
+            if (formType === "templatePre") {
               setClickPublish(true);
               setActiveStep(2);
             }

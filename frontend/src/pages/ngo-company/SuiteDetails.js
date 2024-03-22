@@ -450,10 +450,12 @@ const SuiteDetails = () => {
               });
             }}
           >
-            <Button>Remove</Button>
+            <Button className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white">
+              Remove
+            </Button>
           </Popconfirm>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => handleViewKPILinkedQuestion(metric.MetricName)}
           >
@@ -513,6 +515,7 @@ const SuiteDetails = () => {
           {!programData?.KPIs?.includes?.(metric._id.toString()) ? (
             <Button
               type="primary"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               onClick={async () => {
                 setKPILoader(true);
                 const id = searchParams.get("id");
@@ -532,6 +535,7 @@ const SuiteDetails = () => {
           ) : (
             <Button
               danger
+              className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
               onClick={async () => {
                 setKPILoader(true);
                 const id = searchParams.get("id");
@@ -596,7 +600,7 @@ const SuiteDetails = () => {
             }
           >
             <Button
-              className="py-1 text-sm rounded"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               disabled={programData && !programData.published}
               onClick={async () => {
@@ -607,7 +611,7 @@ const SuiteDetails = () => {
             </Button>
           </Tooltip>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               navigate(`/dashboard/programdetails?id=${record._id}`);
@@ -616,7 +620,7 @@ const SuiteDetails = () => {
             View Assessment
           </Button>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               navigate(`/dashboard/programpre?id=${record._id}`);
@@ -647,7 +651,12 @@ const SuiteDetails = () => {
               }
             }}
           >
-            <Button danger>Delete Assessment</Button>
+            <Button
+              danger
+              className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+            >
+              Delete Assessment
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -828,13 +837,6 @@ const SuiteDetails = () => {
                 {programData.productDetails.Name}
               </p>
             )}
-            {programData?.isGrantOpportunity &&
-              programData?.grantEligibilityCriteria && (
-                <p className={"py-2"}>
-                  <strong>Eligibility Criteria</strong>:{" "}
-                  {programData.grantEligibilityCriteria}
-                </p>
-              )}
             {!programData?.isGrantOpportunity && programData?.objectives && (
               <p className={"py-2"}>
                 <strong>Objectives</strong>: {programData.objectives}
@@ -857,7 +859,7 @@ const SuiteDetails = () => {
           <Divider />
           <Space>
             <Button
-              className="px-2 py-1 text-sm  rounded "
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={() => {
                 const id = searchParams.get("id");
@@ -889,7 +891,9 @@ const SuiteDetails = () => {
                 );
               }}
             >
-              <Button>Duplicate Program</Button>
+              <Button className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white">
+                Duplicate Program
+              </Button>
             </Popconfirm>
             <Popconfirm
               title="Are you sure to delete this program?"
@@ -906,7 +910,12 @@ const SuiteDetails = () => {
                 );
               }}
             >
-              <Button danger>Delete Program</Button>
+              <Button
+                danger
+                className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+              >
+                Delete Program
+              </Button>
             </Popconfirm>
           </Space>
         </>
@@ -928,7 +937,7 @@ const SuiteDetails = () => {
             scroll={{ x: "700px" }}
           />
           <Button
-            className="px-2 py-1 text-sm  rounded my-4"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               setKPIs([]);
@@ -991,7 +1000,7 @@ const SuiteDetails = () => {
           <div className="flex mb-3">
             <h3 className="text-lg font-bold">Assessments</h3>
             <Button
-              className="px-2 py-1 text-sm rounded mx-3"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={async () => {
                 const program = await CrudService.create("Program", {
@@ -1081,7 +1090,7 @@ const SuiteDetails = () => {
             <Option value="annually">Annually</Option>
           </Select>
           <Button
-            className="px-2 ml-3 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => handleKPIMetricsReminderUpdate(reminderType)}
             disabled={!reminderType}
@@ -1185,13 +1194,14 @@ const SuiteDetails = () => {
           <div className="mt-4">
             <Space>
               <Button
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                 type="primary"
                 onClick={() => {
                   fileInputRef.current.value = "";
                   fileInputRef.current.click();
                 }}
               >
-                Import People Emails
+                Import Emails
               </Button>
 
               <Tooltip
@@ -1204,7 +1214,7 @@ const SuiteDetails = () => {
                 }
               >
                 <Button
-                  className="px-2 py-1 text-sm rounded"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                   type="primary"
                   onClick={handleAddUserClick}
                   disabled={

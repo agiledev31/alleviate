@@ -165,7 +165,7 @@ const ProgramDetails = () => {
       render: (record) => (
         <Space size={[12, 10]} wrap>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               handleViewSubmission(record);
@@ -236,7 +236,12 @@ const ProgramDetails = () => {
               setSubmittedProgramData(data);
             }}
           >
-            <Button danger>Delete Submission</Button>
+            <Button
+              danger
+              className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+            >
+              Delete Submission
+            </Button>
           </Popconfirm>
 
           {record.data.formData.hasOwnProperty("submittedData") &&
@@ -246,6 +251,7 @@ const ProgramDetails = () => {
                   <>
                     <Button
                       type={"primary"}
+                      className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                       onClick={async () => {
                         const updatedSubmission = await CrudService.update(
                           "ProgramSubmission",
@@ -286,7 +292,12 @@ const ProgramDetails = () => {
                         }
                       }}
                     >
-                      <Button danger>Reject Submission</Button>
+                      <Button
+                        danger
+                        className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                      >
+                        Reject Submission
+                      </Button>
                     </Popconfirm>
                   </>
                 )}
@@ -350,7 +361,7 @@ const ProgramDetails = () => {
       render: (record) => (
         <Space size={[12, 10]} wrap>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               handleViewSubmission(record);
@@ -421,7 +432,12 @@ const ProgramDetails = () => {
               setSubmittedProgramData(data);
             }}
           >
-            <Button danger>Delete Submission</Button>
+            <Button
+              danger
+              className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+            >
+              Delete Submission
+            </Button>
           </Popconfirm>
 
           {record.data.formData.hasOwnProperty("submittedData") && (
@@ -430,6 +446,7 @@ const ProgramDetails = () => {
                 <>
                   <Button
                     type={"primary"}
+                    className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                     onClick={async () => {
                       const updatedSubmission = await CrudService.update(
                         "ProgramSubmission",
@@ -515,7 +532,12 @@ const ProgramDetails = () => {
                       }
                     }}
                   >
-                    <Button danger>Reject Submission</Button>
+                    <Button
+                      danger
+                      className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                    >
+                      Reject Submission
+                    </Button>
                   </Popconfirm>
                 </>
               )}
@@ -839,15 +861,25 @@ const ProgramDetails = () => {
             <FaCopy />
           </Space>
         </div>
+        <Divider />
 
         <div className="mt-3">
+          <div>
+            <Space>
+              <h3 className="text-lg font-bold">Data Summary</h3>
+              <Tooltip title="The data summary is the summarized overview of all the submissions on this assessment.">
+                <GrInfo />
+              </Tooltip>
+            </Space>
+          </div>
           <Button
             type="primary"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             onClick={() => {
               setDataSummeryModal(true);
             }}
           >
-            View Data Summary
+            View
           </Button>
           <Modal
             wrapClassName={`${darkMode ? "dark" : ""}`}
@@ -874,7 +906,7 @@ const ProgramDetails = () => {
             <Button
               type="primary"
               onClick={handleQualifications}
-              className="px-2"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white px-2"
             >
               Qualifications
             </Button>
@@ -960,6 +992,7 @@ const ProgramDetails = () => {
                     {questionSet.id > 1 && (
                       <Button
                         type="primary"
+                        className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                         onClick={() =>
                           handleRemoveQuestionSet(questionSet.id, index)
                         }
@@ -971,7 +1004,11 @@ const ProgramDetails = () => {
                 ))}
               </div>
               <div>
-                <Button type={"primary"} onClick={handleQualificationSearch}>
+                <Button
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                  type={"primary"}
+                  onClick={handleQualificationSearch}
+                >
                   Search
                 </Button>
               </div>

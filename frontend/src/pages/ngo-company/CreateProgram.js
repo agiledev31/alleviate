@@ -34,7 +34,7 @@ const CreateProgram = () => {
               </div>
               <div className="px-6 pt-4 pb-2">
                 <button
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                   onClick={async () => {
                     const program = await CrudService.create("Program", {
                       programType: programType._id,

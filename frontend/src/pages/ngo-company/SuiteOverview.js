@@ -378,7 +378,7 @@ const SuiteDetails = () => {
           <Divider />
           <Space>
             <Button
-              className="px-2 py-1 text-sm rounded"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={() => {
                 const id = searchParams.get("id");
@@ -390,7 +390,7 @@ const SuiteDetails = () => {
               View Program
             </Button>
             <Button
-              className="px-2 py-1 text-sm rounded"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={() => {
                 const id = searchParams.get("id");
@@ -422,7 +422,9 @@ const SuiteDetails = () => {
                 );
               }}
             >
-              <Button>Duplicate Program</Button>
+              <Button className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white">
+                Duplicate Program
+              </Button>
             </Popconfirm>
             <Popconfirm
               title="Are you sure to delete this program?"
@@ -439,7 +441,12 @@ const SuiteDetails = () => {
                 );
               }}
             >
-              <Button danger>Delete Program</Button>
+              <Button
+                danger
+                className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+              >
+                Delete Program
+              </Button>
             </Popconfirm>
           </Space>
         </>

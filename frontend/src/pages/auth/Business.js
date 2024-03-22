@@ -70,7 +70,7 @@ const Business = () => {
 
           <button
             onClick={handleUpdate}
-            className="mt-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="mt-4 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
           >
             Update
           </button>
@@ -127,7 +127,7 @@ const Business = () => {
           </label>
 
           <button
-            className="cursor-pointer mt-4 text-center rounded-md border-2 border-solid border-gray-300 p-1"
+            className="cursor-pointer mt-4 text-center bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
             onClick={() => setStep(0)}
           >
             « Update Business ID
@@ -150,7 +150,7 @@ const Business = () => {
           </label>
 
           <button
-            className="cursor-pointer mt-4 text-center rounded-md border-2 border-solid border-gray-300 p-1"
+            className="cursor-pointer mt-4 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
             onClick={() => setStep(1)}
           >
             « Reupload Business Document
@@ -168,6 +168,7 @@ const Business = () => {
               <Space>
                 <Button
                   danger
+                  className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
                   onClick={async () => {
                     await GarbageService.rejectCompanyApplication();
                     AuthService.me().then((data) => setMe(data.data.me));
@@ -177,6 +178,7 @@ const Business = () => {
                 </Button>
                 <Button
                   type="primary"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                   onClick={async () => {
                     await GarbageService.approveCompanyApplication();
                     window.location.reload();

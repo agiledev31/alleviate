@@ -17,7 +17,7 @@ const DashboardDetail = () => {
   const [favoriteKPIs, setFavoriteKPIs] = useState([]);
   const [myRecentSuites, setMyRecentSuites] = useState([]);
   const user = useSelector(selectUser);
-  console.log("user", user)
+  console.log("user", user);
 
   const load = useCallback(() => {
     DashboardService.getDashboardDetails().then((res) => {
@@ -85,10 +85,10 @@ const DashboardDetail = () => {
             text === "Submitted"
               ? "green"
               : text === "Waiting"
-                ? "orange"
-                : text === "Approved"
-                  ? "green"
-                  : "red"
+              ? "orange"
+              : text === "Approved"
+              ? "green"
+              : "red"
           }
         >
           {text === "Waiting" ? "Submitted" : text}
@@ -113,7 +113,7 @@ const DashboardDetail = () => {
       render: (record) => (
         <Space size={[12, 10]} wrap>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               navigate(
@@ -154,7 +154,7 @@ const DashboardDetail = () => {
       width: 100,
       render: (record) => (
         <Button
-          className="px-2 py-1 text-sm rounded"
+          className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
           type="primary"
           onClick={() => {
             navigate(`/dashboard/suitedetails?id=${record.data._id}`);
@@ -208,7 +208,7 @@ const DashboardDetail = () => {
       width: 100,
       render: (record) => (
         <Button
-          className="px-2 py-1 text-sm rounded"
+          className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
           type="primary"
           onClick={() => {
             navigate(`/dashboard/suitedetails?id=${record.data._id}`);
@@ -226,7 +226,7 @@ const DashboardDetail = () => {
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6"}>
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
-          {submittedProgramData?.length > 0 && (
+          {user.role !== "admin" && submittedProgramData?.length > 0 && (
             <div
               className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
             >
@@ -477,7 +477,7 @@ const DashboardDetail = () => {
               </div>
             </div>
           )}
-          {user?.myDocuments.length &&
+          {user?.myDocuments.length && (
             <div
               className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
             >
@@ -506,9 +506,8 @@ const DashboardDetail = () => {
                 </div>
               </div>
             </div>
-          }
+          )}
         </div>
-
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     subscription: Object,
     KYCProcess: Object,
+    accessControl: Object,
 
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
@@ -296,8 +297,15 @@ const suiteSchema = new mongoose.Schema(
 
     // Opportunity portal
     isGrantOpportunity: { type: Boolean, default: false },
-    fundingAmount: { type: Number },
-    grantEligibilityCriteria: { type: String },
+    fundingAmount: { type: [Number], default: [0, 20000000] },
+
+    locations: { type: [Object], default: [] },
+    eligibleNationalities: { type: [Object], default: [] },
+    sectors: { type: [Object], default: [] },
+    fundingAgencies: { type: [Object], default: [] },
+    applicationDeadline: { type: Date, default: new Date() },
+    attachments: { type: [String], default: [] },
+    urlLinks: { type: [Object], default: [] },
   },
   { timestamps: true }
 );

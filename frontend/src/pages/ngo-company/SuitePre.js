@@ -172,6 +172,7 @@ const SuitePre = () => {
           label:
             "What approach is your organization using to achieve the selected strategic goal(s)?",
           type: "quiz",
+          multi: true,
           options: categoryDeliveryModel.map((c) => ({
             value: c._id,
             label: c.Name,
@@ -182,6 +183,7 @@ const SuitePre = () => {
           label:
             "What specific products or services are you offering within your chosen delivery model?",
           type: "quiz",
+          multi: true,
           options: categoryProducts.map((c) => ({
             value: c._id,
             label: c.Name,

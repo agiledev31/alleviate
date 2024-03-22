@@ -196,7 +196,12 @@ const EditFormModal = ({
         <Button key="cancel" onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key="save" type="primary" onClick={handleSave}>
+        <Button
+          key="save"
+          type="primary"
+          onClick={handleSave}
+          className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+        >
           Save
         </Button>,
       ]}
@@ -532,13 +537,13 @@ const MultiStepConfigurator = ({
 
                             <div className="space-x-2">
                               <Button
-                                className="px-2 py-1 text-sm  rounded "
+                                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                                 onClick={() => handleEditFormStep(index)}
                               >
                                 Edit
                               </Button>
                               <Button
-                                className="px-2 py-1 text-sm bg-indigo-500 text-white rounded "
+                                className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
                                 onClick={() => handleDeleteFormStep(index)}
                               >
                                 Delete
@@ -559,7 +564,7 @@ const MultiStepConfigurator = ({
               <Button onClick={handleCloseOverlay}>Back</Button>
             )}
             <Button
-              className="px-2 py-1 text-sm bg-indigo-500 text-white rounded "
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               onClick={() => {
                 const updatedSteps = [
                   ...editedStepForm,
@@ -622,13 +627,13 @@ const MultiStepConfigurator = ({
 
                         <div className="space-x-2">
                           <Button
-                            className="px-2 py-1 text-sm  rounded "
+                            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                             onClick={() => handleEditStep(index)}
                           >
                             Edit
                           </Button>
                           <Button
-                            className="px-2 py-1 text-sm bg-indigo-500 text-white rounded "
+                            className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded font-bold py-1 px-4 rounded !text-white hover:!text-white"
                             onClick={() => handleDeleteStep(index)}
                           >
                             Delete
@@ -645,7 +650,7 @@ const MultiStepConfigurator = ({
         </Droppable>
       </DragDropContext>
       <Button
-        className="px-2 py-1 text-sm bg-indigo-500 text-white rounded "
+        className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
         onClick={() =>
           setFunnelSteps((current) => [
             ...current,

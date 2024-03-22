@@ -589,7 +589,7 @@ export default function Example() {
             </button>
             <button
               onClick={handleUpdate}
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
             >
               Save
             </button>
@@ -1099,7 +1099,7 @@ export default function Example() {
 
                   <Button
                     type="primary"
-                    className="rounded-md px-2 py-1.5 mt-2 text-sm font-semibold ring-1 ring-inset hover:bg-gray-50"
+                    className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                     onClick={async () => {
                       const fileInput = document.getElementById("fileInput");
                       fileInput.click();
@@ -1414,7 +1414,7 @@ export default function Example() {
               </button>
               <button
                 onClick={handleUpdate}
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
               >
                 Save
               </button>
@@ -1495,7 +1495,7 @@ export default function Example() {
             </button>
             <button
               onClick={handleUpdate}
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
             >
               Save
             </button>
@@ -1584,7 +1584,7 @@ export default function Example() {
             </button>
             <button
               onClick={handleUpdate}
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
             >
               Save
             </button>
