@@ -14,8 +14,14 @@ import { RiSortAsc } from "react-icons/ri";
 import { TbDeviceHeartMonitor } from "react-icons/tb";
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
-import { selectDarkMode, selectLoading } from "../../../redux/auth/selectors";
+import {
+  selectDarkMode,
+  selectLoading,
+  selectUser,
+} from "../../../redux/auth/selectors";
+import AuthService from "../../../service/AuthService";
 import UserService from "../../../service/UserService";
+import { getNavigation } from "../../Dashboard";
 
 const PAGE_LIMIT = 18;
 const LOG_LOAD_PAGINATION = 25;
@@ -29,14 +35,17 @@ const Team = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [total, setTotal] = useState(0);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [inviteData, setInviteData] = useState({
     email: "",
     firstName: "",
     lastName: "",
     phone: "",
+    accessControl: {},
   });
   const backendLoading = useSelector(selectLoading);
   const darkMode = useSelector(selectDarkMode);
+  const user = useSelector(selectUser);
 
   const sortQuery = {
     recent_created: { createdAt: -1 },
@@ -181,7 +190,8 @@ const Team = () => {
 
       <div className="w-full justify-end flex">
         <Button
-          className="px-2 py-1 text-sm bg-indigo-500 text-white rounded mt-2"
+          danger
+          className="mt-2 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
           onClick={() => {
             setLastScroll(window.scrollY);
             setIsInviteModalOpen(true);
@@ -259,6 +269,16 @@ const Team = () => {
                     />
                   </Space>
                 </div>
+                <Button
+                  danger
+                  className="mb-2 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                  onClick={() => {
+                    setLastScroll(window.scrollY);
+                    setIsUpdateOpen(user);
+                  }}
+                >
+                  Edit
+                </Button>
 
                 <div className="flex justify-between items-end">
                   <div>
@@ -290,7 +310,11 @@ const Team = () => {
 
         {total >= PAGE_LIMIT * (page - 1) && (
           <div className="flex justify-center mt-5">
-            <Button loading={loading} onClick={() => loadMoreUsers({ page })}>
+            <Button
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+              loading={loading}
+              onClick={() => loadMoreUsers({ page })}
+            >
               Load more
             </Button>
           </div>
@@ -347,14 +371,133 @@ const Team = () => {
             value={inviteData.phone}
             onChange={(e) => setInviteData({ ...inviteData, phone: e })}
           />
+
+          <div className="mt-2 font-bold">Access Control</div>
+          {getNavigation(user).map((item, i) => (
+            <div key={i}>
+              <Space>
+                {item?.name}
+                <Switch
+                  checked={inviteData?.accessControl?.[item.id]}
+                  onChange={(e) => {
+                    setInviteData({
+                      ...inviteData,
+                      accessControl: {
+                        ...inviteData.accessControl,
+                        [item.id]: e,
+                      },
+                    });
+                  }}
+                />
+              </Space>
+            </div>
+          ))}
         </div>
         <div className="w-full justify-end flex mt-2">
           <Button
-            className="text-sm bg-indigo-500 text-white rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             onClick={handleInviteUser}
             loading={backendLoading}
           >
             Send Invite
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        wrapClassName={`${darkMode ? "dark" : ""}`}
+        open={isUpdateOpen}
+        onCancel={() => setIsUpdateOpen(false)}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        destroyOnClose
+        title="Update Team Member"
+        afterOpenChange={(e) => {
+          if (!e) window.scrollTo(0, lastScroll);
+        }}
+      >
+        <div className="mb-2 mt-5">
+          <input
+            type="email"
+            className="w-full mt-2 dark:bg-gray-900"
+            placeholder="Email"
+            value={isUpdateOpen.email}
+            onChange={(e) =>
+              setIsUpdateOpen({ ...isUpdateOpen, email: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            className="w-full mt-2 dark:bg-gray-900"
+            placeholder="Firstname"
+            value={isUpdateOpen.firstName}
+            onChange={(e) =>
+              setIsUpdateOpen({ ...isUpdateOpen, firstName: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            className="w-full mt-2 dark:bg-gray-900"
+            placeholder="Lastname"
+            value={isUpdateOpen.lastName}
+            onChange={(e) =>
+              setIsUpdateOpen({ ...isUpdateOpen, lastName: e.target.value })
+            }
+          />
+          <PhoneInput
+            placeholder={"Phone"}
+            defaultCountry="US"
+            className="w-full mt-2"
+            inputClass="dark:!bg-gray-900"
+            dropdownClass="dark:!text-white"
+            buttonClass="dark:!bg-gray-900"
+            value={isUpdateOpen.phone}
+            onChange={(e) => setIsUpdateOpen({ ...isUpdateOpen, phone: e })}
+          />
+
+          <div className="mt-2 font-bold">Access Control</div>
+          {getNavigation(user).map((item, i) => (
+            <div key={i}>
+              <Space>
+                {item?.name}
+                <Switch
+                  checked={isUpdateOpen?.accessControl?.[item.id]}
+                  onChange={(e) => {
+                    setIsUpdateOpen({
+                      ...isUpdateOpen,
+                      accessControl: {
+                        ...isUpdateOpen.accessControl,
+                        [item.id]: e,
+                      },
+                    });
+                  }}
+                />
+              </Space>
+            </div>
+          ))}
+        </div>
+        <div className="w-full justify-end flex mt-2">
+          <Button
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+            onClick={() => {
+              setUsers((users) => {
+                const current = [...users];
+                const thisUser = current.find(
+                  (u) => u._id === isUpdateOpen._id
+                );
+                for (const key in thisUser) {
+                  thisUser[key] = isUpdateOpen[key];
+                }
+
+                return current;
+              });
+
+              AuthService.updateTeamMember(isUpdateOpen._id, isUpdateOpen);
+              setInviteData(false);
+            }}
+            loading={backendLoading}
+          >
+            Save
           </Button>
         </div>
       </Modal>

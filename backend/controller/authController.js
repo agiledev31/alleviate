@@ -64,7 +64,15 @@ const register = async (req, res) => {
 
 const registerTeam = async (req, res) => {
   try {
-    const { parent, phone, email, password, firstName, lastName } = req.body;
+    const {
+      parent,
+      phone,
+      email,
+      password,
+      firstName,
+      lastName,
+      accessControl,
+    } = req.body;
 
     if (password.length < 8)
       throw new Error("Password must contain minimum 8 characters");
@@ -84,6 +92,7 @@ const registerTeam = async (req, res) => {
       password: hashedPassword,
       firstName: firstName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
       lastName: lastName?.replace?.(/[!?\[\]{}()*+\\^$|]/g, ""),
+      accessControl,
     });
     await user.save();
 
@@ -361,6 +370,26 @@ const updateMe = async (req, res) => {
         businessIdDocumentRejected: null,
       });
     }
+    res.json({ message: "Updated" });
+  } catch (err) {
+    res.status(401).send({
+      message: err.message,
+    });
+  }
+};
+
+const updateTeamMember = async (req, res) => {
+  try {
+    await User.findOneAndUpdate(
+      {
+        _id: req.query.id,
+        parent: req.user._id,
+      },
+      {
+        ...req.body,
+      }
+    );
+
     res.json({ message: "Updated" });
   } catch (err) {
     res.status(401).send({
@@ -655,4 +684,5 @@ module.exports = {
   roleSelect,
   generateLinkToInviteUser,
   registerTeam,
+  updateTeamMember,
 };

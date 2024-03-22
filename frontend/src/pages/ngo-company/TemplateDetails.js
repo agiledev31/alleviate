@@ -321,7 +321,7 @@ const TemplateDetails = () => {
           <Divider />
           <Space>
             <Button
-              className="px-2 py-1 text-sm  rounded "
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={() => {
                 const id = searchParams.get("id");
@@ -345,7 +345,12 @@ const TemplateDetails = () => {
                 navigate(`/dashboard/createtemplate?id=${template.data._id}`);
               }}
             >
-              <Button type="primary">Duplicate Template</Button>
+              <Button
+                type="primary"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+              >
+                Duplicate Template
+              </Button>
             </Popconfirm>
             <Popconfirm
               title="Are you sure to delete this template?"
@@ -356,7 +361,12 @@ const TemplateDetails = () => {
                 navigate("/dashboard/templates");
               }}
             >
-              <Button danger>Delete Template</Button>
+              <Button
+                danger
+                className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+              >
+                Delete Template
+              </Button>
             </Popconfirm>
           </Space>
         </>
@@ -410,13 +420,18 @@ const TemplateDetails = () => {
                       load();
                     }}
                   >
-                    <Button>Remove</Button>
+                    <Button
+                      danger
+                      className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                    >
+                      Remove
+                    </Button>
                   </Popconfirm>
                 </div>
               </div>
             ))}
           <Button
-            className="px-2 py-1 text-sm  rounded mt-4"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white mt-4"
             type="primary"
             onClick={() => {
               setKPIModal(true);
@@ -484,6 +499,7 @@ const TemplateDetails = () => {
                   {!templateData?.KPIs?.includes?.(metric._id.toString()) ? (
                     <Button
                       type="primary"
+                      className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                       onClick={async () => {
                         const id = searchParams.get("id");
                         if (!id) return;
@@ -500,6 +516,7 @@ const TemplateDetails = () => {
                     </Button>
                   ) : (
                     <Button
+                      className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                       danger
                       onClick={async () => {
                         const id = searchParams.get("id");
@@ -538,7 +555,7 @@ const TemplateDetails = () => {
           <div className="flex mb-3">
             <h3 className="text-lg font-bold">Assessments</h3>
             <Button
-              className="px-2 py-1 text-sm rounded mx-3"
+              className="mx-3 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={async () => {
                 navigate(
@@ -549,7 +566,7 @@ const TemplateDetails = () => {
               Add {selectedAssessmentType}
             </Button>
             <Button
-              className="px-2 py-1 text-sm rounded mx-3"
+              className="mx-3 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               type="primary"
               onClick={async () => {
                 setIsModalOpen(true);
@@ -620,7 +637,7 @@ const TemplateDetails = () => {
                 <div className="flex-1 px-4">
                   <Space>
                     <Button
-                      className="px-2 py-1 text-sm rounded"
+                      className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                       type="primary"
                       onClick={() => {
                         navigate(`/dashboard/templatepre?id=${assessment._id}`);
@@ -668,7 +685,12 @@ const TemplateDetails = () => {
                         }
                       }}
                     >
-                      <Button danger>Delete assessment</Button>
+                      <Button
+                        danger
+                        className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                      >
+                        Delete assessment
+                      </Button>
                     </Popconfirm>
                   </Space>
                 </div>

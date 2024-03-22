@@ -15,6 +15,8 @@ module.exports = {
       white: colors.white,
       gray: colors.gray,
       emerald: colors.emerald,
+      red: colors.red,
+      ...colors,
       indigo: {
         50: "var(--indigo-50)",
         100: "var(--indigo-100)",

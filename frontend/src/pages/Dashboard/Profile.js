@@ -269,7 +269,7 @@ const Profile = () => {
                     )}
                     <Button
                       type="primary"
-                      className={"my-5"}
+                      className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white my-5"
                       disabled={!user?.cvDocument}
                       onClick={openCVInNewTab}
                     >
@@ -466,7 +466,7 @@ const Profile = () => {
                     </div>
                     <div className="px-6 pt-1 pb-2">
                       <button
-                        className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                         onClick={async () => {
                           navigate(
                             `/dashboard/suitedetails?id=${programType._id}`
@@ -602,6 +602,7 @@ const Profile = () => {
                   </div>
                   <Button
                     type="primary"
+                    className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                     onClick={() => {
                       setProfilePreviewModal(true);
                     }}

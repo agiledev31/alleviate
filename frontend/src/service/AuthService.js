@@ -68,6 +68,9 @@ class AuthService {
   updateMe(me) {
     return this.api.put("/updateMe", me);
   }
+  updateTeamMember(id, data) {
+    return this.api.put(`/updateTeamMember?id=${id}`, data);
+  }
   otpRequest({ purpose }) {
     return this.api.post("/otpRequest", { purpose });
   }

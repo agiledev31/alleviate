@@ -5,12 +5,52 @@ import MultiStepComponent from "../../components/MultiStepComponent";
 import CrudService from "../../service/CrudService";
 import NotificationService from "../../service/NotificationService";
 import StrapiService from "../../service/StrapiService";
+import GrantDetails from "./GrantDetails";
+
+export const sectors = [
+  { value: "Education", label: "Education" },
+  { value: "Health", label: "Health" },
+  {
+    value: "Agriculture & Food Security",
+    label: "Agriculture & Food Security",
+  },
+  { value: "Employment", label: "Employment" },
+  { value: "Diversity & Inclusion", label: "Diversity & Inclusion" },
+  { value: "Financial Services", label: "Financial Services" },
+  {
+    value: "Social Services and Welfare",
+    label: "Social Services and Welfare",
+  },
+  { value: "Community Development", label: "Community Development" },
+  { value: "Youth Development", label: "Youth Development" },
+  {
+    value: "Women's Empowerment & Gender Equality",
+    label: "Women's Empowerment & Gender Equality",
+  },
+  {
+    value: "Small Business & Entrepreneurship",
+    label: "Small Business & Entrepreneurship",
+  },
+];
+
+export const humanReadableRevenue = (num) => {
+  if (num < 1000) {
+    return num.toString();
+  } else if (num < 1000000) {
+    return (num / 1000).toFixed(0) + "k";
+  } else if (num < 1000000000) {
+    return (num / 1000000).toFixed(0) + "M";
+  } else {
+    return (num / 1000000000).toFixed(0) + "B";
+  }
+};
 
 const GrantPreInformation = () => {
   let [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [programData, setProgramData] = useState(null);
   const [programDataDisplay, setProgramDataForDisplay] = useState(null);
+  const [formData, setFormData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [strategicGoals, setStrategicGoals] = useState([]);
@@ -31,6 +71,7 @@ const GrantPreInformation = () => {
       CrudService.getSingle("Suite", id).then((res) => {
         if (!res.data) return;
         setProgramData(res.data);
+        setFormData(res.data);
       });
     } else {
       setProgramCreated(false);
@@ -145,93 +186,303 @@ const GrantPreInformation = () => {
           required: true,
         },
         {
-          fieldName: "description",
-          label: "Application Instructions",
-          type: "textarea",
-          placeholder: "Describe your grant opportunity",
-          rows: 6,
+          fieldName: "locations",
+          label: "Provide applicable locations",
+          type: "list",
+          defaultForm: [
+            {
+              fieldName: "country",
+              type: "country",
+            },
+          ],
+          defaultObject: {
+            country: "",
+          },
         },
         {
-          fieldName: "grantEligibilityCriteria",
-          label: "Eligibility Criteria",
-          type: "textarea",
-          placeholder: "Describe the eligibility criteria of the opportunity",
-          rows: 6,
+          fieldName: "eligibleNationalities",
+          label: "Provide eligible nationalities",
+          type: "list",
+          defaultForm: [
+            {
+              fieldName: "country",
+              type: "country",
+            },
+          ],
+          defaultObject: {
+            country: "",
+          },
+        },
+        {
+          label: "Sectors",
+          fieldName: "sectors",
+          type: "select",
+          multi: true,
+          options: sectors.sort(function (a, b) {
+            return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
+          }),
+        },
+        {
+          label: "Funding Agencies",
+          fieldName: "fundingAgencies",
+          type: "select",
+          multi: true,
+          options: [
+            {
+              value: "National Science Foundation",
+              label: "National Science Foundation",
+            },
+            {
+              value: "Federal Ministry of Education and Research",
+              label: "Federal Ministry of Education and Research",
+            },
+            {
+              value: "Agence nationale de la recherche",
+              label: "Agence nationale de la recherche",
+            },
+            {
+              value: "Fundacao para a Ciencia e a Tecnologia",
+              label: "Fundacao para a Ciencia e a Tecnologia",
+            },
+            {
+              value: "National Science Centre",
+              label: "National Science Centre",
+            },
+            {
+              value: "Research Council of Norway",
+              label: "Research Council of Norway",
+            },
+            { value: "State Research Agency", label: "State Research Agency" },
+            {
+              value:
+                "Unitatea Executiva Pentru Finantarea Invatamantului Superior a Cercetarii Dezvoltarii si Inovarii",
+              label:
+                "Unitatea Executiva Pentru Finantarea Invatamantului Superior a Cercetarii Dezvoltarii si Inovarii",
+            },
+            {
+              value: "Scientific and Technological Research Council of Türkiye",
+              label: "Scientific and Technological Research Council of Türkiye",
+            },
+            {
+              value: "Ministry of Education, Universities and Research",
+              label: "Ministry of Education, Universities and Research",
+            },
+            {
+              value: "Ministry of Climate Action and Energy",
+              label: "Ministry of Climate Action and Energy",
+            },
+            {
+              value: "Swedish Governmental Agency for Innovation Systems",
+              label: "Swedish Governmental Agency for Innovation Systems",
+            },
+            { value: "Innovate UK", label: "Innovate UK" },
+            {
+              value: "Economic and Social Research Council",
+              label: "Economic and Social Research Council",
+            },
+            {
+              value: "Austrian Research Promotion Agency",
+              label: "Austrian Research Promotion Agency",
+            },
+            {
+              value: "National Endowment for the Arts",
+              label: "National Endowment for the Arts",
+            },
+            {
+              value: "National Endowment for the Humanities",
+              label: "National Endowment for the Humanities",
+            },
+            {
+              value: "United States Department of Justice",
+              label: "United States Department of Justice",
+            },
+            {
+              value: "U.S. Department of Homeland Security",
+              label: "U.S. Department of Homeland Security",
+            },
+            {
+              value: "United States Department of Health and Human Services",
+              label: "United States Department of Health and Human Services",
+            },
+            {
+              value: "United States Environmental Protection Agency",
+              label: "United States Environmental Protection Agency",
+            },
+            {
+              value: "United States Department of Energy",
+              label: "United States Department of Energy",
+            },
+            {
+              value:
+                "United States Department of Housing and Urban Development",
+              label:
+                "United States Department of Housing and Urban Development",
+            },
+            {
+              value: "United States Department of Education",
+              label: "United States Department of Education",
+            },
+            { value: "NASA", label: "NASA" },
+            {
+              value: "European Research Council",
+              label: "European Research Council",
+            },
+            {
+              value: "National Institutes of Health",
+              label: "National Institutes of Health",
+            },
+            { value: "DARPA", label: "DARPA" },
+            {
+              value: "National Human Genome Research Institute",
+              label: "National Human Genome Research Institute",
+            },
+            {
+              value:
+                "Federal Ministry for Economic Affairs and Climate Action of Germany",
+              label:
+                "Federal Ministry for Economic Affairs and Climate Action of Germany",
+            },
+            {
+              value:
+                "Federal Ministry for Environment, Nature Conservation and Nuclear Safety (Germany)",
+              label:
+                "Federal Ministry for Environment, Nature Conservation and Nuclear Safety (Germany)",
+            },
+            {
+              value: "Federal Ministry of Food and Agriculture",
+              label: "Federal Ministry of Food and Agriculture",
+            },
+            {
+              value: "Czech Science Foundation",
+              label: "Czech Science Foundation",
+            },
+            {
+              value: "Defence Research & Development Organisation",
+              label: "Defence Research & Development Organisation",
+            },
+            {
+              value: "Department of Science and Technology",
+              label: "Department of Science and Technology",
+            },
+            {
+              value: "Department of Biotechnology",
+              label: "Department of Biotechnology",
+            },
+            {
+              value: "Department of Atomic Energy",
+              label: "Department of Atomic Energy",
+            },
+            {
+              value: "United States Agency for International Development",
+              label: "United States Agency for International Development",
+            },
+            {
+              value: "Department of Chemicals and Petro-Chemicals",
+              label: "Department of Chemicals and Petro-Chemicals",
+            },
+            {
+              value: "Centers for Disease Control and Prevention",
+              label: "Centers for Disease Control and Prevention",
+            },
+            {
+              value:
+                "Cooperative State Research, Education, and Extension Service",
+              label:
+                "Cooperative State Research, Education, and Extension Service",
+            },
+            {
+              value: "Office of Naval Research",
+              label: "Office of Naval Research",
+            },
+            {
+              value: "Health Resources and Services Administration",
+              label: "Health Resources and Services Administration",
+            },
+            {
+              value: "Indian Council of Social Science Research",
+              label: "Indian Council of Social Science Research",
+            },
+            {
+              value: "United States Department of Defense",
+              label: "United States Department of Defense",
+            },
+            {
+              value: "United States Department of Agriculture",
+              label: "United States Department of Agriculture",
+            },
+            {
+              value: "United States Department of Veterans Affairs",
+              label: "United States Department of Veterans Affairs",
+            },
+            {
+              value:
+                "Ministry of Chemicals and Fertilisers, Government of India",
+              label:
+                "Ministry of Chemicals and Fertilisers, Government of India",
+            },
+            {
+              value: "Atomic Energy Regulatory Board",
+              label: "Atomic Energy Regulatory Board",
+            },
+            {
+              value: "UK Research and Innovation",
+              label: "UK Research and Innovation",
+            },
+            { value: "Health Research Board", label: "Health Research Board" },
+          ].sort(function (a, b) {
+            return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
+          }),
+        },
+        {
+          fieldName: "applicationDeadline",
+          label: "Application Deadline",
+          type: "datepicker",
+        },
+        {
+          fieldName: "attachments",
+          label: "Attachments",
+          type: "upload",
+        },
+        {
+          fieldName: "urlLinks",
+          label: "URL Links",
+          type: "list",
+          defaultForm: [
+            {
+              fieldName: "URL",
+              type: "input",
+            },
+          ],
+          defaultObject: {
+            URL: "",
+          },
         },
         {
           fieldName: "fundingAmount",
           label: "Funding Amount",
-          type: "inputNumber",
+          type: "inputRange",
+          max: 20000000,
+          step: 10000,
+          tipFormatter: (value) => `$${humanReadableRevenue(value)}`,
         },
       ],
     },
 
     {
-      id: "step2",
-      name: "Program Details",
+      id: "previewstep2",
+      name: "Preview Grant Opportunity",
       form: [
         {
-          fieldName: "category",
-          label: "Which impact category best aligns with your mission?",
-          type: "quiz",
-          options: categories.map((c) => ({ value: c._id, label: c.Name })),
-        },
-        {
-          fieldName: "strategicGoals",
-          label: "Which Strategic Goal(s) best match your approach?",
-          type: "quiz",
-          options: categoryStrategicGoals.map((c) => ({
-            value: c._id,
-            label: c.Name,
-          })),
-        },
-        {
-          fieldName: "deliveryModel",
-          label:
-            "What approach is your organization using to achieve the selected strategic goal(s)?",
-          type: "quiz",
-          options: categoryDeliveryModel.map((c) => ({
-            value: c._id,
-            label: c.Name,
-          })),
-        },
-        {
-          fieldName: "products",
-          label:
-            "What specific products or services are you offering within your chosen delivery model?",
-          type: "quiz",
-          options: categoryProducts.map((c) => ({
-            value: c._id,
-            label: c.Name,
-          })),
-        },
-        {
-          fieldName: "impactThemes",
-          label: "Which impact themes align with your priorities?",
-          type: "quiz",
-          multi: true,
-          options: impactThemes.map((c) => ({ value: c._id, label: c.Name })),
-        },
-        {
-          fieldName: "startDate",
-          label: "Start Date",
-          type: "datepicker",
-        },
-        {
-          fieldName: "endDate",
-          label: "End Date",
-          type: "datepicker",
+          type: "custom",
+          CustomInputComponent: () => (
+            <>
+              <GrantDetails mockProgramData={formData} />
+            </>
+          ),
         },
       ],
-    },
-    {
-      id: "previewstep",
-      name: "Preview Grant Opportunity",
-      form: [],
       programPreviewDescriptionTitle: "Application Instructions",
       programPreviewDescriptionKey: "description",
-      programPreviewEligibilityKey: "grantEligibilityCriteria",
-      programPreviewEligibilityTitle: "Eligibility Criteria",
     },
   ];
 
@@ -249,10 +500,12 @@ const GrantPreInformation = () => {
           displaySteps={false}
           AIEnhancements={true}
           steps={steps}
+          finishButtonTitle="Save"
           defaultValues={{
             ...programData,
           }}
           onFinish={async (formData) => {
+            setFormData(formData);
             if (!id) {
               if (option === "scratch") {
                 if (formData && formData.isFinishClicked) {
@@ -262,7 +515,7 @@ const GrantPreInformation = () => {
                   }).then(async (program) => {
                     if (!program.data) return;
 
-                    navigate(`/dashboard/suitedetails?id=${program.data._id}`);
+                    navigate(`/dashboard/grantdetail?id=${program.data._id}`);
                   });
                 }
               }
@@ -278,7 +531,7 @@ const GrantPreInformation = () => {
                   await NotificationService.updatedGrant({ id });
                 }
                 if (formData.isFinishClicked)
-                  navigate(`/dashboard/suitedetails?id=${programData._id}`);
+                  navigate(`/dashboard/grantdetail?id=${programData._id}`);
               }
             }
           }}

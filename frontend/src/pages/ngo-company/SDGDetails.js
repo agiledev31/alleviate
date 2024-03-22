@@ -164,8 +164,8 @@ const SDGDetails = () => {
                   </div>
                   <Button
                     type="primary"
+                    className="m-3 border rounded bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                     onClick={() => setSelectedImpactTheme(null)}
-                    className="m-3 border rounded"
                   >
                     Back
                   </Button>

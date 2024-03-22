@@ -14,6 +14,7 @@ const {
   roleSelect,
   generateLinkToInviteUser,
   registerTeam,
+  updateTeamMember,
 } = require("../controller/authController");
 const { checkUser } = require("../controller/crudController");
 
@@ -25,6 +26,7 @@ router.post("/requestPasswordReset", requestPasswordReset);
 router.post("/resetPassword", resetPassword);
 router.get("/me", checkUser, me);
 router.put("/updateMe", checkUser, updateMe);
+router.put("/updateTeamMember", checkUser, updateTeamMember);
 router.post("/otpRequest", checkUser, otpRequest);
 router.post("/otpVerify", checkUser, otpVerify);
 router.post("/requestKyc", checkUser, requestKyc);

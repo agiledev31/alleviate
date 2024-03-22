@@ -31,7 +31,7 @@ const ImportModule = ({
   return (
     <>
       <Button
-        className="px-2 py-1 text-sm bg-indigo-500 text-white rounded"
+        className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
         onClick={() => {
           let mappings = {};
           try {
@@ -186,7 +186,7 @@ const ImportModule = ({
                   await refreshData();
                   setBulkUploadProcess({});
                 }}
-                className="px-2 py-1 text-sm bg-indigo-500 text-white rounded"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                 disabled={loading}
               >
                 {!loading ? "Import" : <Spin>Import</Spin>}
@@ -272,7 +272,7 @@ const ImportModule = ({
                     mappedItems,
                   }));
                 }}
-                className="px-2 py-1 text-sm bg-indigo-500 text-white rounded"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                 disabled={loading}
               >
                 {!loading ? "Import" : <Spin>Import</Spin>}

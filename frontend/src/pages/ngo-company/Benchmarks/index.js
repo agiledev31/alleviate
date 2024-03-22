@@ -606,7 +606,7 @@ const Benchmarks = () => {
       {!(sheetNames.length > 0) && !selectedSheet && (
         <Button
           disabled={!KPIType}
-          className="mt-5"
+          className="mt-5 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
           type="primary"
           onClick={() => {
             fileInputRef.current.value = "";

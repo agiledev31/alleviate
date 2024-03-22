@@ -48,7 +48,7 @@ const MyPrograms = () => {
     if (user?.role == "ngo-beneficiary") {
       setStatusFilter("published");
     }
-  }, [user, window.location.href])
+  }, [user, window.location.href]);
 
   const loadMorePrograms = async (filters = {}, text = "") => {
     setLoading(true);
@@ -64,7 +64,7 @@ const MyPrograms = () => {
       data.filters.isGrantOpportunity = false;
       const programRes = await CrudService.search("Suite", 25, page, data);
       setPrograms(programRes.data.items);
-      console.log("programRes", programRes)
+      console.log("programRes", programRes);
       if (user?.role !== "ngo-beneficiary") {
         setPrograms(programRes.data.items);
       } else {
@@ -72,34 +72,33 @@ const MyPrograms = () => {
         setStatusFilter("published");
         if (window.location.href.includes("myapplications")) {
           setStatusFilter("unPublished");
-        //   setPrograms(
-        //     programRes.data.items.filter(async (item) => {
-        //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
-        //         filters: { 
-        //           suite: item._id, 
-        //           isDefaultAssessment: false,
-        //           status: "approve"
-        //         },
-        //       });
-        //       return !!assessmentRes.data.length;
-        //     })
-        //   )
+          //   setPrograms(
+          //     programRes.data.items.filter(async (item) => {
+          //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
+          //         filters: {
+          //           suite: item._id,
+          //           isDefaultAssessment: false,
+          //           status: "approve"
+          //         },
+          //       });
+          //       return !!assessmentRes.data.length;
+          //     })
+          //   )
         } else {
           setStatusFilter("unPublished");
-        //   setPrograms(
-        //     programRes.data.items.filter(async (item) => {
-        //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
-        //         filters: { 
-        //           suite: item._id, 
-        //           isDefaultAssessment: false,
-        //           status: "approve"
-        //         },
-        //       });
-        //       return !!assessmentRes.data.length;
-        //     })
-        //   )
+          //   setPrograms(
+          //     programRes.data.items.filter(async (item) => {
+          //       const assessmentRes = await CrudService.search("ProgramSubmission", 1, 1, {
+          //         filters: {
+          //           suite: item._id,
+          //           isDefaultAssessment: false,
+          //           status: "approve"
+          //         },
+          //       });
+          //       return !!assessmentRes.data.length;
+          //     })
+          //   )
         }
-        
       }
 
       // const newPrograms = response.data.items;
@@ -252,7 +251,7 @@ const MyPrograms = () => {
           </Transition>
         </Menu>
 
-        {user?.role !== "ngo-beneficiary" &&
+        {user?.role !== "ngo-beneficiary" && (
           <Menu as="div" className="relative ml-3">
             <div style={{ width: "max-content" }}>
               <Menu.Button
@@ -301,11 +300,12 @@ const MyPrograms = () => {
               </Menu.Items>
             </Transition>
           </Menu>
-        }
+        )}
       </div>
-      {user?.role !== "ngo-beneficiary" &&
+      {user?.role !== "ngo-beneficiary" && (
         <Button
           type="primary"
+          className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
           onClick={() => {
             fileInputRef.current.value = "";
             fileInputRef.current.click();
@@ -313,7 +313,7 @@ const MyPrograms = () => {
         >
           Import Programs
         </Button>
-      }
+      )}
       <div className="container mx-auto p-4" id="programContainer">
         {loading && programs.length <= 0 && <Skeleton active />}
         {!loading && programs.length === 0 && (
@@ -333,54 +333,55 @@ const MyPrograms = () => {
                     {programType.name}
                   </div>
                   <div className="flex items-center justify-between">
-                    {user?.role !== "ngo-beneficiary" && <Tooltip
-                      title={
-                        programType.published ? "Published" : "Unpublished"
-                      }
-                    >
-                      <Switch
-                        size="small"
-                        checked={programType.published}
-                        onChange={async (value) => {
-                          setPrograms((prevPrograms) =>
-                            prevPrograms.map((p) =>
-                              p._id === programType._id
-                                ? { ...p, published: value }
-                                : p
-                            )
-                          );
-                          await CrudService.update("Suite", programType._id, {
-                            published: value,
-                            isPublished: value === true,
-                          })
-                            .then((res) => {
-                              if (res.data) {
-                              }
+                    {user?.role !== "ngo-beneficiary" && (
+                      <Tooltip
+                        title={
+                          programType.published ? "Published" : "Unpublished"
+                        }
+                      >
+                        <Switch
+                          size="small"
+                          checked={programType.published}
+                          onChange={async (value) => {
+                            setPrograms((prevPrograms) =>
+                              prevPrograms.map((p) =>
+                                p._id === programType._id
+                                  ? { ...p, published: value }
+                                  : p
+                              )
+                            );
+                            await CrudService.update("Suite", programType._id, {
+                              published: value,
+                              isPublished: value === true,
                             })
-                            .catch((error) => {
-                              setPrograms((prevPrograms) =>
-                                prevPrograms.map((p) =>
-                                  p._id === programType._id
-                                    ? { ...p, published: !value }
-                                    : p
-                                )
-                              );
-                            });
-                        }}
-                      />
-                    </Tooltip>
-                    }
+                              .then((res) => {
+                                if (res.data) {
+                                }
+                              })
+                              .catch((error) => {
+                                setPrograms((prevPrograms) =>
+                                  prevPrograms.map((p) =>
+                                    p._id === programType._id
+                                      ? { ...p, published: !value }
+                                      : p
+                                  )
+                                );
+                              });
+                          }}
+                        />
+                      </Tooltip>
+                    )}
                     <Tooltip
                       title={
                         programType.hasOwnProperty("favoriteBy") &&
-                          programType?.favoriteBy?.includes(user._id)
+                        programType?.favoriteBy?.includes(user._id)
                           ? "Remove from Favorite"
                           : "Add to Favorite"
                       }
                     >
                       {programType &&
-                        programType.hasOwnProperty("favoriteBy") &&
-                        programType?.favoriteBy.includes(user._id) ? (
+                      programType.hasOwnProperty("favoriteBy") &&
+                      programType?.favoriteBy.includes(user._id) ? (
                         <MdFavorite
                           className={"mx-1 cursor-pointer"}
                           stroke={"red"}
@@ -391,11 +392,11 @@ const MyPrograms = () => {
                               prevPrograms.map((p) =>
                                 p._id === programType._id
                                   ? {
-                                    ...p,
-                                    favoriteBy: p.favoriteBy.filter(
-                                      (id) => id !== user._id
-                                    ),
-                                  }
+                                      ...p,
+                                      favoriteBy: p.favoriteBy.filter(
+                                        (id) => id !== user._id
+                                      ),
+                                    }
                                   : p
                               )
                             );
@@ -403,7 +404,7 @@ const MyPrograms = () => {
                               favoriteBy: programType.favoriteBy.filter(
                                 (id) => id !== user._id
                               ),
-                            }).then((res) => { });
+                            }).then((res) => {});
                           }}
                         />
                       ) : (
@@ -416,15 +417,15 @@ const MyPrograms = () => {
                               prevPrograms.map((p) =>
                                 p._id === programType._id
                                   ? {
-                                    ...p,
-                                    favoriteBy: [...p.favoriteBy, user._id],
-                                  }
+                                      ...p,
+                                      favoriteBy: [...p.favoriteBy, user._id],
+                                    }
                                   : p
                               )
                             );
                             await CrudService.update("Suite", programType._id, {
                               favoriteBy: [...programType.favoriteBy, user._id],
-                            }).then((res) => { });
+                            }).then((res) => {});
                           }}
                         />
                       )}
@@ -439,7 +440,7 @@ const MyPrograms = () => {
                   }}
                 >
                   {expandedMap[programType._id] ||
-                    !shouldShowReadMore(programType) ? (
+                  !shouldShowReadMore(programType) ? (
                     programType.description
                   ) : (
                     <>
@@ -462,7 +463,7 @@ const MyPrograms = () => {
               </div>
               <div className="px-6 pt-1 pb-2">
                 <button
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                   onClick={async () => {
                     navigate(`/dashboard/suitedetails?id=${programType._id}`);
                   }}

@@ -148,7 +148,7 @@ const SuiteDetail = () => {
       render: (text, record) => (
         <Space size={[12, 10]} wrap>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               navigate(`/dashboard/programform?id=${record._id}`);
@@ -209,7 +209,7 @@ const SuiteDetail = () => {
       render: (record) => (
         <Space size={[12, 10]} wrap>
           <Button
-            className="px-2 py-1 text-sm rounded"
+            className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
             type="primary"
             onClick={() => {
               handleViewSubmission(record);

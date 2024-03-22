@@ -45,7 +45,7 @@ const Forgot = () => {
           </div>
           <button
             type="submit"
-            class="text-white [&>*]:hover:stroke-[#294895] [&>*]:hover:text-[#294895] button w-button focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
+            class="text-white [&>*]:hover:stroke-[#294895] [&>*]:hover:text-[#294895] button w-button focus:ring-4 focus:outline-none focus:ring-blue-300 bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
           >
             {loading && (
               <svg

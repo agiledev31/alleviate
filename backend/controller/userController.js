@@ -50,7 +50,7 @@ const inviteUser = async (req, res) => {
   try {
     if (req.user.parent) throw new Error("No access");
 
-    const { phone, email, firstName, lastName } = req.body;
+    const { phone, email, firstName, lastName, accessControl } = req.body;
     if (!email) throw new Error("Please provide an email");
     if (!validateEmail(email)) throw new Error("Please provide a valid email");
     if (!firstName) throw new Error("Firstname is required");
@@ -67,6 +67,7 @@ const inviteUser = async (req, res) => {
         firstName,
         lastName,
         phone,
+        accessControl,
       },
       process.env.JWT_SIGN,
       { expiresIn: "365d" }
@@ -91,7 +92,7 @@ const updateUser = async (req, res) => {
   try {
     if (req.user.parent) throw new Error("No access");
 
-    if(req.body.favoriteKPIs) {
+    if (req.body.favoriteKPIs) {
       await User.findOneAndUpdate(
         {
           _id: req.query.id,

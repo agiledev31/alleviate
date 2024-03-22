@@ -1,15 +1,12 @@
-import dayjs from "dayjs";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Pie } from "@ant-design/charts";
 import {
-  Table,
-  Row,
-  Col,
-  Card,
-  Statistic,
   Button,
+  Card,
   Checkbox,
+  Col,
   ColorPicker,
   DatePicker,
+  Divider,
   Dropdown,
   Input,
   InputNumber,
@@ -17,18 +14,23 @@ import {
   Modal,
   Radio,
   Rate,
+  Row,
   Select,
   Slider,
+  Statistic,
   Steps,
   Switch,
+  Table,
   Tag,
   TimePicker,
   Typography,
   message,
 } from "antd";
-import { Pie } from "@ant-design/charts";
+import dayjs from "dayjs";
 import moment from "moment";
 import { TweenOneGroup } from "rc-tween-one";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import ReactFlagsSelect from "react-flags-select";
 import { AiOutlineDelete } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import { TbRobotFace } from "react-icons/tb";
@@ -54,6 +56,8 @@ const DynamicForm = ({
   formType,
   isProgramSubmission,
   isDataSummary,
+  className = "",
+  verticalSpacing = 5,
 }) => {
   const socket = useRef();
   const [inputVisible, setInputVisible] = useState(false);
@@ -177,50 +181,66 @@ const DynamicForm = ({
     ];
 
     const chartData = useMemo(() => {
-      if (item.type == "radio" || item.type == "select" || item.type == "quiz") {
+      if (
+        item.type == "radio" ||
+        item.type == "select" ||
+        item.type == "quiz"
+      ) {
         let _counts = {};
-        formData?.[item.fieldName]?.map((value => {
-          _counts[value] = (_counts[value] || 0) + 1
-        }));
+        formData?.[item.fieldName]?.map((value) => {
+          _counts[value] = (_counts[value] || 0) + 1;
+        });
         const total = Object.values(_counts).reduce((total, cell) => {
-          return total += cell;
+          return (total += cell);
         });
         if (total && total !== undefined) {
-          const _chartData = item.options.map(option => ({
-            label: option.label,
-            ratio: parseFloat(((_counts[option.value] || 0) / total * 100).toFixed(2))
-          })).filter(i => i.ratio != 0)
+          const _chartData = item.options
+            ?.map?.((option) => ({
+              label: option.label,
+              ratio: parseFloat(
+                (((_counts[option.value] || 0) / total) * 100).toFixed(2)
+              ),
+            }))
+            .filter((i) => i.ratio != 0);
           return _chartData;
         } else {
           return [];
         }
-      } else if (item.type == "switch" || item.type == "checkbox" || item.type == "countrySelect") {
+      } else if (
+        item.type == "switch" ||
+        item.type == "checkbox" ||
+        item.type == "countrySelect"
+      ) {
         let _counts = {};
-        formData?.[item.fieldName]?.map((value => {
-          _counts[value] = (_counts[value] || 0) + 1
-        }));
+        formData?.[item.fieldName]?.map?.((value) => {
+          _counts[value] = (_counts[value] || 0) + 1;
+        });
         const total = Object.values(_counts).reduce((total, cell) => {
-          return total += cell;
+          return (total += cell);
         });
         if (total && total !== undefined) {
           if (item.type == "countrySelect") {
-            const _chartData = Object.keys(_counts).map(key => ({
-              label: countries.filter(i => i.value == key)?.[0].label,
-              ratio: parseFloat(((_counts[key] || 0) / total * 100).toFixed(2))
-            }))
+            const _chartData = Object.keys(_counts)?.map?.((key) => ({
+              label: countries.filter((i) => i.value == key)?.[0].label,
+              ratio: parseFloat(
+                (((_counts[key] || 0) / total) * 100).toFixed(2)
+              ),
+            }));
             return _chartData;
           } else {
-            const _chartData = Object.keys(_counts).map(key => ({
+            const _chartData = Object.keys(_counts)?.map?.((key) => ({
               label: key,
-              ratio: parseFloat(((_counts[key] || 0) / total * 100).toFixed(2))
-            }))
+              ratio: parseFloat(
+                (((_counts[key] || 0) / total) * 100).toFixed(2)
+              ),
+            }));
             return _chartData;
           }
         } else {
           return [];
         }
       }
-    }, [item])
+    }, [item]);
 
     const generateChartData = (data) => {
       return {
@@ -231,52 +251,53 @@ const DynamicForm = ({
         radius: 1,
         autoFit: true,
         label: {
-          type: 'inner',
-          offset: '-30%',
+          type: "inner",
+          offset: "-30%",
           content: function content(_ref) {
-            return ''.concat(_ref.ratio, ' %');
+            return "".concat(_ref.ratio, " %");
           },
           style: {
             fontSize: 12,
-            textAlign: 'center',
-          }
+            textAlign: "center",
+          },
         },
         legend: {
           position: "top",
           flipPage: false,
           style: {
-            textAlign: "center"
-          }
+            textAlign: "center",
+          },
         },
-        interactions: [{ type: "pie-legend-active" }, { type: "element-active" }]
+        interactions: [
+          { type: "pie-legend-active" },
+          { type: "element-active" },
+        ],
       };
     };
 
     return (
       <>
-        {(item.type == "input"
-          || item.type == "textarea"
-          || item.type == "upload"
-          || item.type == "address"
-          || item.type == "phoneInput"
-          || item.type == "custom"
-          || item.type == "tagInput"
-        ) &&
+        {(item.type == "input" ||
+          item.type == "textarea" ||
+          item.type == "upload" ||
+          item.type == "address" ||
+          item.type == "phoneInput" ||
+          item.type == "custom" ||
+          item.type == "tagInput") && (
           <Table
-            dataSource={formData?.[item.fieldName].map((element, index) => ({
+            dataSource={formData?.[item.fieldName]?.map?.((element, index) => ({
               id: index + 1,
-              value: element
+              value: element,
             }))}
             columns={listColumns}
             rowKey={(record) => record.id}
             pagination={true}
             scroll={{ x: "700px" }}
           />
-        }
-        {(item.type == "inputNumber"
-          || item.type == "rate"
-          || item.type == "slider"
-        ) &&
+        )}
+        {(item.type == "inputNumber" ||
+          item.type == "rate" ||
+          item.type == "slider") && (
           <Row gutter={[16, 16]} className="mt-2">
             <Col span={8}>
               <Card>
@@ -288,82 +309,76 @@ const DynamicForm = ({
                 </div>
                 <div style={{ textAlign: "center" }}>
                   <p>
-                    Min: {formData?.[item.fieldName]?.min} | Max: {formData?.[item.fieldName]?.max}
+                    Min: {formData?.[item.fieldName]?.min} | Max:{" "}
+                    {formData?.[item.fieldName]?.max}
                   </p>
                   <p>Median: {formData?.[item.fieldName]?.median}</p>
                 </div>
               </Card>
             </Col>
           </Row>
-        }
-        {(item.type == "radio"
-          || item.type == "select"
-          || item.type == "switch"
-          || item.type == "checkbox"
-          || item.type == "quiz"
-          || item.type == "countrySelect"
-        ) &&
+        )}
+        {(item.type == "radio" ||
+          item.type == "select" ||
+          item.type == "switch" ||
+          item.type == "checkbox" ||
+          item.type == "quiz" ||
+          item.type == "countrySelect") && (
           <Row gutter={[16, 16]} className="mt-2">
             {chartData?.length > 0 && (
               <Col span={8}>
-                <Card className={'grid justify-center'}>
-                  <div style={{ width: '300px', height: '300px', position: 'relative' }}>
+                <Card className={"grid justify-center"}>
+                  <div
+                    style={{
+                      width: "300px",
+                      height: "300px",
+                      position: "relative",
+                    }}
+                  >
                     <Pie {...generateChartData(chartData)} />
                   </div>
                 </Card>
               </Col>
             )}
           </Row>
-        }
+        )}
         {item.type == "timepicker" &&
-          formData?.[item.fieldName]?.map((data, i) =>
+          formData?.[item.fieldName]?.map?.((data, i) => (
             <TimePicker
               key={i}
               className="m-1"
               readOnly={true}
               disabled={true}
-              value={
-                data
-                  ? dayjs(data, "HH:mm:ss")
-                  : null
-              }
+              value={data ? dayjs(data, "HH:mm:ss") : null}
             />
-          )
-        }
+          ))}
         {item.type == "datepicker" &&
-          formData?.[item.fieldName].map((data, i) =>
+          formData?.[item.fieldName]?.map?.((data, i) => (
             <DatePicker
               key={i}
               className="m-1"
               readOnly={true}
               disabled={true}
-              value={
-                data
-                  ? dayjs(data)
-                  : null
-              }
+              value={data ? dayjs(data) : null}
             />
-          )
-        }
+          ))}
         {item.type == "colorpicker" &&
-          formData?.[item.fieldName].map((color, index) => (
-            <div 
+          formData?.[item.fieldName]?.map?.((color, index) => (
+            <div
               key={index}
               className="rounded-md text-center"
               style={{
                 backgroundColor: `rgba(${color.metaColor.r}, ${color.metaColor.g}, ${color.metaColor.b}, ${color.metaColor.a})`,
-                width: '50px',
-                height: '50px',
-                margin: '10px',
-                display: 'inline-block'
+                width: "50px",
+                height: "50px",
+                margin: "10px",
+                display: "inline-block",
               }}
-            >
-            </div>
-          ))
-        }
+            ></div>
+          ))}
       </>
-    )
-  }
+    );
+  };
 
   const renderFormItem = (item) => {
     const selectFieldValue = formData?.[item.fieldName];
@@ -397,8 +412,7 @@ const DynamicForm = ({
           item.fieldName === "name" &&
           `Please enter ${item.label.toLowerCase()}`;
 
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <>
             <Input
@@ -431,8 +445,7 @@ const DynamicForm = ({
           />
         );
       case "textarea":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Input.TextArea
             className="dark:bg-gray-900"
@@ -446,8 +459,7 @@ const DynamicForm = ({
           />
         );
       case "inputNumber":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <InputNumber
             min={item.min}
@@ -458,9 +470,22 @@ const DynamicForm = ({
             readOnly={isProgramSubmission}
           />
         );
+      case "inputRange":
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
+        return (
+          <Slider
+            range
+            min={item.min}
+            max={item.max}
+            step={item.step}
+            onChange={(value) => onChange(item.fieldName, value)}
+            value={formData?.[item.fieldName]}
+            disabled={isProgramSubmission}
+            tipFormatter={item.tipFormatter}
+          />
+        );
       case "radio":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Radio.Group
             className={formType === "enrollmentPre" && "grid"}
@@ -469,7 +494,7 @@ const DynamicForm = ({
             }
             value={formData?.[item.fieldName]}
           >
-            {item.options.map((option) => (
+            {item.options?.map?.((option) => (
               <Radio key={option.value} value={option.value}>
                 {option.label}
               </Radio>
@@ -477,8 +502,7 @@ const DynamicForm = ({
           </Radio.Group>
         );
       case "rate":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Rate
             onChange={(value) => onChange(item.fieldName, value)}
@@ -487,8 +511,7 @@ const DynamicForm = ({
           />
         );
       case "select":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <>
             <Select
@@ -501,7 +524,7 @@ const DynamicForm = ({
             >
               {item.options
                 .sort((a, b) => a.label.localeCompare(b.label))
-                .map((option) => (
+                ?.map?.((option) => (
                   <Select.Option key={option.value} value={option.value}>
                     {option.label}
                   </Select.Option>
@@ -518,11 +541,10 @@ const DynamicForm = ({
         );
 
       case "quiz":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <>
-            {item.options.map((option) => (
+            {item.options?.map?.((option) => (
               <Checkbox
                 className="flex"
                 key={option.value}
@@ -561,8 +583,7 @@ const DynamicForm = ({
           </>
         );
       case "slider":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Slider
             min={item.min}
@@ -574,8 +595,7 @@ const DynamicForm = ({
           />
         );
       case "switch":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Switch
             checked={formData?.[item.fieldName]}
@@ -585,8 +605,7 @@ const DynamicForm = ({
           />
         );
       case "timepicker":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <TimePicker
             onChange={(time, timeString) =>
@@ -600,8 +619,7 @@ const DynamicForm = ({
           />
         );
       case "datepicker":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <DatePicker
             onChange={(date, dateString) =>
@@ -615,18 +633,17 @@ const DynamicForm = ({
           />
         );
       case "upload":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <CloudinaryUpload
+            value={formData?.[item.fieldName]}
             onChange={(info) => {
               !isProgramSubmission && onChange(item.fieldName, info);
             }}
           />
         );
       case "checkbox":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <Checkbox
             checked={formData?.[item.fieldName]}
@@ -639,8 +656,7 @@ const DynamicForm = ({
           </Checkbox>
         );
       case "colorpicker":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <ColorPicker
             onChange={(color) =>
@@ -650,8 +666,7 @@ const DynamicForm = ({
           />
         );
       case "custom":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <item.CustomInputComponent
             onChange={(value) =>
@@ -693,8 +708,7 @@ const DynamicForm = ({
           (isEmailError && `Please enter ${item.label.toLowerCase()}`) ||
           (!isEmailValid && "Please enter a valid email address");
 
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <>
             <div
@@ -762,12 +776,13 @@ const DynamicForm = ({
               <div className={"mt-3"}>
                 <Button
                   type="primary"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                   onClick={() => {
                     fileInputRef.current.value = "";
                     fileInputRef.current.click();
                   }}
                 >
-                  Import People Emails
+                  Import Emails
                 </Button>
                 <ExcelImport
                   modalName={"Suite"}
@@ -803,9 +818,68 @@ const DynamicForm = ({
             )}
           </>
         );
+
+      case "list":
+        return (
+          <>
+            {formData?.[item.fieldName]?.map?.((listItem, i) => (
+              <div key={i} className="flex items-center gap-2 w-full">
+                <DynamicForm
+                  className="grow"
+                  verticalSpacing={1}
+                  AIEnhancements={AIEnhancements}
+                  formData={listItem}
+                  thinking={thinking}
+                  setThinking={setThinking}
+                  form={item.defaultForm}
+                  onChange={(fieldname, value) => {
+                    // Create a new list with the updated item.
+                    const updatedList = formData[item.fieldName].map(
+                      (item, index) => {
+                        if (index === i) {
+                          // For the item that changed, update the specific field.
+                          return { ...item, [fieldname]: value };
+                        }
+                        return item;
+                      }
+                    );
+
+                    // Call the main onChange with the updated list.
+                    onChange(item.fieldName, updatedList);
+                  }}
+                />
+
+                <Button
+                  danger
+                  className="mt-7 bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white"
+                  onClick={() => {
+                    onChange(
+                      item.fieldName,
+                      formData[item.fieldName].filter((_, index) => index !== i)
+                    );
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            ))}
+
+            <button
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white"
+              onClick={() => {
+                onChange(item.fieldName, [
+                  ...(formData?.[item.fieldName] ?? []),
+                  item.defaultObject,
+                ]);
+              }}
+            >
+              Add
+            </button>
+          </>
+        );
+
       case "countrySelect":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <>
             <Select
@@ -817,7 +891,7 @@ const DynamicForm = ({
             >
               {countries
                 .sort((a, b) => a.label.localeCompare(b.label))
-                .map((option) => (
+                ?.map?.((option) => (
                   <Select.Option key={option.value} value={option.value}>
                     {option.label}
                   </Select.Option>
@@ -836,7 +910,7 @@ const DynamicForm = ({
       case "address":
         const menu = (
           <Menu>
-            {addressResults.map((result) => (
+            {addressResults?.map?.((result) => (
               <Menu.Item
                 key={result.id}
                 icon={<MdLocationOn size={20} style={{ marginRight: "8px" }} />}
@@ -870,8 +944,7 @@ const DynamicForm = ({
           </Menu>
         );
 
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <div ref={wrapperRef}>
             <Dropdown overlay={menu} visible={showAddressResultsMenu}>
@@ -895,9 +968,20 @@ const DynamicForm = ({
           </div>
         );
 
+      case "country":
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
+        return (
+          <ReactFlagsSelect
+            className="min-w-[240px]"
+            selected={formData?.[item.fieldName]}
+            onSelect={(e) => handleSearch(item.fieldName, e)}
+            searchable
+            multi
+          />
+        );
+
       case "phoneInput":
-        if (isDataSummary)
-          return <>{renderDataSummaryItem(item)}</>;
+        if (isDataSummary) return <>{renderDataSummaryItem(item)}</>;
         return (
           <PhoneInput
             placeholder="Enter phone number"
@@ -913,15 +997,14 @@ const DynamicForm = ({
   };
 
   return (
-    <div
-    // onKeyDown={(e) => {
-    //   if (e.key === "Enter") handleNext();
-    // }}
-    >
+    <div className={className}>
       {form
         .filter((row) => !row.condition || row.condition(formData))
-        .map((row) => (
-          <div key={row.fieldName} className="form-item my-8">
+        ?.map?.((row) => (
+          <div
+            key={row.fieldName}
+            className={`form-item my-${verticalSpacing}`}
+          >
             <div className="flex justify-between">
               <label>
                 {row.label}{" "}
@@ -962,7 +1045,8 @@ const DynamicForm = ({
 
                         ${formData?.[row.fieldName]}
 
-                        I'm looking for a version that's absolutely stunning and highly effective in capturing attention and driving action. Also, when you are answering to this, please only answer with the enhanced version of the text. Do not add anything else into your answer, since your answer will be posted as is on the website. Do NOT use quotes before and after the text in your answer! Also your version of text should under no circumstance be longer than ${formData?.[row.fieldName]?.length * 2
+                        I'm looking for a version that's absolutely stunning and highly effective in capturing attention and driving action. Also, when you are answering to this, please only answer with the enhanced version of the text. Do not add anything else into your answer, since your answer will be posted as is on the website. Do NOT use quotes before and after the text in your answer! Also your version of text should under no circumstance be longer than ${
+                          formData?.[row.fieldName]?.length * 2
                         } characters.`;
 
                       setThinking((e) => [...e, row.fieldName]);
@@ -1003,10 +1087,10 @@ const DynamicForm = ({
 const MultiStepComponent = ({
   steps,
   defaultValues,
-  onFinish = () => { },
-  onPublish = () => { },
-  onActiveStepChange = () => { },
-  onFileImport = () => { },
+  onFinish = () => {},
+  onPublish = () => {},
+  onActiveStepChange = () => {},
+  onFileImport = () => {},
   AIEnhancements = false,
   displaySteps = true,
   programDataDisplay,
@@ -1015,10 +1099,11 @@ const MultiStepComponent = ({
   isClickedPublish,
   isProgramSubmission = false,
   isProgramEditForm = false,
-  onProgramFormEdit = () => { },
+  onProgramFormEdit = () => {},
   kpis,
   isShowBack = false,
   isDataSummary = false,
+  finishButtonTitle,
 }) => {
   const [formData, setFormData] = useState(defaultValues ?? {});
   const [activeStep, setActiveStep] = useState(0); // Initialize current step to 0
@@ -1109,7 +1194,7 @@ const MultiStepComponent = ({
 
     return formData.form.reduce((acc, step) => {
       if (step.form) {
-        const stepMapping = step.form.map((field) => ({
+        const stepMapping = step.form?.map?.((field) => ({
           value: field.fieldName,
           label: field.fieldName,
           type: field.type || "string",
@@ -1165,15 +1250,16 @@ const MultiStepComponent = ({
   if (steps.length === 0) return <></>;
   return (
     <div
-      className={`flex flex-col overflow-auto max-h-[100%] ${!displaySteps && formType === "SuitePre" ? "px-5" : "px-10 pt-5"
-        }`}
+      className={`flex flex-col overflow-auto max-h-[100%] ${
+        !displaySteps && formType === "SuitePre" ? "px-5" : "px-10 pt-5"
+      }`}
     >
       {displaySteps && (
         <div className="hidden md:block ">
           <Steps
             progressDot
             current={activeStep}
-            items={steps.map((step, index) => ({
+            items={steps?.map?.((step, index) => ({
               title: (
                 <>
                   {isProgramEditForm ? (
@@ -1206,7 +1292,7 @@ const MultiStepComponent = ({
           {isProgramEditForm && (
             <>
               <Button
-                className="mt-2 mb-1 mx-2 px-2 py-1 text-sm bg-indigo-500 text-white rounded float-right"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                 onClick={handleAddNewStep}
               >
                 + Add New Step
@@ -1216,8 +1302,9 @@ const MultiStepComponent = ({
         </div>
       )}
       <div
-        className={`flex-grow ${formType !== "SuitePre" && "p-5"} ${formType === "programPre" || isProgramEditForm ? "hidden" : ""
-          }`}
+        className={`flex-grow ${formType !== "SuitePre" && "p-5"} ${
+          formType === "programPre" || isProgramEditForm ? "hidden" : ""
+        }`}
       >
         {steps[activeStep]?.id === "previewstep" &&
         (formType === "SuitePre" ||
@@ -1246,24 +1333,6 @@ const MultiStepComponent = ({
                   }
                 </p>
 
-                {steps[activeStep]?.programPreviewEligibilityKey && (
-                  <>
-                    <p className={"p-2"}>
-                      <strong>
-                        {formType === "SuitePre" ? "Program" : "Template"}{" "}
-                        {steps[activeStep]?.programPreviewEligibilityTitle}
-                      </strong>
-                      :{" "}
-                      {
-                        (programDataDisplay ?? formData)?.[
-                          steps[activeStep]?.programPreviewEligibilityKey ??
-                            "description"
-                        ]
-                      }
-                    </p>
-                  </>
-                )}
-
                 <div>
                   {(programDataDisplay ?? formData)?.categoryDetail?.Name && (
                     <p className={"p-2"}>
@@ -1285,12 +1354,12 @@ const MultiStepComponent = ({
                         :{" "}
                         {(
                           programDataDisplay ?? formData
-                        )?.impactThemeDetails.map((item, index) => (
+                        )?.impactThemeDetails?.map?.((item, index) => (
                           <>
                             <span key={item._id}>{item.Name}</span>
                             {index !==
-                              (programDataDisplay ?? formData)?.impactThemeDetails
-                                .length -
+                            (programDataDisplay ?? formData)?.impactThemeDetails
+                              .length -
                               1
                               ? ", "
                               : ""}
@@ -1380,15 +1449,15 @@ const MultiStepComponent = ({
               activeStep === 1 &&
               formData.enrollClientMethod === "optionB" && (
                 <>
-                  <Button
-                    type="primary"
+                  <button
+                    className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                     onClick={() => {
                       fileInputRef.current.value = "";
                       fileInputRef.current.click();
                     }}
                   >
                     Import Form
-                  </Button>
+                  </button>
                   {formData.form && (
                     <ExcelImport
                       modalName={"Enrollment"}
@@ -1433,8 +1502,8 @@ const MultiStepComponent = ({
         <div className="flex justify-between">
           <div>
             {activeStep > 0 && (
-              <Button
-                type="primary"
+              <button
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
                 onClick={() => {
                   if (activeStep > 0) {
                     // Find the last remembered skipped step before the current step
@@ -1467,7 +1536,7 @@ const MultiStepComponent = ({
                 }}
               >
                 Previous
-              </Button>
+              </button>
             )}
 
             {!displaySteps && formType === "SuitePre" && isShowBack && (
@@ -1480,6 +1549,7 @@ const MultiStepComponent = ({
                   onFinish(finalData);
                 }}
                 type="primary"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
               >
                 Back
               </Button>
@@ -1583,7 +1653,7 @@ const MultiStepComponent = ({
                   setActiveStep(nextStep);
                   onFinish(formData);
                 }}
-                type="primary"
+                className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                 loading={thinking.length > 0}
                 disabled={
                   (!isProgramEditForm && hasEmptyRequiredFields()) ||
@@ -1608,16 +1678,17 @@ const MultiStepComponent = ({
                     setOnFinishClick(true);
                   }}
                   type="primary"
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
                   disabled={hasEmptyRequiredFields()}
                 >
-                  Finish
+                  {finishButtonTitle ?? "Finish"}
                 </Button>
               )}
 
             {isProgramEditForm && (
               <>
                 <Button
-                  className={"ml-3"}
+                  className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white ml-3"
                   loading={thinking.length > 0}
                   onClick={() => {
                     setProgramEditFormPreviewModal(true);

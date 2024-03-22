@@ -28,6 +28,7 @@ const checkUser = async (req, res, next) => {
     const actualFirstName = user.firstName;
     const actualLastName = user.lastName;
     const actualID = user._id;
+    const actualAccessControl = user.accessControl;
 
     if (user.blocked) {
       throw new Error("Access blocked!!");
@@ -65,6 +66,7 @@ const checkUser = async (req, res, next) => {
       req.user.firstName = actualFirstName;
       req.user.lastName = actualLastName;
       req.user.actualID = actualID;
+      req.user.accessControl = actualAccessControl;
     }
 
     next();

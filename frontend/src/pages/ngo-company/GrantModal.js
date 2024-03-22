@@ -1,12 +1,12 @@
 import { Modal, Radio } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectDarkMode } from "../../redux/auth/selectors";
 
 const GrantModal = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("scratch");
   const darkMode = useSelector(selectDarkMode);
 
@@ -20,6 +20,10 @@ const GrantModal = () => {
     }
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    navigate(`/dashboard/grantpre?option=${selectedOption}`);
+  }, []);
 
   const handleCancel = () => {
     navigate(-1);

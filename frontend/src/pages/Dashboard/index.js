@@ -27,6 +27,7 @@ import CrudService from "../../service/CrudService";
 import { default as DashboardDetail } from "../DashboardDetail";
 import GrantOpportunities from "../GrantOpportunities";
 import MyBenchmarks from "../MyBenchmarks";
+import MyDocuments from "../MyDocuments";
 import ProgramForm from "../ProgramForm";
 import ProgramThankyou from "../ProgramThankyou";
 import Programs from "../Programs";
@@ -37,9 +38,9 @@ import CreateGrantOpportunity from "../ngo-company/CreateGrantOpportunity";
 import CreateSuite from "../ngo-company/CreateSuite";
 import { default as CreateTemplate } from "../ngo-company/CreateTemplate";
 import { default as EnrollmentPre } from "../ngo-company/EnrollmentPre";
+import GrantDetails from "../ngo-company/GrantDetails";
 import GrantModal from "../ngo-company/GrantModal";
 import GrantPreInformation from "../ngo-company/GrantPreInformation";
-import MyGrantOpportunities from "../ngo-company/MyGrantOpportunities";
 import MyPrograms from "../ngo-company/MyPrograms";
 import ProgramDetails from "../ngo-company/ProgramDetails";
 import ProgramEdit from "../ngo-company/ProgramEdit";
@@ -64,7 +65,144 @@ import ThemeFive from "./ThemeFive";
 import ThemeOne from "./ThemeOne";
 import ThemeThree from "./ThemeThree";
 import ThemeTwo from "./ThemeTwo";
-import MyDocuments from "../MyDocuments";
+
+const MyProgramsIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
+    />
+  </svg>
+);
+
+const BuildProgramIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+    />
+  </svg>
+);
+
+export const getNavigation = (user) =>
+  [
+    {
+      id: 1,
+      name: "Dashboard",
+      component: <DashboardDetail />,
+      href: "/dashboard",
+      icon: HomeIcon,
+      display: true,
+    },
+    {
+      id: 2,
+      name: "My Benchmarks",
+      component: <MyBenchmarks />,
+      href: "/dashboard/mybenchmarks",
+      icon: FaMagnifyingGlassChart,
+      display: user?.role === "ngo-company",
+    },
+    {
+      id: 3,
+      name: "Team",
+      component: <Team />,
+      href: "/dashboard/team",
+      icon: UsersIcon,
+      display: true,
+    },
+    {
+      id: 4,
+      name: "My Programs",
+      component: <MyPrograms />,
+      href: "/dashboard/myprograms",
+      icon: MyProgramsIcon,
+      display: user?.role === "ngo-company",
+    },
+    {
+      id: 5,
+      name: "Build Program",
+      component: <SuiteModal />,
+      href: "/dashboard/suitemodal",
+      icon: BuildProgramIcon,
+      display: user?.role === "ngo-company",
+    },
+
+    {
+      id: 6,
+      name: "Category Notifications",
+      component: <CategotyNotifications />,
+      href: "/dashboard/categotynofications",
+      icon: BellIcon,
+      display: user?.role === "ngo-company",
+    },
+    {
+      id: 7,
+      name: "Create Template",
+      component: <CreateTemplate />,
+      href: "/dashboard/createtemplate",
+      icon: BuildProgramIcon,
+      display: user?.role === "admin",
+    },
+    {
+      id: 8,
+      name: "Templates",
+      component: <Templates />,
+      href: "/dashboard/templates",
+      icon: MyProgramsIcon,
+      display: user?.role === "admin",
+    },
+    {
+      id: 9,
+      name: "Benchmarks",
+      component: <Benchmarks />,
+      href: "/dashboard/benchmarks",
+      icon: BuildProgramIcon,
+      display: user?.role === "admin",
+    },
+    {
+      id: 10,
+      name: "Programs",
+      component: <Programs />,
+      href: "/dashboard/programs",
+      icon: ChartPieIcon,
+      display: !["ngo-company", "admin"].includes(user?.role),
+    },
+    {
+      id: 11,
+      name: "Post Grant Opportunity",
+      component: <GrantModal />,
+      href: "/dashboard/grantmodal",
+      icon: BuildProgramIcon,
+      display: user?.role === "admin",
+    },
+    {
+      id: 12,
+      name: "Grant Opportunities",
+      component: <GrantOpportunities />,
+      href: "/dashboard/grantopportunities",
+      icon: ChartPieIcon,
+      display: ["ngo-company", "admin"].includes(user?.role),
+    },
+  ].filter((a) => {
+    if (user?.parent && !user?.accessControl?.[a.id]) return false;
+    return true;
+  });
 
 export const THEME_OPTIONS = [
   { value: 1, label: "Default" },
@@ -186,149 +324,7 @@ const Dashboard = () => {
     checkUser();
   }, [location, navigate]);
 
-  const MyProgramsIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      className="w-6 h-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
-      />
-    </svg>
-  );
-
-  const BuildProgramIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      className="w-6 h-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-      />
-    </svg>
-  );
-
-  const navigation = [
-    {
-      name: "Dashboard",
-      component: <DashboardDetail />,
-      href: "/dashboard",
-      icon: HomeIcon,
-      display: ["ngo-company", "admin"].includes(user?.role),
-    },
-    {
-      name: "Home",
-      component: <DashboardDetail />,
-      href: "/dashboard",
-      icon: HomeIcon,
-      display: user?.role === "ngo-beneficiary",
-    },
-    {
-      name: "My Benchmarks",
-      component: <MyBenchmarks />,
-      href: "/dashboard/mybenchmarks",
-      icon: FaMagnifyingGlassChart,
-      display: user?.role === "ngo-company",
-    },
-    {
-      name: "Team",
-      component: <Team />,
-      href: "/dashboard/team",
-      icon: UsersIcon,
-      display: !user?.parent && ["ngo-company", "admin"].includes(user?.role),
-    },
-    {
-      name: "My Programs",
-      component: <MyPrograms />,
-      href: "/dashboard/myprograms",
-      icon: MyProgramsIcon,
-      display: ["ngo-company", "ngo-beneficiary"].includes(user?.role),
-    },
-    {
-      name: "My Applications",
-      component: <MyPrograms />,
-      href: "/dashboard/myapplications",
-      icon: MyProgramsIcon,
-      display: ["ngo-beneficiary"].includes(user?.role),
-    },
-    {
-      name: "Build Program",
-      component: <SuiteModal />,
-      href: "/dashboard/suitemodal",
-      icon: BuildProgramIcon,
-      display: user?.role === "ngo-company",
-    },
-
-    {
-      name: "Category Notifications",
-      component: <CategotyNotifications />,
-      href: "/dashboard/categotynofications",
-      icon: BellIcon,
-      display: ["ngo-company", "ngo-beneficiary"].includes(user?.role),
-    },
-    {
-      name: "Create Template",
-      component: <CreateTemplate />,
-      href: "/dashboard/createtemplate",
-      icon: BuildProgramIcon,
-      display: user?.role === "admin",
-    },
-    {
-      name: "Templates",
-      component: <Templates />,
-      href: "/dashboard/templates",
-      icon: MyProgramsIcon,
-      display: user?.role === "admin",
-    },
-    {
-      name: "Benchmarks",
-      component: <Benchmarks />,
-      href: "/dashboard/benchmarks",
-      icon: BuildProgramIcon,
-      display: user?.role === "admin",
-    },
-    {
-      name: "Programs",
-      component: <Programs />,
-      href: "/dashboard/programs",
-      icon: ChartPieIcon,
-      display: ["admin"].includes(user?.role),
-    },
-    {
-      name: "Post Grant Opportunity",
-      component: <GrantModal />,
-      href: "/dashboard/grantmodal",
-      icon: BuildProgramIcon,
-      display: user?.role === "admin",
-    },
-    {
-      name: "Grant Opportunities",
-      component: <GrantOpportunities />,
-      href: "/dashboard/grantopportunities",
-      icon: ChartPieIcon,
-      display: true, //["ngo-company", "admin"].includes(user?.role),
-    },
-    {
-      name: "My Documents",
-      component: <MyDocuments />,
-      href: "/dashboard/mydocuments",
-      icon: BuildProgramIcon,
-      display: ["ngo-beneficiary"].includes(user?.role),
-    },
-    
-  ]
+  const navigation = getNavigation(user)
     .filter((e) => e.display === true)
     .map((elem) => ({
       ...elem,
@@ -341,7 +337,11 @@ const Dashboard = () => {
   useEffect(() => {
     if (!["ngo-company", "admin"].includes(user?.role)) return;
     CrudService.search("Suite", 5, 1, {
-      filters: { published: false, user_id: user._id },
+      filters: {
+        published: false,
+        isGrantOpportunity: false,
+        user_id: user._id,
+      },
       sort: { createdAt: -1 },
     }).then((res) => {
       if (res.data.items.length > 0)
@@ -436,6 +436,7 @@ const Dashboard = () => {
         <Route path={"/programpublish"} element={<ProgramPublish />} />
         <Route path={"/programdetails"} element={<ProgramDetails />} />
         <Route path={"/suitedetails"} element={<SuiteOverviewDetails />} />
+        <Route path={"/grantdetail"} element={<GrantDetails />} />
         <Route
           path={"/suiteoverviewdetail"}
           element={<SuiteOverviewDetails />}
