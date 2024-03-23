@@ -1,6 +1,11 @@
-import { Breadcrumb, Divider, Select, Slider } from "antd";
+import { Menu, Transition } from "@headlessui/react";
+import { Breadcrumb, Divider, Select, Slider, Space } from "antd";
 import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import ReactFlagsSelect from "react-flags-select";
+import { FaRegSave } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { STANDARD_MOMENT_FORMAT, countries } from "../data/constants";
@@ -26,6 +31,7 @@ const GrantOpportunities = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
+  const [savedSearches, setSavedSearches] = useState([]);
 
   useEffect(() => {
     StrapiService.getList("impact_categories").then(({ data }) => {
@@ -62,6 +68,53 @@ const GrantOpportunities = () => {
     setPage(newPage);
   };
 
+  const saveCurrentSearch = useCallback(async () => {
+    const searchCriteria = {
+      filters,
+      sort,
+    };
+
+    try {
+      await CrudService.create("SavedSearchGrantOpp", searchCriteria);
+      await fetchUserSavedSearches();
+    } catch (error) {}
+  }, [filters, sort]);
+
+  const fetchUserSavedSearches = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await CrudService.search(
+        "SavedSearchGrantOpp",
+        100000,
+        1,
+        {
+          filters: { user_id: user._id },
+          sort: { createdAt: -1 },
+        }
+      );
+      setSavedSearches(response.data.items);
+    } catch (error) {
+      console.error("Failed to fetch saved searches", error);
+    }
+  }, [user]);
+  useEffect(() => {
+    fetchUserSavedSearches();
+  }, [fetchUserSavedSearches]);
+
+  const deleteSavedSearch = async (savedSearchId) => {
+    try {
+      await CrudService.delete("SavedSearchGrantOpp", savedSearchId);
+      await fetchUserSavedSearches();
+    } catch (error) {
+      console.error("Failed to delete saved search", error);
+    }
+  };
+
+  const loadSavedSearch = (search) => {
+    setSort(search.sort);
+    setFilters(search.filters);
+  };
+
   return (
     <>
       <div className=" p-4">
@@ -80,7 +133,7 @@ const GrantOpportunities = () => {
         <div className="bg-white p-6 rounded-md shadow">
           <div className="flex items-center mb-4">
             <input
-              className="border p-2 rounded mr-4 flex-grow"
+              className="border p-2 rounded flex-grow"
               placeholder="Search by keywords"
               onChange={(e) => setText(e.target.value)}
               value={text}
@@ -96,19 +149,99 @@ const GrantOpportunities = () => {
                 setPage(1);
                 fetchPrograms(text);
               }}
-              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-2.5 px-4 rounded"
             >
               Search
             </button>
           </div>
 
           <div className="mt-6">
-            <button
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className="text-indigo-600 hover:text-indigo-800 text-sm font-semibold"
-            >
-              Advanced Filters
-            </button>
+            <div className="flex justify-between">
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className="text-indigo-600 hover:text-indigo-800 text-sm font-semibold"
+              >
+                Advanced Filters
+              </button>
+
+              <div>
+                <Space size={0}>
+                  <button
+                    style={{
+                      border: "solid 1px",
+                      borderTopRightRadius: 0,
+                      borderBottomRightRadius: 0,
+                    }}
+                    className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                    onClick={saveCurrentSearch}
+                  >
+                    <FaRegSave />
+                  </button>
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <Menu.Button
+                        style={{
+                          border: "solid 1px",
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+                        }}
+                        className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                      >
+                        <FaAngleDown />
+                      </Menu.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                          {savedSearches.map((search) => (
+                            <Menu.Item key={search._id}>
+                              {({ active }) => (
+                                <a
+                                  href="#"
+                                  onClick={() => loadSavedSearch(search)}
+                                  className={`${
+                                    active
+                                      ? "bg-gray-100 text-gray-900"
+                                      : "text-gray-700"
+                                  } flex justify-between w-full px-4 py-2 text-sm`}
+                                >
+                                  {search.searchTerm ||
+                                    moment(search.createdAt).format(
+                                      STANDARD_MOMENT_FORMAT
+                                    ) ||
+                                    "Unnamed Search"}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // Prevent loading the search when attempting to delete
+                                      deleteSavedSearch(search._id);
+                                    }}
+                                    className={`${
+                                      active ? "text-gray-900" : "text-gray-400"
+                                    } ml-2 hover:text-gray-600`}
+                                  >
+                                    &#x2715;{" "}
+                                    {/* This is a 'X' character for the delete button */}
+                                  </button>
+                                </a>
+                              )}
+                            </Menu.Item>
+                          ))}
+                        </div>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                </Space>
+              </div>
+            </div>
+
             {showAdvancedFilters && (
               // Add your advanced filters here
               <div className="mt-4">
@@ -118,70 +251,80 @@ const GrantOpportunities = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                       Locations
                     </label>
-                    <Select
-                      className="rounded-full"
-                      style={{ width: 250 }}
-                      onChange={(value) =>
-                        value?.length
-                          ? setFilters((f) => ({
-                              ...f,
-                              "locations.country": { $in: value },
-                            }))
-                          : setFilters((f) => ({
-                              ...f,
-                              "locations.country": undefined,
-                            }))
-                      }
-                      value={filters?.["locations.country"]?.$in ?? []}
-                      mode={"multiple"}
-                    >
-                      {countries
-                        .sort((a, b) => a.label.localeCompare(b.label))
-                        ?.map?.((option) => (
-                          <Select.Option
-                            key={option.value}
-                            value={option.value}
-                          >
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                    </Select>
+                    <div className="flex gap-1 items-center">
+                      <ReactFlagsSelect
+                        className="min-w-[250px] w-full flex-grow rounded-full"
+                        onSelect={(value) =>
+                          value?.length
+                            ? setFilters((f) => ({
+                                ...f,
+                                "locations.country": { $in: [value] },
+                              }))
+                            : setFilters((f) => ({
+                                ...f,
+                                "locations.country": undefined,
+                              }))
+                        }
+                        selected={filters?.["locations.country"]?.$in?.[0]}
+                        searchable
+                      />
+                      <button
+                        style={{
+                          border: "solid 1px",
+                        }}
+                        className="inline-flex justify-center  rounded-md border border-gray-300 shadow-sm px-4 py-4 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => {
+                          setFilters((f) => ({
+                            ...f,
+                            "locations.country": undefined,
+                          }));
+                        }}
+                      >
+                        <RxCross2 />
+                      </button>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                       Eligible Nationalities
                     </label>
-                    <Select
-                      className="rounded-full"
-                      style={{ width: 250 }}
-                      onChange={(value) =>
-                        value?.length
-                          ? setFilters((f) => ({
-                              ...f,
-                              "eligibleNationalities.country": { $in: value },
-                            }))
-                          : setFilters((f) => ({
-                              ...f,
-                              "eligibleNationalities.country": undefined,
-                            }))
-                      }
-                      value={
-                        filters?.["eligibleNationalities.country"]?.$in ?? []
-                      }
-                      mode={"multiple"}
-                    >
-                      {countries
-                        .sort((a, b) => a.label.localeCompare(b.label))
-                        ?.map?.((option) => (
-                          <Select.Option
-                            key={option.value}
-                            value={option.value}
-                          >
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                    </Select>
+                    <div className="flex gap-1 items-center">
+                      <ReactFlagsSelect
+                        className="min-w-[250px] w-full flex-grow rounded-full"
+                        onSelect={(value) =>
+                          value?.length
+                            ? setFilters((f) => ({
+                                ...f,
+                                "eligibleNationalities.country": {
+                                  $in: [value],
+                                },
+                              }))
+                            : setFilters((f) => ({
+                                ...f,
+                                "eligibleNationalities.country": undefined,
+                              }))
+                        }
+                        selected={
+                          filters?.["eligibleNationalities.country"]?.$in?.[0]
+                        }
+                        searchable
+                      />
+                      <button
+                        style={{
+                          border: "solid 1px",
+                        }}
+                        className="inline-flex justify-center  rounded-md border border-gray-300 shadow-sm px-4 py-4 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => {
+                          setFilters((f) => ({
+                            ...f,
+                            "eligibleNationalities.country": undefined,
+                          }));
+                        }}
+                      >
+                        <RxCross2 />
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -256,43 +399,47 @@ const GrantOpportunities = () => {
               </div>
             )}
 
-            <div className="mt-5 flex justify-between text-xs font-semibold text-gray-700">
+            <div className="mt-5 md:flex justify-between text-xs font-semibold text-gray-700">
               <span>{total} results</span>
-              <div className="flex items-center">
-                <span className="mr-2">Show:</span>
-                <select
-                  className="mr-4 rounded-full"
-                  onChange={(e) => {
-                    setFilters((f) => {
-                      const query = {
-                        ...f,
-                      };
+              <div className="md:flex items-center">
+                <div className="mt-5 md:mt-0">
+                  <span className="mr-2">Show:</span>
+                  <select
+                    className="mr-4 rounded-full"
+                    onChange={(e) => {
+                      setFilters((f) => {
+                        const query = {
+                          ...f,
+                        };
 
-                      if (e.target.value !== "ALL")
-                        query.category = e.target.value;
-                      else delete query.category;
+                        if (e.target.value !== "ALL")
+                          query.category = e.target.value;
+                        else delete query.category;
 
-                      return query;
-                    });
-                  }}
-                >
-                  <option value="ALL">All</option>
-                  {categories.map((c) => (
-                    <option value={c?._id}>{c?.Name}</option>
-                  ))}
-                  {/* Options */}
-                </select>
-                <span className="mr-2">Sort by:</span>
-                <select
-                  className="rounded-full"
-                  value={Object.keys(sort)[0]}
-                  onChange={(e) => {
-                    setSort({ [e.target.value]: -1 });
-                  }}
-                >
-                  <option value="createdAt">Post Date</option>
-                  <option value="updatedAt">Modified Date</option>
-                </select>
+                        return query;
+                      });
+                    }}
+                  >
+                    <option value="ALL">All</option>
+                    {categories.map((c) => (
+                      <option value={c?._id}>{c?.Name}</option>
+                    ))}
+                    {/* Options */}
+                  </select>
+                </div>
+                <div className="mt-2 md:mt-0">
+                  <span className="mr-2">Sort by:</span>
+                  <select
+                    className="rounded-full"
+                    value={Object.keys(sort)[0]}
+                    onChange={(e) => {
+                      setSort({ [e.target.value]: -1 });
+                    }}
+                  >
+                    <option value="createdAt">Post Date</option>
+                    <option value="updatedAt">Modified Date</option>
+                  </select>
+                </div>
               </div>
             </div>
 

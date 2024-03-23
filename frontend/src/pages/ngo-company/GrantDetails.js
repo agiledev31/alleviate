@@ -69,6 +69,7 @@ const GrantDetails = ({ mockProgramData }) => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [serverProgramData, setServerProgramData] = useState(null);
+  const [favorite, setFavorite] = useState(null);
 
   const load = useCallback(() => {
     const id = searchParams.get("id");
@@ -86,6 +87,19 @@ const GrantDetails = ({ mockProgramData }) => {
     () => mockProgramData ?? serverProgramData,
     [mockProgramData, serverProgramData]
   );
+
+  useEffect(() => {
+    const id = mockProgramData?._id ?? searchParams.get("id");
+    if (!id) return;
+    if (!user) return;
+
+    CrudService.search("SuiteFavorite", 1, 1, {
+      filters: { suite: id, user_id: user._id },
+    }).then((response) => {
+      const item = response.data?.items?.[0];
+      if (item) setFavorite(item._id);
+    });
+  }, [mockProgramData, serverProgramData, user]);
 
   const isOpen = useMemo(() => {
     return new Date(programData?.applicationDeadline) > new Date();
@@ -113,7 +127,7 @@ const GrantDetails = ({ mockProgramData }) => {
         ]}
       />
       <div className=" mx-auto p-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center ">
           <h2 className="text-xl font-semibold text-gray-700">
             {programData?.name ?? ""}{" "}
             {isOpen ? (
@@ -152,7 +166,7 @@ const GrantDetails = ({ mockProgramData }) => {
               <Popconfirm
                 title="Are you sure?"
                 onConfirm={async () => {
-                  await CrudService.delete(programData?._id);
+                  await CrudService.delete("Suite", programData?._id);
                   navigate("/dashboard/grantopportunities");
                 }}
               >
@@ -163,7 +177,33 @@ const GrantDetails = ({ mockProgramData }) => {
             </div>
           )}
         </div>
-        <div className="border-t border-b py-4">
+        <div className="flex justify-end mt-2">
+          {favorite ? (
+            <button
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
+              onClick={async () => {
+                await CrudService.delete("SuiteFavorite", favorite);
+                setFavorite(null);
+              }}
+            >
+              Remove from Favorites
+            </button>
+          ) : (
+            <button
+              className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded"
+              onClick={async () => {
+                const item = await CrudService.create("SuiteFavorite", {
+                  user_id: user._id,
+                  suite: programData?._id,
+                });
+                if (item.data) setFavorite(item.data._id);
+              }}
+            >
+              Save as Favorite
+            </button>
+          )}
+        </div>
+        <div className="border-t border-b py-4 mt-6">
           <div className="flex flex-wrap -mx-3 mb-2 ">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
@@ -247,6 +287,16 @@ const GrantDetails = ({ mockProgramData }) => {
               </p>
             </div>
           </div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold text-gray-700 mb-3">
+            Description
+          </h3>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: programData?.description?.replace?.(/\n/g, "<br>"),
+            }}
+          />
         </div>
         <div className="mt-4">
           <h3 className="text-lg font-semibold text-gray-700 mb-3">

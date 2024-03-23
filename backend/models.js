@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     subscription: Object,
     KYCProcess: Object,
+    accessControl: Object,
 
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
@@ -296,8 +297,15 @@ const suiteSchema = new mongoose.Schema(
 
     // Opportunity portal
     isGrantOpportunity: { type: Boolean, default: false },
-    fundingAmount: { type: Number },
-    grantEligibilityCriteria: { type: String },
+    fundingAmount: { type: [Number], default: [0, 20000000] },
+
+    locations: { type: [Object], default: [] },
+    eligibleNationalities: { type: [Object], default: [] },
+    sectors: { type: [Object], default: [] },
+    fundingAgencies: { type: [Object], default: [] },
+    applicationDeadline: { type: Date, default: new Date() },
+    attachments: { type: [String], default: [] },
+    urlLinks: { type: [Object], default: [] },
   },
   { timestamps: true }
 );
@@ -355,12 +363,8 @@ const defaultAssessmentSchema = new mongoose.Schema(
 const savedSearchGrantOppSchema = new mongoose.Schema(
   {
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    typeFilter: { type: String, default: "" },
-    minFunding: { type: Number },
-    maxFunding: { type: Number },
-    deadlineStart: { type: Date },
-    deadlineEnd: { type: Date },
-    searchTerm: { type: String, default: "" },
+    filters: { type: Object },
+    sort: { type: Object },
   },
   { timestamps: true }
 );
@@ -389,10 +393,10 @@ const benchMarkSchema = new mongoose.Schema(
 const taskSchema = new mongoose.Schema(
   {
     name: { type: String },
-    description: {type: String },
+    description: { type: String },
     suite: { type: mongoose.Schema.Types.ObjectId, ref: "Suite" },
     type: { type: String },
-    active: { type: Boolean, default: true}
+    active: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
@@ -407,7 +411,15 @@ const TaskUserSchema = new mongoose.Schema(
       // enum: ["progress", "review", "approved", "waiting"],
       default: "waiting",
     },
-    active: { type: Boolean, default: true}
+    active: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+
+const SuiteFavoriteSchema = new mongoose.Schema(
+  {
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    suite: { type: mongoose.Schema.Types.ObjectId, ref: "Suite" },
   },
   { timestamps: true }
 );
@@ -466,6 +478,7 @@ const VersionControlSuite = mongoose.model(
   versionControlSuiteSchema
 );
 const BenchMark = mongoose.model("BenchMark", benchMarkSchema);
+const SuiteFavorite = mongoose.model("SuiteFavorite", SuiteFavoriteSchema);
 const SavedSearchGrantOpp = mongoose.model(
   "SavedSearchGrantOpp",
   savedSearchGrantOppSchema
@@ -486,6 +499,7 @@ const models = {
   BenchMark,
   VersionControlSuite,
   SavedSearchGrantOpp,
+  SuiteFavorite,
   Task,
   TaskUser,
 };
