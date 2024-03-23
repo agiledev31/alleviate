@@ -54,6 +54,7 @@ const GrantPreInformation = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [strategicGoals, setStrategicGoals] = useState([]);
+  const [fundingAgencies, setFundingAgencies] = useState([]);
   const [deliveryModels, setDeliveryModels] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [categoryDeliveryModel, setCategoryDeliveryModel] = useState([]);
@@ -90,6 +91,9 @@ const GrantPreInformation = () => {
     StrapiService.getList("strategic_goals").then(({ data }) =>
       setStrategicGoals(data)
     );
+    StrapiService.getList("funding_agencies").then(({ data }) => {
+      setFundingAgencies(data);
+    });
     StrapiService.getList("delivery_models").then(({ data }) =>
       setDeliveryModels(data)
     );
@@ -186,6 +190,13 @@ const GrantPreInformation = () => {
           required: true,
         },
         {
+          fieldName: "description",
+          label: "Description",
+          type: "textarea",
+          rows: 4,
+          placeholder: "Describe this grant opportunity",
+        },
+        {
           fieldName: "locations",
           label: "Provide applicable locations",
           type: "list",
@@ -226,212 +237,13 @@ const GrantPreInformation = () => {
           label: "Funding Agencies",
           fieldName: "fundingAgencies",
           type: "select",
+          width: 400,
           multi: true,
-          options: [
-            {
-              value: "National Science Foundation",
-              label: "National Science Foundation",
-            },
-            {
-              value: "Federal Ministry of Education and Research",
-              label: "Federal Ministry of Education and Research",
-            },
-            {
-              value: "Agence nationale de la recherche",
-              label: "Agence nationale de la recherche",
-            },
-            {
-              value: "Fundacao para a Ciencia e a Tecnologia",
-              label: "Fundacao para a Ciencia e a Tecnologia",
-            },
-            {
-              value: "National Science Centre",
-              label: "National Science Centre",
-            },
-            {
-              value: "Research Council of Norway",
-              label: "Research Council of Norway",
-            },
-            { value: "State Research Agency", label: "State Research Agency" },
-            {
-              value:
-                "Unitatea Executiva Pentru Finantarea Invatamantului Superior a Cercetarii Dezvoltarii si Inovarii",
-              label:
-                "Unitatea Executiva Pentru Finantarea Invatamantului Superior a Cercetarii Dezvoltarii si Inovarii",
-            },
-            {
-              value: "Scientific and Technological Research Council of Türkiye",
-              label: "Scientific and Technological Research Council of Türkiye",
-            },
-            {
-              value: "Ministry of Education, Universities and Research",
-              label: "Ministry of Education, Universities and Research",
-            },
-            {
-              value: "Ministry of Climate Action and Energy",
-              label: "Ministry of Climate Action and Energy",
-            },
-            {
-              value: "Swedish Governmental Agency for Innovation Systems",
-              label: "Swedish Governmental Agency for Innovation Systems",
-            },
-            { value: "Innovate UK", label: "Innovate UK" },
-            {
-              value: "Economic and Social Research Council",
-              label: "Economic and Social Research Council",
-            },
-            {
-              value: "Austrian Research Promotion Agency",
-              label: "Austrian Research Promotion Agency",
-            },
-            {
-              value: "National Endowment for the Arts",
-              label: "National Endowment for the Arts",
-            },
-            {
-              value: "National Endowment for the Humanities",
-              label: "National Endowment for the Humanities",
-            },
-            {
-              value: "United States Department of Justice",
-              label: "United States Department of Justice",
-            },
-            {
-              value: "U.S. Department of Homeland Security",
-              label: "U.S. Department of Homeland Security",
-            },
-            {
-              value: "United States Department of Health and Human Services",
-              label: "United States Department of Health and Human Services",
-            },
-            {
-              value: "United States Environmental Protection Agency",
-              label: "United States Environmental Protection Agency",
-            },
-            {
-              value: "United States Department of Energy",
-              label: "United States Department of Energy",
-            },
-            {
-              value:
-                "United States Department of Housing and Urban Development",
-              label:
-                "United States Department of Housing and Urban Development",
-            },
-            {
-              value: "United States Department of Education",
-              label: "United States Department of Education",
-            },
-            { value: "NASA", label: "NASA" },
-            {
-              value: "European Research Council",
-              label: "European Research Council",
-            },
-            {
-              value: "National Institutes of Health",
-              label: "National Institutes of Health",
-            },
-            { value: "DARPA", label: "DARPA" },
-            {
-              value: "National Human Genome Research Institute",
-              label: "National Human Genome Research Institute",
-            },
-            {
-              value:
-                "Federal Ministry for Economic Affairs and Climate Action of Germany",
-              label:
-                "Federal Ministry for Economic Affairs and Climate Action of Germany",
-            },
-            {
-              value:
-                "Federal Ministry for Environment, Nature Conservation and Nuclear Safety (Germany)",
-              label:
-                "Federal Ministry for Environment, Nature Conservation and Nuclear Safety (Germany)",
-            },
-            {
-              value: "Federal Ministry of Food and Agriculture",
-              label: "Federal Ministry of Food and Agriculture",
-            },
-            {
-              value: "Czech Science Foundation",
-              label: "Czech Science Foundation",
-            },
-            {
-              value: "Defence Research & Development Organisation",
-              label: "Defence Research & Development Organisation",
-            },
-            {
-              value: "Department of Science and Technology",
-              label: "Department of Science and Technology",
-            },
-            {
-              value: "Department of Biotechnology",
-              label: "Department of Biotechnology",
-            },
-            {
-              value: "Department of Atomic Energy",
-              label: "Department of Atomic Energy",
-            },
-            {
-              value: "United States Agency for International Development",
-              label: "United States Agency for International Development",
-            },
-            {
-              value: "Department of Chemicals and Petro-Chemicals",
-              label: "Department of Chemicals and Petro-Chemicals",
-            },
-            {
-              value: "Centers for Disease Control and Prevention",
-              label: "Centers for Disease Control and Prevention",
-            },
-            {
-              value:
-                "Cooperative State Research, Education, and Extension Service",
-              label:
-                "Cooperative State Research, Education, and Extension Service",
-            },
-            {
-              value: "Office of Naval Research",
-              label: "Office of Naval Research",
-            },
-            {
-              value: "Health Resources and Services Administration",
-              label: "Health Resources and Services Administration",
-            },
-            {
-              value: "Indian Council of Social Science Research",
-              label: "Indian Council of Social Science Research",
-            },
-            {
-              value: "United States Department of Defense",
-              label: "United States Department of Defense",
-            },
-            {
-              value: "United States Department of Agriculture",
-              label: "United States Department of Agriculture",
-            },
-            {
-              value: "United States Department of Veterans Affairs",
-              label: "United States Department of Veterans Affairs",
-            },
-            {
-              value:
-                "Ministry of Chemicals and Fertilisers, Government of India",
-              label:
-                "Ministry of Chemicals and Fertilisers, Government of India",
-            },
-            {
-              value: "Atomic Energy Regulatory Board",
-              label: "Atomic Energy Regulatory Board",
-            },
-            {
-              value: "UK Research and Innovation",
-              label: "UK Research and Innovation",
-            },
-            { value: "Health Research Board", label: "Health Research Board" },
-          ].sort(function (a, b) {
-            return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
-          }),
+          options: fundingAgencies
+            .map((a) => ({ value: a.Title, label: a.Title }))
+            .sort(function (a, b) {
+              return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
+            }),
         },
         {
           fieldName: "applicationDeadline",

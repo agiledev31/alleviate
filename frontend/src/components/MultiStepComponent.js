@@ -515,7 +515,13 @@ const DynamicForm = ({
         return (
           <>
             <Select
-              style={{ width: item.fieldName === "category" ? 150 : 250 }}
+              style={{
+                width: item.width
+                  ? item.width
+                  : item.fieldName === "category"
+                  ? 150
+                  : 250,
+              }}
               onChange={(value) =>
                 !isProgramSubmission && onChange(item.fieldName, value)
               }

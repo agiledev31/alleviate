@@ -31,7 +31,6 @@ async function connectToDatabase() {
     console.error("Error connecting to the database", error);
   }
 }
-connectToDatabase();
 const db = client.db("strapi");
 
 const checkModel = async (req, res, next) => {
@@ -50,7 +49,7 @@ router
   .route("/single")
   .get(checkUser, checkReadPermission, async (req, res) => {
     try {
-      // const result = await models[req.query.ModelName].findById(req.query.id);
+      await connectToDatabase();
       let result;
       let KpiList = [];
 
