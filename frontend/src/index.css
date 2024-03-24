@@ -391,6 +391,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 2px;
     left: -24px;
+    top: 2px;
     transition: .2s ease;
   }
 
