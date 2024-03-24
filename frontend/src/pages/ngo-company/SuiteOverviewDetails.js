@@ -61,6 +61,12 @@ const colors = [
   "yellow", "blue", "red", "green"
 ];
 
+const taskTabs = [
+  {value: "all", label: "All"},
+  {value: "important", label: "Important"},
+  {value: "notes", label: "Notes"},
+]
+
 const taskStatus = [
   { label: "Approved", value: "approved" },
   { label: "In Progress", value: "progress" },
@@ -664,6 +670,7 @@ const SuiteDetails = () => {
     user?.favoriteKPIs ?? []
   );
 
+  const [selectedTaskTab, setSelectedTaskTab] = useState("important");
   const [tasks, setTasks] = useState([]);
   const [taskUsers, setTaskUsers] = useState([]);
   const [taskName, setTaskName] = useState("");
@@ -762,7 +769,10 @@ const SuiteDetails = () => {
   const fetchTasks = async () => {
     if (!programData?._id) return;
     CrudService.search("Task", 100000, 1, {
-      filters: { suite: programData._id },
+      filters: {
+        suite: programData._id,
+        active: true
+      },
       sort: { createdAt: -1 },
     }).then((res) => {
       setTasks(res.data.items);
@@ -772,7 +782,10 @@ const SuiteDetails = () => {
   const fetchTaskUsers = async () => {
     if (!programData?._id) return;
     CrudService.search("TaskUser", 100000, 1, {
-      filters: { suite: programData?._id },
+      filters: {
+        suite: programData?._id,
+        active: true,
+      },
       sort: { createdAt: -1 },
     }).then((res) => {
       setTaskUsers(res.data.items);
@@ -1270,7 +1283,12 @@ const SuiteDetails = () => {
               });
             }}
           >
-            <Button>Remove</Button>
+            <Button
+              danger
+              className="bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
+            >
+              Remove
+            </Button>
           </Popconfirm>
           <Button
             className="bg-gradient-to-r from-indigo-100 to-indigo-500 hover:from-indigo-300 hover:to-indigo-700 text-white font-bold py-1 px-4 rounded !text-white hover:!text-white"
@@ -1653,7 +1671,7 @@ const SuiteDetails = () => {
                                         allKPIs,
                                       })
                                     }
-                                    onChange={() => {}}
+                                    onChange={() => { }}
                                     value={action.id}
                                   >
                                     {action.text({
@@ -2283,22 +2301,15 @@ const SuiteDetails = () => {
                 </Modal>
               </div>
               <div className="content-categories">
-                <div className="label-wrapper">
-                  <input className="nav-item" name="nav" type="radio" id="opt-1" />
-                  <label className="category" htmlFor="opt-1">All</label>
-                </div>
-                <div className="label-wrapper">
-                  <input className="nav-item" name="nav" type="radio" id="opt-2" checked onChange={() => {}} />
-                  <label className="category" htmlFor="opt-2">Important</label>
-                </div>
-                <div className="label-wrapper">
-                  <input className="nav-item" name="nav" type="radio" id="opt-3" />
-                  <label className="category" htmlFor="opt-3">Notes</label>
-                </div>
-                <div className="label-wrapper">
-                  <input className="nav-item" name="nav" type="radio" id="opt-4" />
-                  <label className="category" htmlFor="opt-4">Links</label>
-                </div>
+                {taskTabs.map((tab, index) =>
+                  <div className="label-wrapper">
+                    <input className="nav-item" name={`${tab.value}`} type="radio" id={`opt-${index + 1}`}
+                      checked={selectedTaskTab === tab.value}
+                      onChange={() => { setSelectedTaskTab(tab.value) }}
+                    />
+                    <label className="category" htmlFor={`opt-${index + 1}`}>{tab.label}</label>
+                  </div>
+                )}
               </div>
               <div className="tasks-wrapper">
                 {tasks.map((task, index) => {
@@ -2334,11 +2345,41 @@ const SuiteDetails = () => {
                     <label htmlFor={index}>
                       <span className="label-text">{task.name}</span>
                     </label>
-                    {taskUser && selectedParticipant &&
-                      <span className={`tag ${taskUser.status}`}>
-                        {taskStatus.filter(i => i.value == taskUser.status)?.[0]?.label}
-                      </span>
-                    }
+                    <div>
+                      {taskUser && selectedParticipant &&
+                        <span className={`tag ${taskUser.status} mr-10`}>
+                          {taskStatus.filter(i => i.value == taskUser.status)?.[0]?.label}
+                        </span>
+                      }
+                      <Popconfirm
+                        title="Are you sure to remove this task?"
+                        onConfirm={() => {
+                          CrudService.update("Task", task._id, {
+                            active: false,
+                          })
+                            .then(res => {
+                              if (res) {
+                                fetchTasks();
+                                CrudService.delete("TaskUser", task._id, {
+                                  task: task._id,
+                                })
+                                  .then(res => {
+                                    console.log("task users delete:", res.data)
+                                  })
+                              }
+                            }).catch(err => {
+                              fetchTasks();
+                            })
+                        }}
+                      >
+                        <Button
+                          danger
+                          className="!bg-gradient-to-r !from-red-400 !to-red-600 hover:!from-red-500 hover:!to-red-700 !text-white !font-bold py-1 px-4 rounded !text-white hover:!text-white"
+                        >
+                          Remove
+                        </Button>
+                      </Popconfirm>
+                    </div>
                   </div>
                 })}
                 {/* <div className="header upcoming">Upcoming Tasks</div> */}
