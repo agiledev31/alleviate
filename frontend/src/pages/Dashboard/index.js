@@ -140,7 +140,7 @@ export const getNavigation = (user) =>
       name: "My Programs",
       component: <Programs />,
       href: "/dashboard/programs",
-      icon: ChartPieIcon,
+      icon: MyProgramsIcon,
       display: !["ngo-company", "admin"].includes(user?.role),
     },
     {
@@ -148,7 +148,7 @@ export const getNavigation = (user) =>
       name: "My Applications",
       component: <MyApplications />,
       href: "/dashboard/myapplications",
-      icon: ChartPieIcon,
+      icon: MyProgramsIcon,
       display: ["ngo-beneficiary"].includes(user?.role),
     },
     {
