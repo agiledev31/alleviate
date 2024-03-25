@@ -16,8 +16,9 @@ const DashboardDetail = () => {
   const [submittedProgramData, setSubmittedProgramData] = useState([]);
   const [favoriteKPIs, setFavoriteKPIs] = useState([]);
   const [myRecentSuites, setMyRecentSuites] = useState([]);
+  const [grantOpportunities, setGrantOpportunities] = useState([]);
+  const [recommendedGrantOpportunities, setRecommendedGrantOpportunities] = useState([]);
   const user = useSelector(selectUser);
-  console.log("user", user);
 
   const load = useCallback(() => {
     DashboardService.getDashboardDetails().then((res) => {
@@ -37,6 +38,8 @@ const DashboardDetail = () => {
       setSubmittedProgramData(res.data.submissions);
       setFavoriteKPIs(res.data.favoriteKPIs);
       setMyRecentSuites(res.data.userSuites);
+      setGrantOpportunities(res.data.grantOpportunities);
+      setRecommendedGrantOpportunities(res.data.recommendedGrantOpportunities);
     });
   }, []);
 
@@ -85,10 +88,10 @@ const DashboardDetail = () => {
             text === "Submitted"
               ? "green"
               : text === "Waiting"
-              ? "orange"
-              : text === "Approved"
-              ? "green"
-              : "red"
+                ? "orange"
+                : text === "Approved"
+                  ? "green"
+                  : "red"
           }
         >
           {text === "Waiting" ? "Submitted" : text}
@@ -477,7 +480,8 @@ const DashboardDetail = () => {
               </div>
             </div>
           )}
-          {user?.myDocuments.length && (
+
+          {recommendedGrantOpportunities?.length > 0 && (
             <div
               className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
             >
@@ -486,7 +490,7 @@ const DashboardDetail = () => {
                   "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
                 }
               >
-                My Documents
+                Recommended Grant Opportunities
               </h2>
               <div
                 className={
@@ -494,19 +498,95 @@ const DashboardDetail = () => {
                 }
               >
                 <div className="relative overflow-x-auto">
-                  {user?.myDocuments?.map((document, index) => (
-                    <div
-                      key={index}
-                      className="m-3 p-1 block cursor-pointer text-md font-bold hover:opacity-80 hover:underline"
-                      onClick={() => window.open(document.url)}
-                    >
-                      {document.name}
-                    </div>
-                  ))}
+                  <Table
+                    dataSource={recommendedGrantOpportunities.map((item, index) => {
+                      return {
+                        key: index,
+                        programName: item.name,
+                        categoryName: item.categoryDetails?.Name || "-",
+                        description: item.description,
+                        data: item,
+                      };
+                    })}
+                    columns={programsColumns}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ x: "750px" }}
+                    rowKey="_id"
+                  />
                 </div>
               </div>
             </div>
           )}
+
+          {grantOpportunities?.length > 0 && (
+            <div
+              className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+            >
+              <h2
+                className={
+                  "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                }
+              >
+                Grant Opportunities
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  <Table
+                    dataSource={grantOpportunities.map((item, index) => {
+                      return {
+                        key: index,
+                        programName: item.name,
+                        categoryName: item.categoryDetails?.Name || "-",
+                        description: item.description,
+                        data: item,
+                      };
+                    })}
+                    columns={programsColumns}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ x: "750px" }}
+                    rowKey="_id"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          {user?.myDocuments.length
+            ? (
+              <div
+                className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
+              >
+                <h2
+                  className={
+                    "dark:text-white dark:text-white text-gray-900 text-2xl font-bold pb-4"
+                  }
+                >
+                  My Documents
+                </h2>
+                <div
+                  className={
+                    "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                  }
+                >
+                  <div className="relative overflow-x-auto">
+                    {user?.myDocuments?.map((document, index) => (
+                      <div
+                        key={index}
+                        className="m-3 p-1 block cursor-pointer text-md font-bold hover:opacity-80 hover:underline"
+                        onClick={() => window.open(document.url)}
+                      >
+                        {document.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
         </div>
       </div>
     </div>
