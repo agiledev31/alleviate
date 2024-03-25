@@ -235,9 +235,18 @@ const getDashboardDetails = async (req, res) => {
     }
 
     // total suites
-    const totalSuites = await Suite.find({
+    const totalSuites = [];
+    const _totalSuites = await Suite.find({
       published: true,
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).lean();
+    for (const suite of _totalSuites) {
+      if (suite.category) {
+        suite.categoryDetails = await db
+          .collection("impact_categories")
+          .findOne({ _id: new ObjectId(suite.category) });
+      }
+      totalSuites.push(suite);
+    }
 
     const _grantOpportunities = totalSuites.filter((item) => {
       return item.isGrantOpportunity;
