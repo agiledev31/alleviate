@@ -29,6 +29,8 @@ const getDashboardDetails = async (req, res) => {
       segmentKPIs: [],
       submissions: [],
       pendingPrograms: [],
+      grantOpportunities: [],
+      recommendedGrantOpportunities: [],
       sdgs: [],
     };
     const userSuite = await Suite.find({
@@ -230,6 +232,29 @@ const getDashboardDetails = async (req, res) => {
     const firstFiveSuites = filteredSuites.slice(0, 5);
     if (firstFiveSuites && firstFiveSuites.length > 0) {
       data.pendingPrograms = firstFiveSuites;
+    }
+
+    // total suites
+    const totalSuites = await Suite.find({
+      published: true,
+    }).sort({ createdAt: -1 });
+
+    const _grantOpportunities = totalSuites.filter((item) => {
+      return item.isGrantOpportunity;
+    });
+
+    const grantOpportunities = _grantOpportunities.slice(0, 5);
+    if (grantOpportunities && grantOpportunities.length > 0) {
+      data.grantOpportunities = grantOpportunities;
+    }
+
+    const _recommendedGrantOpportunities = totalSuites.filter((item) => {
+      return req.user.impactThemeInterests.includes(item.category);
+    });
+
+    const recommendedGrantOpportunities = _recommendedGrantOpportunities.slice(0, 5);
+    if (recommendedGrantOpportunities && recommendedGrantOpportunities.length > 0) {
+      data.recommendedGrantOpportunities = recommendedGrantOpportunities;
     }
 
     res.json(data);

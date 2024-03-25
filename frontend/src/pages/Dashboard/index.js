@@ -28,6 +28,7 @@ import { default as DashboardDetail } from "../DashboardDetail";
 import GrantOpportunities from "../GrantOpportunities";
 import MyBenchmarks from "../MyBenchmarks";
 import MyDocuments from "../MyDocuments";
+import MyApplications from "../MyApplications";
 import ProgramForm from "../ProgramForm";
 import ProgramThankyou from "../ProgramThankyou";
 import Programs from "../Programs";
@@ -104,7 +105,7 @@ export const getNavigation = (user) =>
   [
     {
       id: 1,
-      name: "Dashboard",
+      name: user?.role === "ngo-beneficiary" ? "Home" : "Dashboard",
       component: <DashboardDetail />,
       href: "/dashboard",
       icon: HomeIcon,
@@ -124,7 +125,7 @@ export const getNavigation = (user) =>
       component: <Team />,
       href: "/dashboard/team",
       icon: UsersIcon,
-      display: true,
+      display: ["ngo-company", "admin"].includes(user?.role),
     },
     {
       id: 4,
@@ -136,6 +137,22 @@ export const getNavigation = (user) =>
     },
     {
       id: 5,
+      name: "My Programs",
+      component: <Programs />,
+      href: "/dashboard/programs",
+      icon: ChartPieIcon,
+      display: !["ngo-company", "admin"].includes(user?.role),
+    },
+    {
+      id: 6,
+      name: "My Applications",
+      component: <MyApplications />,
+      href: "/dashboard/myapplications",
+      icon: ChartPieIcon,
+      display: ["ngo-beneficiary"].includes(user?.role),
+    },
+    {
+      id: 7,
       name: "Build Program",
       component: <SuiteModal />,
       href: "/dashboard/suitemodal",
@@ -144,15 +161,15 @@ export const getNavigation = (user) =>
     },
 
     {
-      id: 6,
+      id: 8,
       name: "Category Notifications",
       component: <CategotyNotifications />,
       href: "/dashboard/categotynofications",
       icon: BellIcon,
-      display: user?.role === "ngo-company",
+      display: ["ngo-company", "ngo-beneficiary"].includes(user?.role),
     },
     {
-      id: 7,
+      id: 9,
       name: "Create Template",
       component: <CreateTemplate />,
       href: "/dashboard/createtemplate",
@@ -160,7 +177,7 @@ export const getNavigation = (user) =>
       display: user?.role === "admin",
     },
     {
-      id: 8,
+      id: 10,
       name: "Templates",
       component: <Templates />,
       href: "/dashboard/templates",
@@ -168,23 +185,16 @@ export const getNavigation = (user) =>
       display: user?.role === "admin",
     },
     {
-      id: 9,
+      id: 11,
       name: "Benchmarks",
       component: <Benchmarks />,
       href: "/dashboard/benchmarks",
       icon: BuildProgramIcon,
       display: user?.role === "admin",
     },
+    
     {
-      id: 10,
-      name: "Programs",
-      component: <Programs />,
-      href: "/dashboard/programs",
-      icon: ChartPieIcon,
-      display: !["ngo-company", "admin"].includes(user?.role),
-    },
-    {
-      id: 11,
+      id: 12,
       name: "Post Grant Opportunity",
       component: <GrantModal />,
       href: "/dashboard/grantmodal",
@@ -192,12 +202,20 @@ export const getNavigation = (user) =>
       display: user?.role === "admin",
     },
     {
-      id: 12,
+      id: 13,
       name: "Grant Opportunities",
       component: <GrantOpportunities />,
       href: "/dashboard/grantopportunities",
       icon: ChartPieIcon,
-      display: ["ngo-company", "admin"].includes(user?.role),
+      display: ["ngo-beneficiary", "ngo-company", "admin"].includes(user?.role),
+    },
+    {
+      id: 14,
+      name: "My Documents",
+      component: <MyDocuments />,
+      href: "/dashboard/mydocuments",
+      icon: MyProgramsIcon,
+      display: ["ngo-beneficiary"].includes(user?.role),
     },
   ].filter((a) => {
     if (user?.parent && !user?.accessControl?.[a.id]) return false;
