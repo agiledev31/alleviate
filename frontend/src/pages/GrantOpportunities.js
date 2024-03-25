@@ -399,10 +399,10 @@ const GrantOpportunities = () => {
               </div>
             )}
 
-            <div className="mt-5 md:flex justify-between items-center text-xs font-semibold text-gray-700">
+            <div className="mt-5 md:flex justify-between text-xs font-semibold text-gray-700">
               <span>{total} results</span>
               <div className="md:flex items-center">
-                <div className="mt-2 md:mt-0">
+                <div className="mt-5 md:mt-0">
                   <span className="mr-2">Show:</span>
                   <select
                     className="mr-4 rounded-full"

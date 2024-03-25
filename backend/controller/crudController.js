@@ -31,7 +31,7 @@ const checkUser = async (req, res, next) => {
     const actualAccessControl = user.accessControl;
 
     if (user.blocked) {
-      throw new Error("Access blocked!!");
+      throw new Error("Access denied");
     }
 
     let isTeammember = false;

@@ -1,4 +1,4 @@
-const { Program, ProgramSubmission } = require("../models");
+const { Program, Suite, ProgramSubmission, User } = require("../models");
 
 const getSurveys = async (req, res) => {
   try {
@@ -258,8 +258,60 @@ const getDataSummary = async (req, res) => {
   }
 };
 
+const getAdminStats = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") throw new Error("No access");
+
+    const activeUsersCount = await User.countDocuments({
+      /* your condition for active users */
+    });
+
+    // Daily Active Users: Assuming you have a updatedAt field to check activity in the last 24h
+    const dailyActiveUsersCount = await User.countDocuments({
+      updatedAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+    const totalUsersCount = await User.countDocuments({});
+    const dailyActiveUsersPercentage =
+      (dailyActiveUsersCount / totalUsersCount) * 100;
+
+    // Weekly and Monthly Active Users: Similar to Daily, but with 7 days and 30 days
+    const weeklyActiveUsersCount = await User.countDocuments({
+      updatedAt: { $gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+    });
+    const weeklyActiveUsersPercentage =
+      (weeklyActiveUsersCount / totalUsersCount) * 100;
+
+    const monthlyActiveUsersCount = await User.countDocuments({
+      updatedAt: { $gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+    });
+    const monthlyActiveUsersPercentage =
+      (monthlyActiveUsersCount / totalUsersCount) * 100;
+
+    const ngoOrganizationCount = await User.countDocuments({
+      role: "ngo-company",
+    });
+    const programCount = await Suite.countDocuments({
+      isGrantOpportunity: false,
+    });
+
+    res.json({
+      activeUsersCount,
+      dailyActiveUsersPercentage,
+      weeklyActiveUsersPercentage,
+      monthlyActiveUsersPercentage,
+      ngoOrganizationCount,
+      programCount,
+    });
+  } catch (err) {
+    res.status(400).send({
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   getSurveys,
   getAssessmentSurveys,
   getDataSummary,
+  getAdminStats,
 };
