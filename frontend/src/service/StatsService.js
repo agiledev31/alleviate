@@ -21,6 +21,9 @@ class StatsService {
   getDataSummary(id) {
     return this.api.get(`/getDataSummary?id=${id}`);
   }
+  getAdminStats() {
+    return this.api.get(`/getAdminStats`);
+  }
 }
 
 export default new StatsService(`${getBackendUrl()}/stats`);

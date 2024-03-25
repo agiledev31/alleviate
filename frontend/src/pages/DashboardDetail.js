@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { sdgDefault } from "../data/constants";
 import { selectUser } from "../redux/auth/selectors";
 import DashboardService from "../service/DashboardService";
+import AdminDashboard from "./AdminDashboard";
 
 const DashboardDetail = () => {
   const navigate = useNavigate();
@@ -88,10 +89,10 @@ const DashboardDetail = () => {
             text === "Submitted"
               ? "green"
               : text === "Waiting"
-                ? "orange"
-                : text === "Approved"
-                  ? "green"
-                  : "red"
+              ? "orange"
+              : text === "Approved"
+              ? "green"
+              : "red"
           }
         >
           {text === "Waiting" ? "Submitted" : text}
@@ -228,6 +229,8 @@ const DashboardDetail = () => {
   return (
     <div className="">
       <div className={"mx-auto md:p-4 2xl:p-6 2xl:px-6"}>
+        {user?.role === "admin" && <AdminDashboard />}
+
         <div className={"mt-7.5 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5 "}>
           {user.role !== "admin" && submittedProgramData?.length > 0 && (
             <div
@@ -480,7 +483,7 @@ const DashboardDetail = () => {
               </div>
             </div>
           )}
-
+          
           {recommendedGrantOpportunities?.length > 0 && (
             <div
               className={"col-span-12 shadow-sm bg-white dark:bg-gray-900 p-8"}
@@ -567,26 +570,26 @@ const DashboardDetail = () => {
                   }
                 >
                   My Documents
-                </h2>
-                <div
-                  className={
-                    "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
-                  }
-                >
-                  <div className="relative overflow-x-auto">
-                    {user?.myDocuments?.map((document, index) => (
-                      <div
-                        key={index}
-                        className="m-3 p-1 block cursor-pointer text-md font-bold hover:opacity-80 hover:underline"
-                        onClick={() => window.open(document.url)}
-                      >
-                        {document.name}
-                      </div>
-                    ))}
-                  </div>
+              </h2>
+              <div
+                className={
+                  "col-span-12 rounded-sm border border-stroke bg-white dark:bg-gray-900 pt-7.5 shadow-default sm:px-7.5 xl:col-span-8"
+                }
+              >
+                <div className="relative overflow-x-auto">
+                  {user?.myDocuments?.map((document, index) => (
+                    <div
+                      key={index}
+                      className="m-3 p-1 block cursor-pointer text-md font-bold hover:opacity-80 hover:underline"
+                      onClick={() => window.open(document.url)}
+                    >
+                      {document.name}
+                    </div>
+                  ))}
                 </div>
               </div>
-            ) : null}
+            </div>
+          ) : null }
         </div>
       </div>
     </div>
